@@ -11,7 +11,7 @@ using ReactCURD_EX;
 namespace ReactCURD_EX.Migrations
 {
     [DbContext(typeof(ComponyContext))]
-    [Migration("20240116104326_init")]
+    [Migration("20240119073318_init")]
     partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -82,6 +82,10 @@ namespace ReactCURD_EX.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhotoPath")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 

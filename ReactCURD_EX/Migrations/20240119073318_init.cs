@@ -44,7 +44,8 @@ namespace ReactCURD_EX.Migrations
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Adress = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Age = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Class = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Class = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PhotoPath = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {

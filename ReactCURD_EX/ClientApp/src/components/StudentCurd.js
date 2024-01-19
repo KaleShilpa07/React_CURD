@@ -15,9 +15,25 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
-  TextField,
+
 } from "@mui/material";
 const StudentCurd = () => {
+
+        const [searchTerm, setSearchTerm] = useState('');
+
+        const handleSearch = () => {
+            axios.get(`https://localhost:7195/api/home/search?searchTerm=${searchTerm}`)
+                .then((result) => {
+                    Setdata(result.data);
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+        };
+
+
+
+
   const [open, setOpen] = useState(false);
   const [deleteId, setDeleteId] = useState();
 
@@ -47,7 +63,6 @@ const StudentCurd = () => {
         handleCloseDialog(); // Close the confirmation dialog
       });
   };
-  const [filter, setFilter] = useState([])
   const [data, Setdata] = useState([]);
   const [show, setShow] = useState(false);
 
@@ -55,7 +70,6 @@ const StudentCurd = () => {
   const handleShow = () => setShow(true);
 
   const [Name, SetName] = useState("");
-  const [id, SetId] = useState("");
   const [Age, SetAge] = useState("");
   const [Adress, SetAddress] = useState("");
   const [Class, SetClass] = useState("");
@@ -184,21 +198,11 @@ const StudentCurd = () => {
   //       });
   //   }
   // };
-  const requestSearch = (searchedVal) => {
-    const filteredRows = data.filter((row) => {
-        return row.customer.toString().toLowerCase().includes(searchedVal.toString().toLowerCase());
-    });
-    if (searchedVal.length < 1) {
-        setFilter(data)
-    }
-    else {
-        setFilter(filteredRows)
-    }
-  };
+  
   useEffect(() => {
     Getdata();
-    setFilter();
-  }, []);
+    
+  }, [searchTerm]);
 
   const Getdata = () => {
     axios
@@ -273,14 +277,16 @@ const StudentCurd = () => {
           </Col>
           <Col lg={4} md={8} style={{ position: 'fixed', width: '20%', marginLeft: '860px' }} >
             <input
-              class="form-control"
-              type="search"
-              placeholder="Search"
-              aria-label="Search"
+                          class="form-control"
+                          type="search"
+                          placeholder="Search"
+                          aria-label="Search"
+                          value={searchTerm}
+                          onChange={(e) => setSearchTerm(e.target.value)}
             />
           </Col>
           <Col lg={2} md={10} style={{ position: 'fixed', width: '20%', marginLeft: '1100px' }}>
-            <button class="btn btn-outline-success " type="submit">
+                      <button class="btn btn-outline-success" type="submit" onClick={handleSearch}>
               Search
             </button>
           </Col>

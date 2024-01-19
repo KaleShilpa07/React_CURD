@@ -17,8 +17,5 @@ namespace ReactCURD_EX
         public string? Age { get; set; }
         [Required]
         public string? Class { get; set; }
-       
-
-
     }
 }

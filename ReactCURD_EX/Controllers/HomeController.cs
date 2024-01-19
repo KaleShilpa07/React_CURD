@@ -95,5 +95,18 @@ namespace ReactCURD_EX.Controllers
             await _cc.SaveChangesAsync();
             return Ok();    
         }
-        } 
-}
+
+
+        [HttpGet("search")]
+        public IActionResult SearchStudents(string searchTerm)
+        {
+            var filteredStudents = _cc.students
+                .Where(s => s.Name.Contains(searchTerm) || s.Class.Contains(searchTerm) || s.Age.Contains(searchTerm) || s.Adress.Contains(searchTerm))
+                .ToList();
+
+            return Ok(filteredStudents);
+        }
+    }
+
+} 
+

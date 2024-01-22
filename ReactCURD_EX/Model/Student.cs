@@ -17,5 +17,11 @@ namespace ReactCURD_EX
         public string? Age { get; set; }
         [Required]
         public string? Class { get; set; }
+        // New property for storing photo as byte array
+        public byte[]? Photo { get; set; }
+
+        // New property for storing base64 representation of the photo
+        [NotMapped] // This property is not mapped to the database
+        public string? PhotoBase64 { get; set; }
     }
 }

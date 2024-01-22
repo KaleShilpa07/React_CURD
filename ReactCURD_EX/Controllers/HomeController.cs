@@ -38,12 +38,18 @@ namespace ReactCURD_EX.Controllers
             return student;
         }
 
-
         [HttpPost]
         public async Task<ActionResult<IEnumerable<Student>>> AddStudent(Student student)
         {
             try
             {
+                
+                // Convert base64 string to byte array and set the Photo property
+                if (!string.IsNullOrEmpty(student.PhotoBase64))
+                {
+                    student.Photo = Convert.FromBase64String(student.PhotoBase64);
+                }
+
                 _cc.students.Add(student);
                 await _cc.SaveChangesAsync();
             }
@@ -52,19 +58,22 @@ namespace ReactCURD_EX.Controllers
                 throw;
             }
             return Ok();
-            //return CreatedAtAction(nameof(AddStudent),new {id=student.Id},student);
-    
         }
 
-
         [HttpPut("{id}")]
-        public async Task<ActionResult<IEnumerable<Student>>> EditStudent( int id, Student ss)
+        public async Task<ActionResult<IEnumerable<Student>>> EditStudent(int id, Student ss)
         {
-
             if (id != ss.Id)
             {
                 return BadRequest();
             }
+
+            // Convert base64 string to byte array and set the Photo property
+            if (!string.IsNullOrEmpty(ss.PhotoBase64))
+            {
+                ss.Photo = Convert.FromBase64String(ss.PhotoBase64);
+            }
+
             _cc.Entry(ss).State = EntityState.Modified;
             try
             {
@@ -72,13 +81,10 @@ namespace ReactCURD_EX.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-
                 throw;
             }
             return Ok();
-
         }
-
         [HttpDelete("{id}")]
         public async Task<ActionResult<IEnumerable<Student>>> DeleteStudent(int id)
         {

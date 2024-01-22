@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using ReactCURD_EX;
-using ScratchProject1;
+
 
 var builder = WebApplication.CreateBuilder(args);
 

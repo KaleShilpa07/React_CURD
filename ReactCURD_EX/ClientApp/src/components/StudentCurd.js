@@ -1,4 +1,6 @@
 ﻿import React, { Fragment, useState, useEffect } from "react";
+import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, IconButton } from '@mui/material';
+
 import Table from "react-bootstrap/Table";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
@@ -12,16 +14,10 @@ import { useTheme } from '@mui/material/styles';
 import Icon from '@mui/material/Icon';
 import EditIcon from '@mui/icons-material/Edit';
 import VisibilityIcon from '@mui/icons-material/Visibility';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import DeleteIcon from '@mui/icons-material/Delete';
 import "react-toastify/dist/ReactToastify.css";
-import {
-    Dialog,
-    DialogActions,
-    DialogContent,
-    DialogContentText,
-    DialogTitle,
 
-} from "@mui/material";
 const StudentCurd = () => {
     const useIsDarkMode = () => {
         const theme = useTheme();
@@ -345,18 +341,9 @@ const StudentCurd = () => {
 
             </Container>
             <Container>
-                <Row>
-                   
-                      <div>  <Icon
-                        onClick={handleAddShowModal}
-                            sx={{ ...(isDarkMode && { filter: 'invert(1)' }) }}
-                            baseClassName="material-icons-two-tone"
-                        >
-                            add_circle
-                        </Icon><h>New</h></div>
-    
-      
-      </Row>
+                <Row> <div> <IconButton color="Secondary" onClick={handleAddShowModal}>
+                    <AddCircleOutlineIcon />Add
+                </IconButton></div> </Row>
             </Container>
             <br></br>
 
@@ -474,6 +461,9 @@ const StudentCurd = () => {
                                             </div>
                                         </td>
                                         <td colSpan={2}>
+                                            <IconButton color="primary" onClick={handleAddShowModal}>
+                                                <AddCircleOutlineIcon />
+                                            </IconButton>
                                             <EditIcon
                                                 style={{ cursor: 'pointer', color: 'blue' }} // Set color or other styles as needed
                                                 onClick={() => HandleEdit(item.id)}

@@ -6,7 +6,9 @@ a {
 code {
   color: #E01A76;
 }
-
+.app-container {
+    margin: 20px; /* Adjust the value as needed */
+}
 .btn-primary {
   color: #fff;
   background-color: #1b6ec2;

@@ -325,7 +325,7 @@ const StudentCurd = () => {
                         <input
                             className="form-control"
                             type="search"
-                            placeholder="Search"
+                            placeholder="Search here.."
                             aria-label="Search"
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
@@ -338,13 +338,11 @@ const StudentCurd = () => {
                     </Col>
 
                 </Row>
-
+                
             </Container>
-            <Container>
-                <Row> <div> <IconButton color="Secondary" onClick={handleAddShowModal}>
+            <Row> <div> <IconButton color="btn btn-outline-Success" style={{ color: 'green' }} onClick={handleAddShowModal}>
                     <AddCircleOutlineIcon />Add
-                </IconButton></div> </Row>
-            </Container>
+            </IconButton> </div></Row>
             <br></br>
 
 

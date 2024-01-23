@@ -8,6 +8,11 @@ import Container from "react-bootstrap/Container";
 import axios from "axios";
 import { getData } from "ajv/dist/compile/validate";
 import { ToastContainer, toast } from "react-toastify";
+import { useTheme } from '@mui/material/styles';
+import Icon from '@mui/material/Icon';
+import EditIcon from '@mui/icons-material/Edit';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import DeleteIcon from '@mui/icons-material/Delete';
 import "react-toastify/dist/ReactToastify.css";
 import {
     Dialog,
@@ -18,17 +23,18 @@ import {
 
 } from "@mui/material";
 const StudentCurd = () => {
-    const [showPreview, setShowPreview] = useState(false);
-    const [previewData, setPreviewData] = useState(false);
+    const useIsDarkMode = () => {
+        const theme = useTheme();
+        return theme.palette.mode === 'dark';
+    };
+    const isDarkMode = useIsDarkMode();
     const [currentPhotoUrl, setCurrentPhotoUrl] = useState("");
-    const [showEditModal, setShowEditModal] = useState(false);
-    const [showPreviewModal, setShowPreviewModal] = useState(false);
+     const [previewData, setPreviewData] = useState(false);
+   
     // Add a new state for storing the selected file
-   const [selectedFile, setSelectedFile] = useState(null);
+    const [selectedFile, setSelectedFile] = useState(null);
 
     // Handler for file input change
-
-
     const handleFileChange = (e) => {
         setSelectedFile(e.target.files[0]);
     };
@@ -59,14 +65,33 @@ const StudentCurd = () => {
         setDeleteId(id);
         setOpen(true);
     };
-    const handleCloseEditModal = () => setShowEditModal(false);
-    const handleClosePreviewModal = () => setShowPreviewModal(false);
-    const handleCloseDialog = () => {
-        setOpen(false);
+      const handleCloseDialog = () => { setOpen(false); };
+
+    //
+    const [showEditModal, setShowEditModal] = useState(false);
+    const handleEditModal = () => {
+        setShowEditModal(true);
     };
 
+    const handleCloseEditModal = () => {
+        setShowEditModal(false);
+    };
+
+//
+    const [showPreviewModal, setShowPreviewModal] = useState(false);
+
+    const handlePreviewModal = () => {
+        setShowPreviewModal(true);
+    };
+
+    const handleClosePreviewModal = () => {
+        setShowPreviewModal(false);
+    };
+  //
+    //Delete Data
     const HandleDelete = (id) => {
         handleClickOpen(id);
+
     };
     const confirmDelete = () => {
         axios
@@ -82,12 +107,11 @@ const StudentCurd = () => {
                 handleCloseDialog(); // Close the confirmation dialog
             });
     };
+
+
+
     const [data, Setdata] = useState([]);
-    const [show, setShow] = useState(false);
-
-    const handleClose = () => setShow(false);
-    const handleShow = () => setShow(true);
-
+    
     const [Name, SetName] = useState("");
     const [Age, SetAge] = useState("");
     const [Adress, SetAddress] = useState("");
@@ -148,6 +172,7 @@ const StudentCurd = () => {
             };
         });
     };
+    //Save Data
     const HandleSave = async () => {
         const url1 = "https://localhost:7195/api/home";
         const formData = {
@@ -162,6 +187,7 @@ const StudentCurd = () => {
             .then((result) => {
                 getData();
                 Clear();
+                console.log("Add data:", formData)
                 toast.success("Student Add Successfully..");
             })
             .catch((error) => {
@@ -196,7 +222,7 @@ const StudentCurd = () => {
             .put(`https://localhost:7195/api/home/${id}`, updatedData)
             .then((response) => {
                 toast.success("Data updated successfully");
-                handleClose(); // Close the modal after successful update
+                // Close the modal after successful update
                 refreshPage();
             })
             .catch((error) => {
@@ -205,8 +231,7 @@ const StudentCurd = () => {
             });
     };
     const HandleEdit = (id) => {
-        handleShow();
-
+        handleEditModal();
         axios
             .get(`https://localhost:7195/api/home/${id}`, {
                 headers: {
@@ -214,21 +239,17 @@ const StudentCurd = () => {
                 },
             })
             .then((result) => {
-                setPreviewData(result.data);
-               
-                setShowEditModal(true); // Set showEditModal to true
-               // setShowPreview(false);
-                 SetEditPhotoBase64(result.data.PhotoBase64);
+                SetEditPhotoBase64(result.data.PhotoBase64);
                 SetEditName(result.data.name);
                 SetEditAge(result.data.age);
-                SetEditAddress(result.data.adress); // Make sure this matches the actual property name from the API response
+                SetEditAddress(result.data.adress);
                 SetEditClass(result.data.class);
-                setCurrentPhotoUrl(`data:image/png;base64,${result.data.photo}`); // Set currentPhotoUrl
-
-                SetEditid(id); // You don't need to set the id if it's already in the URL
+                setCurrentPhotoUrl(`data:image/png;base64,${result.data.photo}`);
+                SetEditid(id);
+               setShowEditModal(true); // You might need this line if you want to ensure the modal is visible after fetching data
             })
             .catch((error) => {
-                console.error(error); // Log any errors to the console
+                console.error(error);
                 toast.error("Error fetching student data for edit");
             });
     };
@@ -249,6 +270,8 @@ const StudentCurd = () => {
     // };
 
     const HandlePreview = (id) => {
+        handlePreviewModal();
+        
         axios
             .get(`https://localhost:7195/api/home/${id}`, {
                 headers: {
@@ -257,13 +280,25 @@ const StudentCurd = () => {
             })
             .then((result) => {
                 setPreviewData(result.data);
+                // Open the preview modal
                 setShowPreviewModal(true);
-                setShowEditModal(false); // Disable the EditModal
+               
                  })
             .catch((error) => {
                 console.error(error);
                 toast.error("Error fetching student data for preview");
             });
+    };
+
+
+    const [showAddModal, setAddShowModal] = useState(false);
+
+    const handleAddShowModal = () => {
+        setAddShowModal(true);
+    };
+
+    const handleAddCloseModal = () => {
+        setAddShowModal(false);
     };
 
     useEffect(() => {
@@ -289,67 +324,7 @@ const StudentCurd = () => {
             <ToastContainer />
 
             <Container>
-                <Row>
-                    <h2>Add New Records:</h2>
-                    <Col lg={2} md={8}>
-                        <input
-                            type="Text"
-                            className="form-control"
-                            placeholder="Name"
-                            value={Name}
-                            onChange={(e) => SetName(e.target.value)}
-                        />
-                    </Col>
-                    <Col lg={4} md={8}>
-                        <input
-                            type="Text"
-                            className="form-control"
-                            placeholder="Address"
-                            value={Adress}
-                            onChange={(e) => SetAddress(e.target.value)}
-                        />
-                    </Col>
-
-                </Row>
-                <br></br>
-                <Row>
-                    <Col lg={2} md={10}>
-                        <input
-                            type="Text"
-                            className="form-control"
-                            placeholder="Age"
-                            value={Age}
-                            onChange={(e) => SetAge(e.target.value)}
-                        />
-                    </Col>
-                    <Col lg={2} md={10}>
-                        <input
-                            type="Text"
-                            className="form-control"
-                            placeholder="Class"
-                            value={Class}
-                            onChange={(e) => SetClass(e.target.value)}
-                        />
-                    </Col>
-                    <Col lg={4} md={8}>
-                        <input
-                            type="file"
-                            className="form-control"
-                            onChange={(e) => handleFileChange(e)}
-                        /></Col>
-                    <br />
-
-                    <Col >
-                        <button
-                            className="btn btn-success"
-                            onClick={() => {
-                                HandleSave();
-                                refreshPage();
-                            }}
-                        >
-                            Submit
-                        </button>
-                    </Col>
+            <Row>
                     <Col lg={4} md={8} style={{ position: 'fixed', width: '20%', marginLeft: '860px' }} >
                         <input
                             className="form-control"
@@ -369,12 +344,101 @@ const StudentCurd = () => {
                 </Row>
 
             </Container>
-
+            <Container>
+                <Row>
+                   
+                      <div>  <Icon
+                        onClick={handleAddShowModal}
+                            sx={{ ...(isDarkMode && { filter: 'invert(1)' }) }}
+                            baseClassName="material-icons-two-tone"
+                        >
+                            add_circle
+                        </Icon><h>New</h></div>
+    
+      
+      </Row>
+            </Container>
             <br></br>
-            <Table striped bordered hover>
+
+
+            <Modal show={showAddModal} onHide={handleAddCloseModal} size="lg">
+                <Modal.Header closeButton>
+                    <Modal.Title>Add New Student</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <Row>
+                        <Col lg={5} md={7}>
+                            <input
+                                type="Text"
+                                className="form-control"
+                                placeholder="Name"
+                                value={Name}
+                                onChange={(e) => SetName(e.target.value)}
+                            />
+                        </Col>
+                        <Col lg={7} md={5}>
+                            <input
+                                type="Text"
+                                className="form-control"
+                                placeholder="Address"
+                                value={Adress}
+                                onChange={(e) => SetAddress(e.target.value)}
+                            />
+                        </Col>
+
+                    </Row>
+                    <br></br>
+                    <Row>
+                        <Col lg={3} md={9}>
+                            <input
+                                type="Text"
+                                className="form-control"
+                                placeholder="Age"
+                                value={Age}
+                                onChange={(e) => SetAge(e.target.value)}
+                            />
+                        </Col>
+                        <Col lg={3} md={9}>
+                            <input
+                                type="Text"
+                                className="form-control"
+                                placeholder="Class"
+                                value={Class}
+                                onChange={(e) => SetClass(e.target.value)}
+                            />
+                        </Col>
+                        <Col lg={6} md={6}>
+                            <input
+                                type="file"
+                                className="form-control"
+                                onChange={(e) => handleFileChange(e)}
+                            /></Col>
+                        <br />
+                       
+                        
+
+                    </Row>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={handleAddCloseModal}>
+                        Close
+                    </Button>
+                    <Button
+                        variant="success"
+                        onClick={() => {
+                            HandleSave();
+                            refreshPage();
+                            handleAddCloseModal();
+                        }}
+                    >
+                        Submit
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+            <Table striped bordered>
                 <thead>
                     <tr>
-                        <th>Serial No</th>
+                       {/* <th>No</th>*/}
                         <th>Name</th>
                         <th>Age</th>
                         <th>Address</th>
@@ -389,8 +453,8 @@ const StudentCurd = () => {
                         ? data.map((item, index) => {
                             return (
                                 <>
-                                    <tr key={index} onClick={() => HandleEdit(item.id)}>
-                                        <td>{index + 1}</td>
+                                    <tr key={index} >
+                                      {/*  <td>{index + 1}</td>*/}
                                         <td>{item.name}</td>
                                         <td>{item.age}</td>
                                         <td>{item.adress}</td>
@@ -402,6 +466,7 @@ const StudentCurd = () => {
                                                         style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                                                         src={`data:image/png;base64,${item.photo}`}
                                                         alt={`${item.name}`}
+                                                        onClick={() => HandlePreview(item.id)}
                                                     />
                                                 ) : (
                                                     ".."
@@ -409,29 +474,23 @@ const StudentCurd = () => {
                                             </div>
                                         </td>
                                         <td colSpan={2}>
-                                            <button
-                                                className="btn btn-primary"
+                                            <EditIcon
+                                                style={{ cursor: 'pointer', color: 'blue' }} // Set color or other styles as needed
                                                 onClick={() => HandleEdit(item.id)}
-                                            >
-                                                Edit
-                                            </button>
+                                            ></EditIcon>
 
                                             &nbsp;
-                                            <button
-                                                className="btn btn-success"
+                                            <VisibilityIcon
                                                 onClick={() => HandlePreview(item.id)}
-                                            >
-                                                Preview
-                                            </button>
+                                                style={{ cursor: 'pointer' }}
+                                            />
                                             &nbsp;
-                                            <button
-                                                className="btn btn-danger"
+                                            <DeleteIcon
                                                 onClick={() => {
                                                     HandleDelete(item.id);
                                                 }}
-                                            >
-                                                Delete
-                                            </button>
+                                                style={{ cursor: 'pointer', color: 'red' }} // Customize the color
+                                            />
                                         </td>
                                     </tr>
                                 </>
@@ -442,7 +501,30 @@ const StudentCurd = () => {
             </Table>
 
             {/* New modal for preview */}
-            <div>  <Modal show={showPreviewModal}  onHide={handleClosePreviewModal} animation={true}>
+           
+            <Dialog open={open} onClose={handleCloseDialog}>
+                <DialogTitle>Confirmation</DialogTitle>
+                <DialogContent>
+                    <DialogContentText>
+                        Are you sure you want to delete this student?
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleCloseDialog} color="primary">
+                        Cancel
+                    </Button>
+                    <Button
+                        onClick={() => {
+                            confirmDelete();
+                            refreshPage();
+                        }}
+                        variant="danger"
+                    >
+                        Confirm
+                    </Button>
+                </DialogActions>
+            </Dialog>
+            <div>  <Modal show={showPreviewModal} onHide={handleClosePreviewModal} animation={true}>
                 <Modal.Header closeButton>
                     <Modal.Title>Student Preview</Modal.Title>
                 </Modal.Header>
@@ -464,9 +546,9 @@ const StudentCurd = () => {
                     )}
                 </Modal.Body>
             </Modal> </div>
-          <div>  <Modal show={showEditModal} onHide={handleCloseEditModal} animation={true}>
+            <div>  <Modal show={showEditModal} onHide={handleCloseEditModal} animation={true}>
                 <Modal.Header closeButton>
-                    <Modal.Title>Update/Edit Employee</Modal.Title>
+                    <Modal.Title>Update/Edit Student</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <Row>
@@ -509,9 +591,9 @@ const StudentCurd = () => {
                                 onChange={(e) => SetEditClass(e.target.value)}
                             />
                         </Col>
-                        <br></br>
+                        <br></br>&nbsp;
 
-                         {/*Display the current photo */}
+                        {/*Display the current photo */}
                         {currentPhotoUrl && (
                             <img
                                 src={currentPhotoUrl}
@@ -519,7 +601,7 @@ const StudentCurd = () => {
                                 style={{ maxWidth: '100%', maxHeight: '200px' }}
                             />
                         )}
-
+                        &nbsp;
                         <input
                             type="file"
                             onChange={(e) => handleEditFileChange(e)}
@@ -542,28 +624,6 @@ const StudentCurd = () => {
                     </Button>
                 </Modal.Footer>
             </Modal> </div>
-            <Dialog open={open} onClose={handleCloseDialog}>
-                <DialogTitle>Confirmation</DialogTitle>
-                <DialogContent>
-                    <DialogContentText>
-                        Are you sure you want to delete this student?
-                    </DialogContentText>
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={handleCloseDialog} color="primary">
-                        Cancel
-                    </Button>
-                    <Button
-                        onClick={() => {
-                            confirmDelete();
-                            refreshPage();
-                        }}
-                        color="primary"
-                    >
-                        Confirm
-                    </Button>
-                </DialogActions>
-            </Dialog>
         </Fragment>
     );
 };

@@ -53,8 +53,9 @@ namespace ReactCURD_EX.Controllers
                 _cc.students.Add(student);
                 await _cc.SaveChangesAsync();
             }
-            catch (DbUpdateConcurrencyException)
+            catch (DbUpdateConcurrencyException ex)
             {
+                Console.WriteLine($"Concurrency Exception: {ex.Message}");
                 throw;
             }
             return Ok();
@@ -107,7 +108,7 @@ namespace ReactCURD_EX.Controllers
         public IActionResult SearchStudents(string searchTerm)
         {
             var filteredStudents = _cc.students
-                .Where(s => s.Name.Contains(searchTerm) || s.Class.Contains(searchTerm) || s.Age.Contains(searchTerm) || s.Adress.Contains(searchTerm))
+                .Where(s => s.Name.Contains(searchTerm) || s.Standard.Contains(searchTerm) || s.Age.Contains(searchTerm) || s.City.Contains(searchTerm) || s.MobileNo.Contains(searchTerm) || s.Gender.Contains(searchTerm) || s.EmailId.Contains(searchTerm) )
                 .ToList();
 
             return Ok(filteredStudents);

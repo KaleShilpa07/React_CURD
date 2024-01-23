@@ -12,16 +12,23 @@ namespace ReactCURD_EX
         [Required]
         public string? Name { get; set; }
         [Required]
-        public string? Adress { get; set; }
+        public string? City { get; set; }
         [Required]
         public string? Age { get; set; }
         [Required]
-        public string? Class { get; set; }
+        public string? Standard { get; set; }
         // New property for storing photo as byte array
         public byte[]? Photo { get; set; }
 
         // New property for storing base64 representation of the photo
         [NotMapped] // This property is not mapped to the database
         public string? PhotoBase64 { get; set; }
+        public DateTime? DOB { get; set; }
+        [Required]
+        public string? Gender { get; set; }
+        [Required]
+        public string? MobileNo { get; set; }
+        [Required]
+        public string? EmailId { get; set; }
     }
 }

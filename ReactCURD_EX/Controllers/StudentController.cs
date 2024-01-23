@@ -26,8 +26,8 @@ namespace ReactCURD_EX.Controllers
                 if (!String.IsNullOrEmpty(searchString))
                 {
                     Stud = Stud.Where(m => m.Name.Contains(searchString)
-                                           || m.Adress.Contains(searchString)
-                                            || m.Class.Contains(searchString)
+                                           || m.City.Contains(searchString)
+                                            || m.Standard.Contains(searchString)
                                            );
                     return View(Stud);
                 }

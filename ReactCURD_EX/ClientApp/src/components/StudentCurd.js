@@ -1,8 +1,10 @@
 ﻿import React, { Fragment, useState, useEffect } from "react";
 import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, IconButton } from '@mui/material';
-
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 import Table from "react-bootstrap/Table";
 import Button from "react-bootstrap/Button";
+import {Form } from 'react-bootstrap';
 import Modal from "react-bootstrap/Modal";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
@@ -10,8 +12,6 @@ import Container from "react-bootstrap/Container";
 import axios from "axios";
 import { getData } from "ajv/dist/compile/validate";
 import { ToastContainer, toast } from "react-toastify";
-import { useTheme } from '@mui/material/styles';
-import Icon from '@mui/material/Icon';
 import EditIcon from '@mui/icons-material/Edit';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
@@ -19,14 +19,10 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import "react-toastify/dist/ReactToastify.css";
 
 const StudentCurd = () => {
-    const useIsDarkMode = () => {
-        const theme = useTheme();
-        return theme.palette.mode === 'dark';
-    };
-    const isDarkMode = useIsDarkMode();
+
     const [currentPhotoUrl, setCurrentPhotoUrl] = useState("");
      const [previewData, setPreviewData] = useState(false);
-   
+    
     // Add a new state for storing the selected file
     const [selectedFile, setSelectedFile] = useState(null);
 
@@ -110,15 +106,25 @@ const StudentCurd = () => {
     
     const [Name, SetName] = useState("");
     const [Age, SetAge] = useState("");
-    const [Adress, SetAddress] = useState("");
-    const [Class, SetClass] = useState("");
+    const [City, SetCity] = useState("");
+    const [Standard, SetStandard] = useState("");
+    const [DOB, SetDOB] = useState("");
+    const [Gender, SetGender] = useState("");
+    const [MobileNo, SetMobileNo] = useState("");
+    const [EmailId, SetEmailId] = useState("");
 
     const [Editid, SetEditid] = useState("");
     const [Editname, SetEditName] = useState("");
     const [EditAge, SetEditAge] = useState("");
-    const [EditAddress, SetEditAddress] = useState("");
-    const [EditClass, SetEditClass] = useState("");
+    const [EditCity, SetEditCity] = useState("");
+    const [EditStandard, SetEditStandard] = useState("");
     const [EditPhotoBase64, SetEditPhotoBase64] = useState("");
+    const [EditDOB, SetEditDOB] = useState(new Date()); // Initial value, you can replace it with your actual initial value
+
+    const [EditGender, SetEditGender] = useState("");
+    const [EditMobileNo, SetEditMobileNo] = useState("");
+    const [EditEmailId, SetEditEmailId] = useState("");
+
 
     //Insert dummy data into table...
     // const rows = [
@@ -174,33 +180,49 @@ const StudentCurd = () => {
         const formData = {
             Name: Name,
             Age: Age,
-            Adress: Adress,
-            Class: Class,
-            PhotoBase64: selectedFile ? await getBase64(selectedFile) : null,
+            DOB: DOB,
+            Gender: Gender,
+            City: City,
+            EmailId: EmailId,
+            MobileNo: MobileNo,
+            
+            Standard: Standard,
+            photo: selectedFile ? await getBase64(selectedFile) : null,
         };
 
         axios.post(url1, formData)
             .then((result) => {
                 getData();
                 Clear();
-                console.log("Add data:", formData)
-                toast.success("Student Add Successfully..");
+                 toast.error("Error adding student");
             })
-            .catch((error) => {
-                console.error(error);
-                toast.error("Error adding student");
+            .catch(() => {
+                console.error();
+                toast.success("Student Add Successfully..");
+
+             
             });
     };
     const Clear = () => {
         SetName("");
-        SetAddress("");
+        SetCity("");
         SetAge("");
-        SetClass("");
+        SetDOB("");
+        SetGender("");
+        SetMobileNo("");
+        SetEmailId("");
+        SetStandard("");
+
+        EditPhotoBase64("");
+        SetEditCity("");
         SetEditid("");
         SetEditName("");
         SetEditAge("");
-        SetEditAddress("");
-        SetEditClass("");
+        SetEditDOB("");
+        SetEditMobileNo("");
+        SetEditEmailId("");
+        SetEditGender("");
+        SetEditStandard("");
         SetEditPhotoBase64("");
     };
     const handleUpdate = async (id) => {
@@ -208,8 +230,13 @@ const StudentCurd = () => {
             id: Editid,
             Name: Editname,
             Age: EditAge,
-            Adress: EditAddress,
-            Class: EditClass,
+            City: EditCity,
+            Standard: EditStandard,
+            DOB: EditDOB,
+            EmailId: EditEmailId,
+            MobileNo: EditMobileNo,
+            Gender: EditGender,
+            
             //Photo: currentPhotoUrl.split(',')[1], // Extract base64 part
             PhotoBase64: currentPhotoUrl ? await getBase64(selectedFile) : null,
         };
@@ -238,8 +265,12 @@ const StudentCurd = () => {
                 SetEditPhotoBase64(result.data.PhotoBase64);
                 SetEditName(result.data.name);
                 SetEditAge(result.data.age);
-                SetEditAddress(result.data.adress);
-                SetEditClass(result.data.class);
+                SetEditCity(result.data.city);
+                SetEditStandard(result.data.standard);
+                SetEditDOB(result.data.dOB);
+                SetEditEmailId(result.data.emailId);
+                SetEditMobileNo(result.data.mobileNo);
+                SetEditGender(result.data.gender);
                 setCurrentPhotoUrl(`data:image/png;base64,${result.data.photo}`);
                 SetEditid(id);
                setShowEditModal(true); // You might need this line if you want to ensure the modal is visible after fetching data
@@ -315,11 +346,13 @@ const StudentCurd = () => {
             });
     };
     return (
-        <Fragment>
+        <Fragment >
+       
             <br></br>
             <ToastContainer />
 
             <Container>
+               
             <Row>
                     <Col lg={4} md={8} style={{ position: 'fixed', width: '20%', marginLeft: '860px' }} >
                         <input
@@ -338,7 +371,6 @@ const StudentCurd = () => {
                     </Col>
 
                 </Row>
-                
             </Container>
             <Row> <div> <IconButton color="btn btn-outline-Success" style={{ color: 'green' }} onClick={handleAddShowModal}>
                     <AddCircleOutlineIcon />Add
@@ -352,56 +384,125 @@ const StudentCurd = () => {
                 </Modal.Header>
                 <Modal.Body>
                     <Row>
-                        <Col lg={5} md={7}>
-                            <input
-                                type="Text"
-                                className="form-control"
-                                placeholder="Name"
-                                value={Name}
-                                onChange={(e) => SetName(e.target.value)}
-                            />
+                        <Col xs={12} md={6}>
+                            <Form.Group>
+                                <Form.Label></Form.Label>
+                                <input
+                                    type="text"
+                                    className="form-control"
+                                    placeholder="Name"
+                                    value={Name}
+                                    onChange={(e) => SetName(e.target.value)}
+                                />
+                            </Form.Group>
                         </Col>
-                        <Col lg={7} md={5}>
-                            <input
-                                type="Text"
-                                className="form-control"
-                                placeholder="Address"
-                                value={Adress}
-                                onChange={(e) => SetAddress(e.target.value)}
-                            />
+                        <Col xs={12} md={6} >
+                            <Form.Group>
+                                <Form.Label> </Form.Label>
+                                <input
+                                    type="text"
+                                    className="form-control"
+                                    placeholder="Mobile No"
+                                    value={MobileNo}
+                                    onChange={(e) => SetMobileNo(e.target.value)}
+                                />
+                            </Form.Group>
                         </Col>
+                       
+                    </Row>
 
+                    <Row>
+                        <Col xs={12} md={6}>
+                            <Form.Group>
+                                <Form.Label></Form.Label>
+                                <input
+                                    type="text"
+                                    className="form-control"
+                                    placeholder="Age"
+                                    value={Age}
+                                    onChange={(e) => SetAge(e.target.value)}
+                                />
+                            </Form.Group>
+                        </Col>
+                        <Col xs={12} md={6}>
+                            <Form.Group>
+                                <Form.Label></Form.Label>
+                                <input
+                                    type="text"
+                                    className="form-control"
+                                    placeholder="Standard"
+                                    value={Standard}
+                                    onChange={(e) => SetStandard(e.target.value)}
+                                />
+                            </Form.Group>
+                        </Col>
+                    </Row>
+
+                    <Row>
+                        <Col xs={12} md={6}>
+                            <Form.Group>
+                                <Form.Label></Form.Label>
+                                <input
+                                    type="text"
+                                    className="form-control"
+                                    placeholder="Gender"
+                                    value={Gender}
+                                    onChange={(e) => SetGender(e.target.value)}
+                                />
+                            </Form.Group>
+                        </Col>
+                        <Col xs={12} md={6}>
+                            <Form.Group>
+                                <Form.Label></Form.Label>
+                                <input
+                                    type="text"
+                                    className="form-control"
+                                    placeholder="Email Id"
+                                    value={EmailId}
+                                    onChange={(e) => SetEmailId(e.target.value)}
+                                />
+                            </Form.Group>
+                        </Col>
+                    </Row>
+
+                    <Row>
+                        <Col xs={12} md={6}>
+                            <Form.Group>
+                                <Form.Label></Form.Label>
+                                <input
+                                    type="text"
+                                    className="form-control"
+                                    placeholder="City"
+                                    value={City}
+                                    onChange={(e) => SetCity(e.target.value)}
+                                />
+                            </Form.Group>
+                        </Col>
+                        <Col xs={12} md={6} style={{ marginTop: "24px", width: "220px" }}>
+                            <Form.Group>
+                                <Form.Label> </Form.Label>
+                                <DatePicker
+                                    selected={DOB ? new Date(DOB) : null}
+                                    onChange={(date) => SetDOB(date)}
+                                    className="form-control"
+                                    placeholderText="Date of Birth"
+                                />
+
+                            </Form.Group>
+                        </Col>
                     </Row>
                     <br></br>
-                    <Row>
-                        <Col lg={3} md={9}>
-                            <input
-                                type="Text"
-                                className="form-control"
-                                placeholder="Age"
-                                value={Age}
-                                onChange={(e) => SetAge(e.target.value)}
-                            />
-                        </Col>
-                        <Col lg={3} md={9}>
-                            <input
-                                type="Text"
-                                className="form-control"
-                                placeholder="Class"
-                                value={Class}
-                                onChange={(e) => SetClass(e.target.value)}
-                            />
-                        </Col>
-                        <Col lg={6} md={6}>
-                            <input
-                                type="file"
-                                className="form-control"
-                                onChange={(e) => handleFileChange(e)}
-                            /></Col>
-                        <br />
-                       
-                        
 
+                    <Row>
+                        <Col xs={12} md={6} style={{ marginTop: "30px" }}>
+                            <Form.Group >
+                                <Form.Label></Form.Label>
+                                <input
+                                    type="file"
+                                    onChange={(e) => handleFileChange(e)}
+                                />
+                            </Form.Group>
+                        </Col>
                     </Row>
                 </Modal.Body>
                 <Modal.Footer>
@@ -420,16 +521,24 @@ const StudentCurd = () => {
                     </Button>
                 </Modal.Footer>
             </Modal>
-            <Table striped bordered>
+            <Table striped bordered style={{
+                marginRight:'40px',
+                top: "100px",
+                overflowX: 'auto', // Add this line for horizontal scrollbar
+                maxWidth: '100%', // Ensure the table takes the full width
+            }} >
                 <thead>
-                    <tr>
+                    <tr style={{ textAlign: "center" }}>
                        {/* <th>No</th>*/}
                         <th>Name</th>
+                        <th>Date-Of-Birth</th>
                         <th>Age</th>
-                        <th>Address</th>
-                        <th>Class</th>
+                        <th>Gender</th>
+                        <th>Email Id</th>
+                        <th>City</th>
+                        <th>Standard</th>
+                        <th>Mobile No</th>
                         <th>Photo</th>
-
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -438,14 +547,18 @@ const StudentCurd = () => {
                         ? data.map((item, index) => {
                             return (
                                 <>
-                                    <tr key={index} >
+                                    <tr key={index} style={{ textAlign:"center" }} >
                                       {/*  <td>{index + 1}</td>*/}
                                         <td>{item.name}</td>
+                                        <td>{item.dob ? new Date(item.dob).toLocaleDateString() : "N/A"}</td>
                                         <td>{item.age}</td>
-                                        <td>{item.adress}</td>
-                                        <td>{item.class}</td>
+                                        <td>{item.gender}</td>
+                                        <td>{item.emailId}</td>
+                                        <td>{item.city}</td>
+                                        <td>{item.standard}</td>
+                                        <td>{item.mobileNo}</td>
                                         <td>
-                                            <div style={{ maxWidth: '50px', maxHeight: '50px', overflow: 'hidden' }}>
+                                            <div style={{ textAlign: "center", maxWidth: '50px', maxHeight: '50px', overflow: 'hidden' }}>
                                                 {item.photo !== null ? (
                                                     <img
                                                         style={{ width: '100%', height: '100%', objectFit: 'cover' }}
@@ -459,9 +572,7 @@ const StudentCurd = () => {
                                             </div>
                                         </td>
                                         <td colSpan={2}>
-                                            <IconButton color="primary" onClick={handleAddShowModal}>
-                                                <AddCircleOutlineIcon />
-                                            </IconButton>
+                                            
                                             <EditIcon
                                                 style={{ cursor: 'pointer', color: 'blue' }} // Set color or other styles as needed
                                                 onClick={() => HandleEdit(item.id)}
@@ -520,9 +631,15 @@ const StudentCurd = () => {
                     {previewData && (
                         <div>
                             <p>Name: {previewData.name}</p>
+                            <p>DOB: {previewData.dob}</p>
                             <p>Age: {previewData.age}</p>
-                            <p>Address: {previewData.adress}</p>
-                            <p>Class: {previewData.class}</p>
+                            <p>Gender: {previewData.gender}</p>
+                            <p>Email Id: {previewData.emailId}</p>
+                            <p>City: {previewData.city}</p>
+                            <p>Standard: {previewData.standard}</p>
+                            <p>Mobile No: {previewData.mobileNo}</p>
+                          
+                            
                             {previewData.photo && (
                                 <img
                                     src={`data:image/png;base64,${previewData.photo}`}
@@ -534,84 +651,163 @@ const StudentCurd = () => {
                     )}
                 </Modal.Body>
             </Modal> </div>
-            <div>  <Modal show={showEditModal} onHide={handleCloseEditModal} animation={true}>
-                <Modal.Header closeButton>
-                    <Modal.Title>Update/Edit Student</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <Row>
-                        <Col xs={10} md={6}>
-                            <input
-                                type="Text"
-                                className="form-control"
-                                placeholder="Editname"
-                                value={Editname}
-                                onChange={(e) => SetEditName(e.target.value)}
-                            />
-                        </Col>
-                        <Col xs={10} md={6}>
-                            <input
-                                type="Text"
-                                className="form-control"
-                                placeholder="EditAddress"
-                                value={EditAddress}
-                                onChange={(e) => SetEditAddress(e.target.value)}
-                            />
-                        </Col>
-                    </Row>
-                    <br></br>
-                    <Row>
-                        <Col xs={10} md={6}>
-                            <input
-                                type="Text"
-                                className="form-control"
-                                placeholder="EditAge"
-                                value={EditAge}
-                                onChange={(e) => SetEditAge(e.target.value)}
-                            />
-                        </Col>
-                        <Col xs={10} md={6}>
-                            <input
-                                type="Text"
-                                className="form-control"
-                                placeholder="EditClass"
-                                value={EditClass}
-                                onChange={(e) => SetEditClass(e.target.value)}
-                            />
-                        </Col>
-                        <br></br>&nbsp;
+            <div>
+                <Modal show={showEditModal} onHide={handleCloseEditModal} animation={true}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>Update/Edit Student</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <Row>
+                            <Col xs={12} md={6}>
+                                <Form.Group>
+                                    <Form.Label></Form.Label>
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        placeholder="Edit Name"
+                                        value={Editname}
+                                        onChange={(e) => SetEditName(e.target.value)}
+                                    />
+                                </Form.Group>
+                            </Col> 
+                            <Col xs={12} md={6} >
+                                <Form.Group>
+                                    <Form.Label> </Form.Label>
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        placeholder="Edit Mobile No"
+                                        value={EditMobileNo}
+                                        onChange={(e) => SetEditMobileNo(e.target.value)}
+                                    />
+                                </Form.Group>
+                            </Col>
+                        </Row>
 
-                        {/*Display the current photo */}
-                        {currentPhotoUrl && (
-                            <img
-                                src={currentPhotoUrl}
-                                alt="Current Photo"
-                                style={{ maxWidth: '100%', maxHeight: '200px' }}
-                            />
-                        )}
-                        &nbsp;
-                        <input
-                            type="file"
-                            onChange={(e) => handleEditFileChange(e)}
-                        />
-                    </Row>
+                        <Row>
+                            <Col xs={12} md={6}>
+                                <Form.Group>
+                                    <Form.Label></Form.Label>
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        placeholder="Edit Age"
+                                        value={EditAge}
+                                        onChange={(e) => SetEditAge(e.target.value)}
+                                    />
+                                </Form.Group>
+                            </Col> 
+                            <Col xs={12} md={6}>
+                                <Form.Group>
+                                    <Form.Label></Form.Label>
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        placeholder="Edit Standard"
+                                        value={EditStandard}
+                                        onChange={(e) => SetEditStandard(e.target.value)}
+                                    />
+                                </Form.Group>
+                            </Col> 
+                        </Row>
 
-                    <br></br>
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button variant="secondary" onClick={handleCloseEditModal}>
-                        Close
-                    </Button>
-                    <Button
-                        variant="primary"
-                        onClick={() => {
-                            handleUpdate(Editid);
-                        }}
-                    >
-                        Save
-                    </Button>
-                </Modal.Footer>
-            </Modal> </div>
+                        <Row>
+                            <Col xs={12} md={6}>
+                                <Form.Group>
+                                    <Form.Label></Form.Label>
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        placeholder="Edit Gender"
+                                        value={EditGender}
+                                        onChange={(e) => SetEditGender(e.target.value)}
+                                    />
+                                </Form.Group>
+                            </Col> 
+                            <Col xs={12} md={6}>
+                                <Form.Group>
+                                    <Form.Label></Form.Label>
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        placeholder="Edit Email Id"
+                                        value={EditEmailId}
+                                        onChange={(e) => SetEditEmailId(e.target.value)}
+                                    />
+                                </Form.Group>
+                            </Col> 
+                        </Row>
+
+                        <Row>
+                            
+
+                            <Col xs={12} md={6}>
+                                <Form.Group>
+                                    <Form.Label></Form.Label>
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        placeholder="Edit City"
+                                        value={EditCity}
+                                        onChange={(e) => SetEditCity(e.target.value)}
+                                    />
+                                </Form.Group>
+                            </Col> 
+                            <Col xs={12} md={6} style={{ marginTop: "24px", width:"220px"} }>
+                                <Form.Group>
+                                    <Form.Label> </Form.Label>
+                                    <DatePicker
+                                        selected={EditDOB ? new Date(EditDOB) : null}
+                                        onChange={(date) => SetEditDOB(date)}
+                                        className="form-control"
+                                        placeholderText={EditDOB ? new Date(EditDOB).toLocaleDateString() : "Select DOB"}
+                                    />
+                                </Form.Group>
+                            </Col> 
+                        </Row>
+                        <br></br>
+
+                        <Row>
+                            {/* Display the current photo */}
+                            {currentPhotoUrl && (
+                                <Col xs={12} md={6}>
+                                    <Form.Group>
+                                        <Form.Label></Form.Label>
+                                        <img
+                                            src={currentPhotoUrl}
+                                            alt="Current Photo"
+                                            style={{ maxWidth: '100%', maxHeight: '200px' }}
+                                        />
+                                    </Form.Group>
+                                </Col>
+                            )}
+                            {/* File Input */}
+                            <Col xs={12} md={6} style={{ marginTop: "30px" }}>
+                                <Form.Group >
+                                    <Form.Label></Form.Label>
+                                    <input
+                                        type="file"
+                                        onChange={(e) => handleEditFileChange(e)}
+                                    />
+                                </Form.Group>
+                            </Col>
+                        </Row>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="secondary" onClick={handleCloseEditModal}>
+                            Close
+                        </Button>
+                        <Button
+                            variant="primary"
+                            onClick={() => {
+                                handleUpdate(Editid);
+                            }}
+                        >
+                            Save
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
+            </div>
         </Fragment>
     );
 };

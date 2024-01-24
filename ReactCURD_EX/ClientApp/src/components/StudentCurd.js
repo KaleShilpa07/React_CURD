@@ -75,8 +75,16 @@ const StudentCurd = () => {
   };
 
   //
-  const [showPreviewModal, setShowPreviewModal] = useState(false);
 
+    const [showPreviewImage, setShowPreviewImage] = useState(false);
+    const handlePreviewModalImage = () => {
+        setShowPreviewImage(true);
+    };
+
+    const handleClosePreviewModalImage = () => {
+        setShowPreviewImage(false);
+    };
+    const [showPreviewModal, setShowPreviewModal] = useState(false);
   const handlePreviewModal = () => {
     setShowPreviewModal(true);
   };
@@ -295,9 +303,13 @@ const StudentCurd = () => {
   //       });
   //   }
   // };
+    const HandleGet = (id) => {
+        getData();
+    }
 
   const HandlePreview = (id) => {
-    handlePreviewModal();
+      handlePreviewModal();
+     
 
     axios
       .get(`https://localhost:7195/api/home/${id}`, {
@@ -308,13 +320,35 @@ const StudentCurd = () => {
       .then((result) => {
         setPreviewData(result.data);
         // Open the preview modal
-        setShowPreviewModal(true);
+          setShowPreviewModal(true);
+       
       })
       .catch((error) => {
         console.error(error);
         toast.error("Error fetching student data for preview");
       });
   };
+    const HandlePreview2 = (id) => {
+      
+        handlePreviewModalImage();
+
+        axios
+            .get(`https://localhost:7195/api/home/${id}`, {
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            })
+            .then((result) => {
+                setPreviewData(result.data);
+                // Open the preview modal
+             
+                setShowPreviewImage(true);
+            })
+            .catch((error) => {
+                console.error(error);
+                toast.error("Error fetching student data for preview");
+            });
+    };
 
   const [showAddModal, setAddShowModal] = useState(false);
 
@@ -598,7 +632,7 @@ const StudentCurd = () => {
                               }}
                               src={`data:image/png;base64,${item.photo}`}
                               alt={`${item.name}`}
-                              onClick={() => HandlePreview(item.id)}
+                              onClick={() => HandlePreview2(item.id)}
                             />
                           ) : (
                             ".."
@@ -627,11 +661,11 @@ const StudentCurd = () => {
                   </>
                 );
               })
-            : "...Loading"}
+            : "... No data here "}
         </tbody>
       </Table>
 
-      {/* New modal for preview */}
+
 
       <Dialog open={open} onClose={handleCloseDialog}>
         <DialogTitle>Confirmation</DialogTitle>
@@ -640,7 +674,8 @@ const StudentCurd = () => {
             Are you sure you want to delete this student?
           </DialogContentText>
         </DialogContent>
-        <DialogActions>
+              <DialogActions>
+                 
           <Button onClick={handleCloseDialog} color="primary">
             Cancel
           </Button>
@@ -655,7 +690,13 @@ const StudentCurd = () => {
           </Button>
         </DialogActions>
       </Dialog>
-      <div>
+          <div style={{
+              position: "fixed",
+              origin:"50%",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+          }}>
         {" "}
         <Modal
           show={showPreviewModal}
@@ -688,7 +729,34 @@ const StudentCurd = () => {
             )}
           </Modal.Body>
         </Modal>{" "}
-      </div>
+          </div>
+          <div>
+              <Modal 
+                  show={showPreviewImage}
+                  onHide={handleClosePreviewModalImage}
+                  animation={true}
+              >
+                  <Modal.Header closeButton>
+                      <marquee> <Modal.Title> {previewData && (
+
+                          <h >{previewData.name}'s Photo and MobileNo: {previewData.mobileNo} </h>)}
+                      </Modal.Title></marquee>
+                  </Modal.Header>
+                  <Modal.Body>
+                      {previewData && (
+                          <div >
+                              {previewData.photo && (
+                                  <img
+                                      src={`data:image/png;base64,${previewData.photo}`}
+                                      alt={`Photo of ${previewData.name}`}
+                                      style={{  maxWidth: "100%", maxHeight: "600px"   }}
+                                  />
+                              )}
+                          </div>
+                      )}
+                  </Modal.Body>
+              </Modal>{" "}
+          </div>
       <div>
         <Modal
           show={showEditModal}

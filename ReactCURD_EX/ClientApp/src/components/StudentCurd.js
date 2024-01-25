@@ -34,9 +34,11 @@ const StudentCurd = () => {
 
   // Handler for file input change
   const handleFileChange = (e) => {
-    setSelectedFile(e.target.files[0]);
+      setSelectedFile(e.target.files[0]);
+
   };
-  const handleEditFileChange = (e) => {
+    const handleEditFileChange = (e) => {
+        SetEditPhotoBase64();
     setSelectedFile(e.target.files[0]);
   };
 
@@ -275,7 +277,7 @@ const StudentCurd = () => {
         SetEditAge(result.data.age);
         SetEditCity(result.data.city);
         SetEditStandard(result.data.standard);
-        SetEditDOB(result.data.dOB);
+          SetEditDOB(result.data.dob);
         SetEditEmailId(result.data.emailId);
         SetEditMobileNo(result.data.mobileNo);
         SetEditGender(result.data.gender);
@@ -303,9 +305,7 @@ const StudentCurd = () => {
   //       });
   //   }
   // };
-    const HandleGet = (id) => {
-        getData();
-    }
+  
 
   const HandlePreview = (id) => {
       handlePreviewModal();
@@ -492,18 +492,42 @@ const StudentCurd = () => {
           </Row>
 
           <Row>
-            <Col xs={12} md={6}>
-              <Form.Group>
-                <Form.Label></Form.Label>
-                <input
-                  type="text"
-                  className="form-control"
-                  placeholder="Gender"
-                  value={Gender}
-                  onChange={(e) => SetGender(e.target.value)}
-                />
-              </Form.Group>
-            </Col>
+
+                      <Col xs={12} md={6} style={{ marginTop: "30px"} }>
+                              <Form.Group>
+                              <div>  
+                                  <label>Gender&nbsp; 
+                                  
+                                      <Form.Check
+                                          inline
+                                          value={Gender}
+                                          label="Male"
+                                          type="radio"
+                                          id="maleRadio"
+                                          name="genderRadio"
+                                          checked={Gender === "Male" || Gender === "male"}
+                                          onChange={() => SetGender("Male")}
+                                      />
+                                      <Form.Check
+                                          inline
+                                          value={Gender}
+                                          label="Female"
+                                          type="radio"
+                                          id="femaleRadio"
+                                          name="genderRadio"
+                                          checked={Gender === "Female" || Gender === "female"}
+                                          onChange={() => SetGender("Female")}
+                                      />
+
+                                      </label>
+                              </div>
+                              </Form.Group>
+                          </Col>
+                    
+                    
+
+
+
             <Col xs={12} md={6}>
               <Form.Group>
                 <Form.Label></Form.Label>
@@ -822,18 +846,37 @@ const StudentCurd = () => {
             </Row>
 
             <Row>
-              <Col xs={12} md={6}>
-                <Form.Group>
-                  <Form.Label></Form.Label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    placeholder="Edit Gender"
-                    value={EditGender}
-                    onChange={(e) => SetEditGender(e.target.value)}
-                  />
-                </Form.Group>
-              </Col>
+                          <Col xs={12} md={6} style={{ marginTop: "30px" }}>
+                              <Form.Group>
+                                  <div>
+                                      <label>Gender&nbsp;
+
+                                          <Form.Check
+                                              inline
+                                              value={EditGender}
+                                              label="Male"
+                                              
+                                              id="maleRadio"
+                                              name="genderRadio"
+                                              type="radio"
+                                              checked={EditGender === "Male" || EditGender==="male"}
+                                              onChange={() => SetEditGender("Male")}
+                                          />
+                                          <Form.Check
+                                              inline
+                                              value={EditGender}
+                                              label="Female"
+                                           
+                                              id="femaleRadio"
+                                              name="genderRadio"
+                                              type="radio"
+                                              checked={EditGender === "Female" || EditGender === "female"}
+                                              onChange={() => SetEditGender("Female")}
+                                          />
+                                      </label>
+                                  </div>
+                              </Form.Group>
+                          </Col>
               <Col xs={12} md={6}>
                 <Form.Group>
                   <Form.Label></Form.Label>
@@ -861,7 +904,8 @@ const StudentCurd = () => {
                   />
                 </Form.Group>
               </Col>
-              <Col xs={12} md={6} style={{ marginTop: "24px", width: "220px" }}>
+                          <Col xs={12} md={6} style={{ marginTop: "24px", width: "220px" }}>
+                            
                 <Form.Group>
                   <Form.Label> </Form.Label>
                   <DatePicker

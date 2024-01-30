@@ -30,5 +30,6 @@ namespace ReactCURD_EX
         public string? MobileNo { get; set; }
         [Required]
         public string? EmailId { get; set; }
+        public bool IsActive { get; set; }
     }
 }

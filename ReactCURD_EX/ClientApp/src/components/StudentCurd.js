@@ -96,6 +96,32 @@ const StudentCurd = () => {
   };
   //
   //Delete Data
+
+
+    const [selectedRows, setSelectedRows] = useState([]);
+   
+    const handleDeleteSelectedRows = async () => {
+        try {
+            await axios.delete('https://localhost:7195/api/home/deleteMultiple', {
+                data: selectedRows
+            });
+            setTimeout(() => {
+                window.location.reload();
+            }, 5000);
+            // Handle success
+            toast.success("Data deleted successfully", { position: "top-center" });
+
+            // Handle additional logic (e.g., update UI or fetch updated data)
+        } catch (error) {
+            // Handle error
+          
+            // Display an error toast
+            toast.error("Please Select Row..", { position: "top-center" });
+        }
+    };
+ 
+   
+  //
   const HandleDelete = (id) => {
     handleClickOpen(id);
   };
@@ -104,12 +130,12 @@ const StudentCurd = () => {
       .delete(`https://localhost:7195/api/home/${deleteId}`)
       .then((result) => {
         if (result.status === 200) {
-          toast.success("Student Delete SuccessFully..");
+            toast.success("Student Delete SuccessFully..", { position: "top-center" });
         }
         handleCloseDialog(); // Close the confirmation dialog
       })
       .catch((error) => {
-        toast.error(error);
+          toast.error(error, { position: "top-center"});
         handleCloseDialog(); // Close the confirmation dialog
       });
   };
@@ -117,6 +143,8 @@ const StudentCurd = () => {
   const [data, Setdata] = useState([]);
 
   const [Name, SetName] = useState("");
+    const [IsActive, SetIsActive] = useState("");
+ 
   const [Age, SetAge] = useState("");
   const [City, SetCity] = useState("");
   const [Standard, SetStandard] = useState("");
@@ -134,9 +162,11 @@ const StudentCurd = () => {
   const [EditDOB, SetEditDOB] = useState(new Date()); // Initial value, you can replace it with your actual initial value
 
   const [EditGender, SetEditGender] = useState("");
+    const [EditIsActive, SetEditIsActive] = useState("");
   const [EditMobileNo, SetEditMobileNo] = useState("");
   const [EditEmailId, SetEditEmailId] = useState("");
 
+   
   //Insert dummy data into table...
   // const rows = [
   //   {
@@ -195,8 +225,8 @@ const StudentCurd = () => {
       Gender: Gender,
       City: City,
       EmailId: EmailId,
-      MobileNo: MobileNo,
-
+        MobileNo: MobileNo,
+        isActive: IsActive,
       Standard: Standard,
       photo: selectedFile ? await getBase64(selectedFile) : null,
     };
@@ -206,11 +236,11 @@ const StudentCurd = () => {
       .then((result) => {
         getData();
         Clear();
-        toast.error("Error adding student");
+          toast.error("Error adding student", { position: "top-center" });
       })
       .catch(() => {
         console.error();
-        toast.success("Student Add Successfully..");
+          toast.success("Student Add Successfully..", { position: "top-center" });
       });
   };
   const Clear = () => {
@@ -222,7 +252,7 @@ const StudentCurd = () => {
     SetMobileNo("");
     SetEmailId("");
     SetStandard("");
-
+      SetIsActive("");
     EditPhotoBase64("");
     SetEditCity("");
     SetEditid("");
@@ -231,7 +261,8 @@ const StudentCurd = () => {
     SetEditDOB("");
     SetEditMobileNo("");
     SetEditEmailId("");
-    SetEditGender("");
+      SetEditGender("");
+      SetEditIsActive("");
     SetEditStandard("");
     SetEditPhotoBase64("");
   };
@@ -245,7 +276,8 @@ const StudentCurd = () => {
       DOB: EditDOB,
       EmailId: EditEmailId,
       MobileNo: EditMobileNo,
-      Gender: EditGender,
+        Gender: EditGender,
+        IsActive: EditIsActive,
 
       //Photo: currentPhotoUrl.split(',')[1], // Extract base64 part
       PhotoBase64: currentPhotoUrl ? await getBase64(selectedFile) : null,
@@ -254,13 +286,13 @@ const StudentCurd = () => {
     axios
       .put(`https://localhost:7195/api/home/${id}`, updatedData)
       .then((response) => {
-        toast.success("Data updated successfully");
+          toast.success("Data updated successfully", { position: "top-center" });
         // Close the modal after successful update
         refreshPage();
       })
       .catch((error) => {
-        console.error(error);
-        toast.error("Error updating data");
+          console.error(error, { position: "top-center" });
+          toast.error("Error updating data", { position: "top-center" });
       });
   };
   const HandleEdit = (id) => {
@@ -280,14 +312,15 @@ const StudentCurd = () => {
           SetEditDOB(result.data.dob);
         SetEditEmailId(result.data.emailId);
         SetEditMobileNo(result.data.mobileNo);
-        SetEditGender(result.data.gender);
+          SetEditGender(result.data.gender);
+          SetEditIsActive(result.data.isActive);
         setCurrentPhotoUrl(`data:image/png;base64,${result.data.photo}`);
         SetEditid(id);
         setShowEditModal(true); // You might need this line if you want to ensure the modal is visible after fetching data
       })
       .catch((error) => {
         console.error(error);
-        toast.error("Error fetching student data for edit");
+          toast.error("Error fetching student data for edit", { position: "top-center" });
       });
   };
   // const HandleDelete = (id) => {
@@ -325,7 +358,7 @@ const StudentCurd = () => {
       })
       .catch((error) => {
         console.error(error);
-        toast.error("Error fetching student data for preview");
+          toast.error("Error fetching student data for preview", { position: "top-center" });
       });
   };
     const HandlePreview2 = (id) => {
@@ -346,7 +379,7 @@ const StudentCurd = () => {
             })
             .catch((error) => {
                 console.error(error);
-                toast.error("Error fetching student data for preview");
+                toast.error("Error fetching student data for preview", { position: "top-center" });
             });
     };
 
@@ -359,6 +392,23 @@ const StudentCurd = () => {
   const handleAddCloseModal = () => {
     setAddShowModal(false);
   };
+
+    const handleIsActiveChange = (itemId) => {
+        Setdata((prevData) =>
+            prevData.map((item) =>
+                item.id === itemId ? { ...item, isActive: !item.isActive } : item
+            )
+        );
+        const checkbox = document.getElementById(`checkbox_${itemId}`);
+        if (checkbox) {
+            checkbox.classList.toggle('Red');
+        }
+    };
+    // Disable all checkboxes by default
+    const [checkboxesDisabled, setCheckboxesDisabled] = useState(true);
+
+   
+    
 
   useEffect(() => {
     Getdata();
@@ -404,7 +454,7 @@ const StudentCurd = () => {
           <Col
             lg={2}
             md={10}
-            style={{ position: "fixed", width: "20%", marginLeft: "1100px" }}
+            style={{ position: "fixed", width: "20%", marginLeft: "1125px" }}
           >
             <button
               className="btn btn-outline-success"
@@ -412,7 +462,10 @@ const StudentCurd = () => {
               onClick={handleSearch}
             >
               Search
-            </button>
+                      </button>&nbsp;
+                      <button className="btn btn-outline-danger"
+                         
+                          onClick={handleDeleteSelectedRows}>DeleteAll</button>
           </Col>
         </Row>
       </Container>
@@ -475,7 +528,8 @@ const StudentCurd = () => {
                   value={Age}
                   onChange={(e) => SetAge(e.target.value)}
                 />
-              </Form.Group>
+                          </Form.Group>
+                        
             </Col>
             <Col xs={12} md={6}>
               <Form.Group>
@@ -491,13 +545,43 @@ const StudentCurd = () => {
             </Col>
           </Row>
 
-          <Row>
+      
 
-                      <Col xs={12} md={6} style={{ marginTop: "30px"} }>
+          <Row>
+            <Col xs={12} md={6}>
+              <Form.Group>
+                <Form.Label></Form.Label>
+                <input
+                  type="text"
+                  className="form-control"
+                  placeholder="City"
+                  value={City}
+                  onChange={(e) => SetCity(e.target.value)}
+                />
+              </Form.Group>
+            </Col>
+                      <Col xs={12} md={6}>
+                         
                               <Form.Group>
-                              <div>  
-                                  <label>Gender&nbsp; 
-                                  
+                                  <Form.Label></Form.Label>
+                                  <input
+                                      type="text"
+                                      className="form-control"
+                                      placeholder="Email Id"
+                                      value={EmailId}
+                                      onChange={(e) => SetEmailId(e.target.value)}
+                                  />
+              </Form.Group>
+            </Col>
+          </Row>
+          <br></br>
+                  <Row>
+                     
+                      <Col xs={12} md={6}>
+                          <Form.Group>
+                              <div>
+                                  <label>Gender &nbsp;:&nbsp;&nbsp;
+
                                       <Form.Check
                                           inline
                                           value={Gender}
@@ -519,56 +603,53 @@ const StudentCurd = () => {
                                           onChange={() => SetGender("Female")}
                                       />
 
-                                      </label>
+                                  </label>
                               </div>
-                              </Form.Group>
-                          </Col>
+                          </Form.Group>
+                      </Col>
+
+
+                      <Col xs={12} md={6}>
+                          <Form.Group>
+                              <label>IsActive &nbsp;:&nbsp;&nbsp;
+                                  <Form.Check
+                                      inline
+                                      label="Yes"
+                                      type="radio"
+                                      id="yesRadio"
+                                      name="isActiveRadio"
+                                      checked={IsActive === true}
+                                      style={{ color: IsActive ? 'green' : 'black', cursor: 'pointer' }}
+                                        onChange={() => SetIsActive(true)}
+                                  />
+                                  <Form.Check
+                                      inline
+                                      label="No"
+                                      type="radio"
+                                      id="noRadio"
+                                      name="isActiveRadio"
+                                      checked={IsActive === false}
+                                      style={{ color: IsActive ? 'red' : 'black', cursor: 'pointer' }}
+
+                                      onChange={() => SetIsActive(false)}
+                                  />
+                              </label>
+                          </Form.Group>
+                      </Col>
                     
-                    
-
-
-
-            <Col xs={12} md={6}>
-              <Form.Group>
-                <Form.Label></Form.Label>
-                <input
-                  type="text"
-                  className="form-control"
-                  placeholder="Email Id"
-                  value={EmailId}
-                  onChange={(e) => SetEmailId(e.target.value)}
-                />
-              </Form.Group>
-            </Col>
-          </Row>
-
-          <Row>
-            <Col xs={12} md={6}>
-              <Form.Group>
-                <Form.Label></Form.Label>
-                <input
-                  type="text"
-                  className="form-control"
-                  placeholder="City"
-                  value={City}
-                  onChange={(e) => SetCity(e.target.value)}
-                />
-              </Form.Group>
-            </Col>
-            <Col xs={12} md={6} style={{ marginTop: "24px", width: "220px" }}>
-              <Form.Group>
-                <Form.Label> </Form.Label>
-                <DatePicker
-                  selected={DOB ? new Date(DOB) : null}
-                  onChange={(date) => SetDOB(date)}
-                  className="form-control"
-                  placeholderText="Date of Birth"
-                />
-              </Form.Group>
-            </Col>
-          </Row>
-          <br></br>
-
+                  </Row>
+                  <Row>
+                  <Col xs={12} md={4} style={{ marginTop: "24px", width: "260px" }}>
+                      <Form.Group>
+                          <Form.Label> </Form.Label>
+                          <DatePicker
+                              selected={DOB ? new Date(DOB) : null}
+                              onChange={(date) => SetDOB(date)}
+                              className="form-control"
+                              placeholderText="Date of Birth"
+                          />
+                      </Form.Group>
+                      </Col></Row>
           <Row>
             <Col xs={12} md={6} style={{ marginTop: "30px" }}>
               <Form.Group>
@@ -607,6 +688,7 @@ const StudentCurd = () => {
         <thead>
           <tr style={{ textAlign: "center" }}>
             {/* <th>No</th>*/}
+            <th>SelectRow</th>
             <th>Name</th>
             <th>Date-Of-Birth</th>
             <th>Age</th>
@@ -615,7 +697,8 @@ const StudentCurd = () => {
             <th>City</th>
             <th>Standard</th>
             <th>Mobile No</th>
-            <th>Photo</th>
+                      <th>Photo</th>
+            <th>IsActive</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -625,7 +708,23 @@ const StudentCurd = () => {
                 return (
                   <>
                     <tr key={index} style={{ textAlign: "center" }}>
-                      {/*  <td>{index + 1}</td>*/}
+                            {/*  <td>{index + 1}</td>*/}
+                            <td>
+                                <input
+                                    type="checkbox"
+                                    value={item.id}
+                                    onChange={(e) => {
+                                        const itemId = parseInt(e.target.value, 10);
+                                        setSelectedRows(prev => (
+                                            e.target.checked
+                                                ? [...prev, itemId]
+                                                : prev.filter(id => id !== itemId)
+                                        ));
+                                    }}
+                                />
+
+                                
+                            </td>
                       <td>{item.name}</td>
                       <td>
                         {item.dob
@@ -662,7 +761,15 @@ const StudentCurd = () => {
                             ".."
                           )}
                         </div>
-                      </td>
+                            </td>
+                            <td className="text-center">
+                            <input
+                                type="checkbox"
+                                defaultChecked={item.isActive}
+                                    onChange={() => handleIsActiveChange(item.id)}
+                                    disabled={checkboxesDisabled}
+                                    id={`checkbox_${item.id}`}
+                                /></td>
                       <td colSpan={2}>
                         <EditIcon
                           style={{ cursor: "pointer", color: "blue" }} // Set color or other styles as needed
@@ -741,6 +848,7 @@ const StudentCurd = () => {
                 <p>City: {previewData.city}</p>
                 <p>Standard: {previewData.standard}</p>
                 <p>Mobile No: {previewData.mobileNo}</p>
+             
 
                 {previewData.photo && (
                   <img
@@ -846,38 +954,7 @@ const StudentCurd = () => {
             </Row>
 
             <Row>
-                          <Col xs={12} md={6} style={{ marginTop: "30px" }}>
-                              <Form.Group>
-                                  <div>
-                                      <label>Gender&nbsp;
-
-                                          <Form.Check
-                                              inline
-                                              value={EditGender}
-                                              label="Male"
-                                              
-                                              id="maleRadio"
-                                              name="genderRadio"
-                                              type="radio"
-                                              checked={EditGender === "Male" || EditGender==="male"}
-                                              onChange={() => SetEditGender("Male")}
-                                          />
-                                          <Form.Check
-                                              inline
-                                              value={EditGender}
-                                              label="Female"
-                                           
-                                              id="femaleRadio"
-                                              name="genderRadio"
-                                              type="radio"
-                                              checked={EditGender === "Female" || EditGender === "female"}
-                                              onChange={() => SetEditGender("Female")}
-                                          />
-                                      </label>
-                                  </div>
-                              </Form.Group>
-                          </Col>
-              <Col xs={12} md={6}>
+                <Col xs={12} md={6}>
                 <Form.Group>
                   <Form.Label></Form.Label>
                   <input
@@ -888,39 +965,101 @@ const StudentCurd = () => {
                     onChange={(e) => SetEditEmailId(e.target.value)}
                   />
                 </Form.Group>
-              </Col>
+                          </Col>
+                          <Col xs={12} md={6}>
+                              <Form.Group>
+                                  <Form.Label></Form.Label>
+                                  <input
+                                      type="text"
+                                      className="form-control"
+                                      placeholder="Edit City"
+                                      value={EditCity}
+                                      onChange={(e) => SetEditCity(e.target.value)}
+                                  />
+                              </Form.Group>
+                          </Col>
             </Row>
+                          <Row>
+                          <Col xs={12} md={4} style={{ marginTop: "24px", width: "265px" }} >
+                              <Form.Group>
+                                  <div>
+                                      <label>Gender &nbsp;:&nbsp;&nbsp;
 
-            <Row>
-              <Col xs={12} md={6}>
-                <Form.Group>
-                  <Form.Label></Form.Label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    placeholder="Edit City"
-                    value={EditCity}
-                    onChange={(e) => SetEditCity(e.target.value)}
-                  />
-                </Form.Group>
-              </Col>
-                          <Col xs={12} md={6} style={{ marginTop: "24px", width: "220px" }}>
-                            
-                <Form.Group>
-                  <Form.Label> </Form.Label>
-                  <DatePicker
-                    selected={EditDOB ? new Date(EditDOB) : null}
-                    onChange={(date) => SetEditDOB(date)}
-                    className="form-control"
-                    placeholderText={
-                      EditDOB
-                        ? new Date(EditDOB).toLocaleDateString()
-                        : "Select DOB"
-                    }
-                  />
-                </Form.Group>
-              </Col>
-            </Row>
+                                          <Form.Check
+                                              inline
+                                              value={EditGender}
+                                              label="Male"
+
+                                              id="maleRadio"
+                                              name="genderRadio"
+                                              type="radio"
+                                              checked={EditGender === "Male" || EditGender === "male"}
+                                              onChange={() => SetEditGender("Male")}
+                                          />
+                                          <Form.Check
+                                              inline
+                                              value={EditGender}
+                                              label="Female"
+
+                                              id="femaleRadio"
+                                              name="genderRadio"
+                                              type="radio"
+                                              checked={EditGender === "Female" || EditGender === "female"}
+                                              onChange={() => SetEditGender("Female")}
+                                          />
+                                      </label>
+                                  </div>
+                              </Form.Group>
+                          </Col>
+
+                          <Col xs={12} md={4} style={{ marginTop: "24px", width: "225px", marginLeft:"0px" }} >
+                              <Form.Group>
+                                  <label>IsActive &nbsp;:&nbsp;&nbsp;
+
+                                      <Form.Check
+                                          inline
+                                          label="Yes"
+                                          type="radio"
+                                          id="yesRadio"
+                                          name="isActiveRadio"
+                                          checked={EditIsActive === true}
+                                          style={{ color: EditIsActive ? 'green' : 'black', cursor: 'pointer' }}
+                                          onChange={() => SetEditIsActive(true)}
+                                      />
+                                      <Form.Check
+                                          inline
+                                          label="No"
+                                          type="radio"
+                                          id="noRadio"
+                                          name="isActiveRadio"
+                                          checked={EditIsActive === false}
+                                          style={{ color: EditIsActive ? 'red' : 'black', cursor: 'pointer' }}
+                                          onChange={() => SetEditIsActive(false)}
+                                      />
+
+
+                                  </label>
+                              </Form.Group>
+
+                      </Col>
+                      </Row>
+                   
+                      <Row> <Col xs={12} md={6} style={{ marginTop: "24px", width: "220px" }}>
+
+                          <Form.Group>
+                              <Form.Label> </Form.Label>
+                              <DatePicker
+                                  selected={EditDOB ? new Date(EditDOB) : null}
+                                  onChange={(date) => SetEditDOB(date)}
+                                  className="form-control"
+                                  placeholderText={
+                                      EditDOB
+                                          ? new Date(EditDOB).toLocaleDateString()
+                                          : "Select DOB"
+                                  }
+                              />
+                          </Form.Group>
+                      </Col></Row>
             <br></br>
 
             <Row>

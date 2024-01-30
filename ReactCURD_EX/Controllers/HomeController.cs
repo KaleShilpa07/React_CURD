@@ -43,7 +43,7 @@ namespace ReactCURD_EX.Controllers
         {
             try
             {
-                
+
                 // Convert base64 string to byte array and set the Photo property
                 if (!string.IsNullOrEmpty(student.PhotoBase64))
                 {
@@ -86,7 +86,25 @@ namespace ReactCURD_EX.Controllers
             }
             return Ok();
         }
-        [HttpDelete("{id}")]
+        [HttpDelete("deleteMultiple")]
+        public async Task<IActionResult> DeleteMultiple([FromBody] List<int> ids)
+        {
+            var itemsToDelete = await _cc.students.Where(i => ids.Contains(i.Id)).ToListAsync();
+
+            if (itemsToDelete == null || itemsToDelete.Count == 0)
+            {
+                return NotFound();
+            }
+
+            _cc.students.RemoveRange(itemsToDelete);
+            await
+                _cc.SaveChangesAsync();
+
+            return Ok();
+        }
+    
+
+    [HttpDelete("{id}")]
         public async Task<ActionResult<IEnumerable<Student>>> DeleteStudent(int id)
         {
             if (_cc.students==null)

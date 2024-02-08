@@ -12,8 +12,8 @@ using ReactCURD_EX;
 namespace ReactCURD_EX.Migrations
 {
     [DbContext(typeof(ComponyContext))]
-    [Migration("20240129130201_isActiveData")]
-    partial class isActiveData
+    [Migration("20240208140137_Crud2React")]
+    partial class Crud2React
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -23,6 +23,55 @@ namespace ReactCURD_EX.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
+
+            modelBuilder.Entity("ReactCURD_EX.Model.Cource", b =>
+                {
+                    b.Property<int>("CourceId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CourceId"), 1L, 1);
+
+                    b.Property<string>("CourceCode")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CourceName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Credits")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Grade")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("CourceId");
+
+                    b.ToTable("courses");
+                });
+
+            modelBuilder.Entity("ReactCURD_EX.Model.Enrollment", b =>
+                {
+                    b.Property<int>("Id")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CourceId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("EnrollmentDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("EnrollmentId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("EnrollmentId"), 1L, 1);
+
+                    b.HasKey("Id", "CourceId");
+
+                    b.HasIndex("CourceId");
+
+                    b.ToTable("enrollments");
+                });
 
             modelBuilder.Entity("ReactCURD_EX.Registration", b =>
                 {
@@ -110,6 +159,35 @@ namespace ReactCURD_EX.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("StudTBL");
+                });
+
+            modelBuilder.Entity("ReactCURD_EX.Model.Enrollment", b =>
+                {
+                    b.HasOne("ReactCURD_EX.Model.Cource", "Cource")
+                        .WithMany("Enrollments")
+                        .HasForeignKey("CourceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ReactCURD_EX.Student", "Student")
+                        .WithMany("Enrollments")
+                        .HasForeignKey("Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Cource");
+
+                    b.Navigation("Student");
+                });
+
+            modelBuilder.Entity("ReactCURD_EX.Model.Cource", b =>
+                {
+                    b.Navigation("Enrollments");
+                });
+
+            modelBuilder.Entity("ReactCURD_EX.Student", b =>
+                {
+                    b.Navigation("Enrollments");
                 });
 #pragma warning restore 612, 618
         }

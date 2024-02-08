@@ -21,7 +21,7 @@ namespace ReactCURD_EX.Controllers
             {
                 ViewData["CurrentFilter"] = searchString;
 
-                var Stud = from mem in _context.students
+                var Stud = from mem in _context.Students
                            select mem;
                 if (!String.IsNullOrEmpty(searchString))
                 {
@@ -32,7 +32,7 @@ namespace ReactCURD_EX.Controllers
                     return View(Stud);
                 }
 
-                var stdList = _context.students.ToList();
+                var stdList = _context.Students.ToList();
                 return View(stdList);
 
             }
@@ -89,12 +89,12 @@ namespace ReactCURD_EX.Controllers
             // GET: StudentsSS/Edit/5
             public async Task<IActionResult> Edit(int? id)
             {
-                if (id == null || _context.students == null)
+                if (id == null || _context.Students == null)
                 {
                     return NotFound();
                 }
 
-                var student = await _context.students.FindAsync(id);
+                var student = await _context.Students.FindAsync(id);
                 if (student == null)
                 {
                     return NotFound();
@@ -163,14 +163,14 @@ namespace ReactCURD_EX.Controllers
             [ValidateAntiForgeryToken]
             public async Task<IActionResult> DeleteConfirmed(int id)
             {
-                if (_context.students == null)
+                if (_context.Students == null)
                 {
                     return Problem("Entity set 'ComponyContext.students'  is null.");
                 }
-                var student = await _context.students.FindAsync(id);
+                var student = await _context.Students.FindAsync(id);
                 if (student != null)
                 {
-                    _context.students.Remove(student);
+                    _context.Students.Remove(student);
                 }
 
                 await _context.SaveChangesAsync();
@@ -181,7 +181,7 @@ namespace ReactCURD_EX.Controllers
 
             private bool StudentExists(int id)
             {
-                return (_context.students?.Any(e => e.Id == id)).GetValueOrDefault();
+                return (_context.Students?.Any(e => e.Id == id)).GetValueOrDefault();
             }
         }
     }

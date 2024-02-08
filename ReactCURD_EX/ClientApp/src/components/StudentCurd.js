@@ -116,7 +116,7 @@ const StudentCurd = () => {
             // Handle error
           
             // Display an error toast
-            toast.error("Please Select Row..", { position: "top-center" });
+            toast.error("Please Select Row To Delete Multiple Records..", { position: "top-center" });
         }
     };
  
@@ -143,6 +143,7 @@ const StudentCurd = () => {
   const [data, Setdata] = useState([]);
 
   const [Name, SetName] = useState("");
+  const [Id, SetId] = useState("");
     const [IsActive, SetIsActive] = useState("");
  
   const [Age, SetAge] = useState("");
@@ -151,7 +152,14 @@ const StudentCurd = () => {
   const [DOB, SetDOB] = useState("");
   const [Gender, SetGender] = useState("");
   const [MobileNo, SetMobileNo] = useState("");
-  const [EmailId, SetEmailId] = useState("");
+    const [EmailId, SetEmailId] = useState("");
+
+
+    const [CourceName, SetCourceName] = useState("");
+    const [CourceCode, SetCourceCode] = useState("");
+    const [Credits, SetCredits] = useState("");
+    const [Grade, SetGrade] = useState("");
+    const [EnrollmentDate, SetEnrollmentDate] = useState("");
 
   const [Editid, SetEditid] = useState("");
   const [Editname, SetEditName] = useState("");
@@ -164,7 +172,14 @@ const StudentCurd = () => {
   const [EditGender, SetEditGender] = useState("");
     const [EditIsActive, SetEditIsActive] = useState("");
   const [EditMobileNo, SetEditMobileNo] = useState("");
-  const [EditEmailId, SetEditEmailId] = useState("");
+    const [EditEmailId, SetEditEmailId] = useState("");
+
+
+    const [EditCredits, SetEditCredits] = useState("");
+    const [EditGrade, SetEditGrade] = useState("");
+    const [EditEnrollmentDate, SetEditEnrollmentDate] = useState("");
+    const [EditCourceCode, SetEditCourceCode] = useState("");
+    const [EditCourceName, SetEditCourceName] = useState("");
 
    
   //Insert dummy data into table...
@@ -218,13 +233,21 @@ const StudentCurd = () => {
   //Save Data
   const HandleSave = async () => {
     const url1 = "https://localhost:7195/api/home";
-    const formData = {
+      const formData = {
+       
       Name: Name,
       Age: Age,
       DOB: DOB,
       Gender: Gender,
       City: City,
-      EmailId: EmailId,
+        EmailId: EmailId,
+
+        CourceCode: CourceCode,
+        CourceName: CourceName,
+        Credits: Credits,
+        Grade: Grade,
+        EnrollmentDate: EnrollmentDate,
+
         MobileNo: MobileNo,
         isActive: IsActive,
       Standard: Standard,
@@ -235,7 +258,7 @@ const StudentCurd = () => {
       .post(url1, formData)
       .then((result) => {
         getData();
-        Clear();
+        //Clear();
           toast.error("Error adding student", { position: "top-center" });
       })
       .catch(() => {
@@ -253,6 +276,12 @@ const StudentCurd = () => {
     SetEmailId("");
     SetStandard("");
       SetIsActive("");
+
+      SetEditCourceName("");
+      SetEditCourceCode("");
+      SetEditCredits("");
+      SetEditGrade("");
+      SetEditEnrollmentDate("");
     EditPhotoBase64("");
     SetEditCity("");
     SetEditid("");
@@ -278,6 +307,12 @@ const StudentCurd = () => {
       MobileNo: EditMobileNo,
         Gender: EditGender,
         IsActive: EditIsActive,
+
+        Credits: EditCredits,
+        Grade: EditGrade,
+        EnrollmentDate: EditEnrollmentDate,
+        CourceCode: EditCourceCode,
+        CourceName: EditCourceName,
 
       //Photo: currentPhotoUrl.split(',')[1], // Extract base64 part
       PhotoBase64: currentPhotoUrl ? await getBase64(selectedFile) : null,
@@ -314,8 +349,15 @@ const StudentCurd = () => {
         SetEditMobileNo(result.data.mobileNo);
           SetEditGender(result.data.gender);
           SetEditIsActive(result.data.isActive);
-        setCurrentPhotoUrl(`data:image/png;base64,${result.data.photo}`);
-        SetEditid(id);
+          SetEditCourceName(result.data.courceName);
+          SetEditCredits(result.data.credits);
+          SetEditGrade(result.data.grade);
+          SetEditEnrollmentDate(result.data.enrollmentDate);
+          SetEditCourceCode(result.data.courceCode);
+
+
+          setCurrentPhotoUrl(`data:image/png;base64,${result.data.photo}`);
+          SetEditid(id);
         setShowEditModal(true); // You might need this line if you want to ensure the modal is visible after fetching data
       })
       .catch((error) => {
@@ -429,7 +471,26 @@ const StudentCurd = () => {
       .catch((error) => {
         console.log(error);
       });
-  };
+    };
+
+
+
+  //  const [selectedOption, setSelectedOption] = useState(""); // State to store the selected option
+    //const [customValue, setCustomValue] = useState(""); // State to store the custom value entered in the input field
+
+    //// Options for the dropdown
+    
+    //// Function to handle change in selected option
+    //const handleOptionChange = (e) => {
+    //    SetGrade(e.target.value); // Update the selected option
+    //    setCustomValue(""); // Clear the custom value when an option is selected from the dropdown
+    //};
+
+    //// Function to handle change in custom value
+    //const handleCustomValueChange = (e) => {
+    //    setCustomValue(e.target.value); // Update the custom value
+    //    SetGrade(""); // Clear the selected option when a custom value is entered
+    //};
   return (
     <Fragment>
       <br></br>
@@ -440,7 +501,7 @@ const StudentCurd = () => {
           <Col
             lg={4}
             md={8}
-            style={{ position: "fixed", width: "20%", marginLeft: "860px" }}
+                      style={{ position: "fixed", width: "15%", marginLeft: "860px" }}
           >
             <input
               className="form-control"
@@ -454,7 +515,7 @@ const StudentCurd = () => {
           <Col
             lg={2}
             md={10}
-            style={{ position: "fixed", width: "20%", marginLeft: "1125px" }}
+                      style={{ position: "fixed", width: "20%", marginLeft: "1100px" }}
           >
             <button
               className="btn btn-outline-success"
@@ -573,7 +634,101 @@ const StudentCurd = () => {
                                   />
               </Form.Group>
             </Col>
-          </Row>
+                  </Row>
+                  <Row>
+                      <Col xs={12} md={6}>
+                          <Form.Group>
+                              <Form.Label></Form.Label>
+                              <Form.Select
+                                  value={CourceName}
+                                  onChange={(e) => SetCourceName(e.target.value)}
+                              >
+                                  <option value="">Select CourceName</option>
+                                  {data && data.length > 0 && data.map(
+                                      (item, index) => (
+                                          <option key={index} value={item.courceName}>{item.courceName}</option>
+                                      )
+                                  )}
+                              </Form.Select>
+                          </Form.Group>
+                      </Col>
+                     
+                      <Col xs={12} md={6}>
+                          <Form.Group>
+                              <Form.Label></Form.Label>
+                              <Form.Select
+                                  value={CourceCode}
+                                  onChange={(e) => SetCourceCode(e.target.value)}
+                              >
+                                  <option value="">Select CourceCode</option>
+                                  {data && data.length > 0 && data.map(
+                                      (item, index) => (
+                                          <option key={index} value={item.courceCode}>{item.courceCode}</option>
+                                      )
+                                  )}
+                              </Form.Select>
+                          </Form.Group>
+                      </Col>
+                  </Row>
+                  <Row>
+                      <Col xs={12} md={6}>
+                          <Form.Group>
+                              <Form.Label></Form.Label>
+                              <input
+                                  type="text"
+                                  className="form-control"
+                                  placeholder="Credits"
+                                  value={Credits}
+                                  onChange={(e) => SetCredits(e.target.value)}
+                              />
+                          </Form.Group>
+                      </Col>
+                     
+                      <Col xs={12} md={6}>
+                          <Form.Group>
+                              <Form.Label></Form.Label>
+                              <Form.Select
+                                  value={Grade}
+                                  onChange={(e) => SetGrade(e.target.value)}
+                              >
+                                  <option value="">Select Grade</option>
+                                  {data && data.length > 0 && data.map(
+                                      (item, index) => (
+                                          <option key={index} value={item.grade}>{item.grade}</option>
+                                      )
+                                  )}
+                              </Form.Select>
+                          </Form.Group>
+                      </Col>
+
+                      {/*<Col xs={12} md={6}>*/}
+                      {/*    <Form.Group>*/}
+                      {/*        <Form.Label>Choose an option:</Form.Label>*/}
+                      {/*        <div className="d-flex align-items-center">*/}
+                      {/*            <Form.Select*/}
+                      {/*                value={Grade}*/}
+                      {/*                onChange={handleOptionChange}*/}
+                      {/*                className="me-2"*/}
+                      {/*            >*/}
+                      {/*                <option value="">Select an option</option>*/}
+                      {/*                {data && data.length > 0 && data.map(*/}
+                      {/*                    (item, index) => (*/}
+                      {/*                        <option key={index} value={item.grade}>{item.grade}</option>*/}
+                      {/*                    )*/}
+                      {/*                )}*/}
+                      {/*            </Form.Select>*/}
+                      {/*            <Form.Control*/}
+                      {/*                type="text"*/}
+                      {/*                value={customValue}*/}
+                      {/*                onChange={handleCustomValueChange}*/}
+                      {/*                placeholder="Enter a custom value"*/}
+                      {/*                disabled={!!Grade} // Disable input when an option is selected*/}
+                      {/*            />*/}
+                      {/*        </div>*/}
+                      {/*    </Form.Group>*/}
+                      {/*</Col>*/}
+                  </Row>
+
           <br></br>
                   <Row>
                      
@@ -639,17 +794,33 @@ const StudentCurd = () => {
                     
                   </Row>
                   <Row>
-                  <Col xs={12} md={4} style={{ marginTop: "24px", width: "260px" }}>
-                      <Form.Group>
-                          <Form.Label> </Form.Label>
-                          <DatePicker
-                              selected={DOB ? new Date(DOB) : null}
-                              onChange={(date) => SetDOB(date)}
-                              className="form-control"
-                              placeholderText="Date of Birth"
-                          />
-                      </Form.Group>
-                      </Col></Row>
+                      <Col xs={12} md={4} style={{ marginTop: "24px", width: "320px" }}>
+                          <Form.Group>
+                              <Form.Label> </Form.Label>
+                              <DatePicker
+                                  selected={DOB ? new Date(DOB) : null}
+                                  onChange={(date) => SetDOB(date)}
+                                  className="form-control"
+                                  placeholderText="Date of Birth"
+                              />
+                          </Form.Group>
+                      </Col>
+                      <Col
+                          xs={12}
+                          md={4}
+                          style={{ marginLeft: "80px", marginTop: "24px", width: "320px" }}
+                      >
+                          <Form.Group>
+                              <Form.Label> </Form.Label>
+                              <DatePicker
+                                  selected={EnrollmentDate ? new Date(EnrollmentDate) : null}
+                                  onChange={(date) => SetEnrollmentDate(date)}
+                                  className="form-control"
+                                  placeholderText="EnrollmentDate"
+                              />
+                          </Form.Group>
+                      </Col>
+                  </Row>
           <Row>
             <Col xs={12} md={6} style={{ marginTop: "30px" }}>
               <Form.Group>
@@ -667,7 +838,7 @@ const StudentCurd = () => {
             variant="success"
             onClick={() => {
               HandleSave();
-              refreshPage();
+            //  refreshPage();
               handleAddCloseModal();
             }}
           >
@@ -689,6 +860,7 @@ const StudentCurd = () => {
           <tr style={{ textAlign: "center" }}>
             {/* <th>No</th>*/}
             <th>SelectRow</th>
+            <th>StudentId</th>
             <th>Name</th>
             <th>Date-Of-Birth</th>
             <th>Age</th>
@@ -698,6 +870,11 @@ const StudentCurd = () => {
             <th>Standard</th>
             <th>Mobile No</th>
                       <th>Photo</th>
+                      <th>CourceName</th>
+                      <th>CourceCode</th>
+                      <th>Credit</th>
+                      <th>Grade</th>
+                      <th>EnrollmentDate</th>
             <th>IsActive</th>
             <th>Actions</th>
           </tr>
@@ -725,12 +902,14 @@ const StudentCurd = () => {
 
                                 
                             </td>
+                            <td>{item.id}</td>
                       <td>{item.name}</td>
                       <td>
                         {item.dob
                           ? new Date(item.dob).toLocaleDateString()
                           : "N/A"}
-                      </td>
+                            </td>
+                          
                       <td>{item.age}</td>
                       <td>{item.gender}</td>
                       <td>{item.emailId}</td>
@@ -762,6 +941,12 @@ const StudentCurd = () => {
                           )}
                         </div>
                             </td>
+                           
+                            <td>{item.courceName}</td>
+                            <td>{item.courceCode}</td>
+                            <td>{item.credits}</td>
+                            <td>{item.grade} </td>
+                            <td>{item.enrollmentDate}</td>
                             <td className="text-center">
                             <input
                                 type="checkbox"
@@ -978,7 +1163,73 @@ const StudentCurd = () => {
                                   />
                               </Form.Group>
                           </Col>
-            </Row>
+                      </Row><Row>
+                          <Col xs={12} md={6}>
+                              <Form.Group>
+                                  <Form.Label></Form.Label>
+                                  <Form.Select
+                                      value={EditCourceName}
+                                      onChange={(e) => {
+                                          SetEditCourceName(e.target.value);
+                                      }}
+                                  >
+                                      <option value="">Select CourceName</option>
+                                      {data && data.length > 0 && data.map((item, index) => (
+                                          <option key={index} value={item.courceName}>{item.courceName}</option>
+                                      ))}
+                                  </Form.Select>
+                              </Form.Group>
+                          </Col>
+                          <Col xs={12} md={6}>
+                              <Form.Group>
+                                  <Form.Label></Form.Label>
+                                  <Form.Select
+                                      value={EditCourceCode}
+                                      onChange={(e) => {
+                                          SetEditCourceCode(e.target.value);
+                                      }}
+                                  >
+                                      <option value="">Select CourceCode</option>
+                                      {data && data.length > 0 && data.map((item, index) => (
+                                          <option key={index} value={item.courceCode}>{item.courceCode}</option>
+                                      ))}
+                                  </Form.Select>
+                              </Form.Group>
+                          </Col>
+                      </Row>
+                      <Row>
+                          <Col xs={12} md={6}>
+                              <Form.Group>
+                                  <Form.Label></Form.Label>
+                                  <input
+                                      type="text"
+                                      className="form-control"
+                                      placeholder="EditCredits"
+                                      value={EditCredits}
+                                      onChange={(e) => SetEditCredits(e.target.value)}
+                                  />
+                              </Form.Group>
+                          </Col>
+                          <Col xs={12} md={6}>
+                              <Form.Group>
+                                  <Form.Label></Form.Label>
+                                  <Form.Select
+                                      value={EditGrade}
+                                      onChange={(e) => {
+                                          SetEditGrade(e.target.value);
+                                      }}
+                                  >
+                                      <option value="">Select Grade</option>
+                                      {data && data.length > 0 && data.map((item, index) => (
+                                          <option key={index} value={item.grade}>{item.grade}</option>
+                                      ))}
+                                  </Form.Select>
+                              </Form.Group>
+                          </Col>
+
+
+
+                      </Row>
                           <Row>
                           <Col xs={12} md={4} style={{ marginTop: "24px", width: "265px" }} >
                               <Form.Group>
@@ -1043,23 +1294,42 @@ const StudentCurd = () => {
 
                       </Col>
                       </Row>
-                   
-                      <Row> <Col xs={12} md={6} style={{ marginTop: "24px", width: "220px" }}>
 
-                          <Form.Group>
-                              <Form.Label> </Form.Label>
-                              <DatePicker
-                                  selected={EditDOB ? new Date(EditDOB) : null}
-                                  onChange={(date) => SetEditDOB(date)}
-                                  className="form-control"
-                                  placeholderText={
-                                      EditDOB
-                                          ? new Date(EditDOB).toLocaleDateString()
-                                          : "Select DOB"
-                                  }
-                              />
-                          </Form.Group>
-                      </Col></Row>
+                   
+                      <Row>
+                          {" "}
+                          <Col xs={12} md={6} style={{ marginTop: "24px", width: "220px" }}>
+                              <Form.Group>
+                                  <Form.Label> </Form.Label>
+                                  <DatePicker
+                                      selected={EditDOB ? new Date(EditDOB) : null}
+                                      onChange={(date) => SetEditDOB(date)}
+                                      className="form-control"
+                                      placeholderText={
+                                          EditDOB
+                                              ? new Date(EditDOB).toLocaleDateString()
+                                              : "Select DOB"
+                                      }
+                                  />
+                              </Form.Group>
+                          </Col>
+                          <Col xs={12} md={4} style={{ marginTop: "24px", width: "260px" }}>
+                              <Form.Group>
+                                  <Form.Label> </Form.Label>
+                                  <DatePicker
+                                      selected={
+                                          EditEnrollmentDate ? new Date(EditEnrollmentDate) : null
+                                      }
+                                      onChange={(date) => SetEditEnrollmentDate(date)}
+                                      className="form-control"
+                                      placeholderText={
+                                          EditEnrollmentDate
+                                              ? new Date(EditEnrollmentDate).toLocaleDateString()
+                                              : "Select EnrollmentDate"
+                                      }
+                                  />
+                              </Form.Group>
+                          </Col></Row>
             <br></br>
 
             <Row>

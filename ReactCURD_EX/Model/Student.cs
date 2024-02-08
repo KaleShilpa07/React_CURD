@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using ReactCURD_EX.Model;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ReactCURD_EX
@@ -7,6 +8,7 @@ namespace ReactCURD_EX
     public class Student
     {
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         //Scaler Property
         public int Id { get; set; }
         [Required]
@@ -31,5 +33,8 @@ namespace ReactCURD_EX
         [Required]
         public string? EmailId { get; set; }
         public bool IsActive { get; set; }
+        // Navigation properties
+        public virtual ICollection<Enrollment>? Enrollments { get; set; }
     }
+
 }

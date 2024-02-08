@@ -1,12 +1,14 @@
 using Microsoft.EntityFrameworkCore;
 using ReactCURD_EX;
-
+using ReactCURD_EX.Infrastructure.Interface;
+using ReactCURD_EX.Infrastructure.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
 builder.Services.AddControllersWithViews();
+builder.Services.AddScoped<IStudentrepo, StudentRepo>();
 builder.Services.AddDbContext<ComponyContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultCon"));

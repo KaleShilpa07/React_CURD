@@ -178,18 +178,22 @@ namespace ReactCURD_EX.Controllers
         [HttpDelete("deleteMultiple")]
         public async Task<IActionResult> DeleteMultiple([FromBody] List<int> ids)
         {
-            var itemsToDelete = await _cc.Students.Where(i => ids.Contains(i.Id)).ToListAsync();
-
-            if (itemsToDelete == null || itemsToDelete.Count == 0)
+            try
             {
-                return NotFound();
+                int deletedCount = await _studentRepository.DeleteMultiple(ids);
+
+                if (deletedCount == 0)
+                {
+                    return NotFound("No items found or deleted.");
+                }
+
+                return Ok($"Successfully deleted {deletedCount} item(s).");
             }
-
-            _cc.Students.RemoveRange(itemsToDelete);
-            await
-                _cc.SaveChangesAsync();
-
-            return Ok();
+            catch (Exception)
+            {
+                // Log the exception or handle it accordingly
+                return StatusCode(500, "Internal Server Error");
+            }
         }
 
 

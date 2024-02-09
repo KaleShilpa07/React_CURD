@@ -22,7 +22,7 @@ namespace ReactCURD_EX.Infrastructure.Repository
                 {
                     // Create a new Student entity
                     var student = new Student
-                    {
+                    { 
                         Name = studentDetails.Name,
                         City = studentDetails.City,
                         Age = studentDetails.Age,
@@ -57,8 +57,10 @@ namespace ReactCURD_EX.Infrastructure.Repository
                     // Create a new Enrollment entity
                     var enrollment = new Enrollment
                     {
+                       
                         Id = student.Id,
                         CourceId = course.CourceId,
+                        EnrollmentId = student.Id,
                         EnrollmentDate = studentDetails.EnrollmentDate
                         // Set other properties accordingly
                     };
@@ -67,6 +69,7 @@ namespace ReactCURD_EX.Infrastructure.Repository
                     _cc.enrollments.Add(enrollment);
                     await _cc.SaveChangesAsync();
 
+                   
                     // Commit the transaction
                     transaction.Commit();
 
@@ -155,11 +158,16 @@ namespace ReactCURD_EX.Infrastructure.Repository
 
             if (existingEnrollment != null)
             {
-                // Update the existing enrollment properties
-                existingEnrollment.EnrollmentDate = student.EnrollmentDate;
+                        
+                        // Update the existing enrollment properties (excluding EnrollmentId)
+                        _cc.Entry(existingEnrollment).Property(e => e.EnrollmentId).IsModified = false;
+                       
+                        existingEnrollment.EnrollmentDate = student.EnrollmentDate;
+                        existingEnrollment.EnrollmentId = student.Id;
 
-                // Update the enrollment data in the Enrollment table
-                _cc.enrollments.Update(existingEnrollment);
+
+                        // Update the enrollment data in the Enrollment table
+                        _cc.enrollments.Update(existingEnrollment);
                 await _cc.SaveChangesAsync();
             }
 
@@ -253,6 +261,20 @@ namespace ReactCURD_EX.Infrastructure.Repository
       .ToList();
 
             return filteredStudents;
+        }
+        public async Task<int> DeleteMultiple(List<int> ids)
+        {
+            var itemsToDelete = await _cc.Students.Where(i => ids.Contains(i.Id)).ToListAsync();
+
+            if (itemsToDelete == null || itemsToDelete.Count == 0)
+            {
+                return 0; // Indicates that no items were found or deleted
+            }
+
+            _cc.Students.RemoveRange(itemsToDelete);
+            int deletedCount = await _cc.SaveChangesAsync();
+
+            return deletedCount;
         }
     }
 }

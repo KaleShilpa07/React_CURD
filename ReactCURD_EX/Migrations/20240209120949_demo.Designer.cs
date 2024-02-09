@@ -12,8 +12,8 @@ using ReactCURD_EX;
 namespace ReactCURD_EX.Migrations
 {
     [DbContext(typeof(ComponyContext))]
-    [Migration("20240208140137_Crud2React")]
-    partial class Crud2React
+    [Migration("20240209120949_demo")]
+    partial class demo
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -61,10 +61,7 @@ namespace ReactCURD_EX.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<int>("EnrollmentId")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("EnrollmentId"), 1L, 1);
 
                     b.HasKey("Id", "CourceId");
 

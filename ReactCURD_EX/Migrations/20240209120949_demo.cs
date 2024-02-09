@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace ReactCURD_EX.Migrations
 {
-    public partial class Crud2React : Migration
+    public partial class demo : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -78,10 +78,9 @@ namespace ReactCURD_EX.Migrations
                 name: "enrollments",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false),
                     CourceId = table.Column<int>(type: "int", nullable: false),
-                    EnrollmentId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<int>(type: "int", nullable: false),
+                    EnrollmentId = table.Column<int>(type: "int", nullable: false),
                     EnrollmentDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>

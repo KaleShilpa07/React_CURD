@@ -9,5 +9,6 @@ namespace ReactCURD_EX.Infrastructure.Interface
         Task<int> AddStudent(StudentDetailsDTO studentDetails);
         Task<bool> EditStudent(int id, StudentDetailsDTO studentDetails);
         List<StudentDetailsDTO> SearchStudents(string searchterm);
+        Task<int> DeleteMultiple(List<int> ids);
     }
 }

@@ -59,10 +59,7 @@ namespace ReactCURD_EX.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<int>("EnrollmentId")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("EnrollmentId"), 1L, 1);
 
                     b.HasKey("Id", "CourceId");
 

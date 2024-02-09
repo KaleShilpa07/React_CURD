@@ -20,6 +20,7 @@ namespace ReactCURD_EX
         [Required]
         public string? Standard { get; set; }
         // New property for storing photo as byte array
+
         public byte[]? Photo { get; set; }
 
         // New property for storing base64 representation of the photo

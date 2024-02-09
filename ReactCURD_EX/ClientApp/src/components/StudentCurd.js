@@ -38,7 +38,7 @@ const StudentCurd = () => {
 
   };
     const handleEditFileChange = (e) => {
-        SetEditPhotoBase64();
+       SetEditPhotoBase64();
     setSelectedFile(e.target.files[0]);
   };
 
@@ -143,7 +143,6 @@ const StudentCurd = () => {
   const [data, Setdata] = useState([]);
 
   const [Name, SetName] = useState("");
-  const [Id, SetId] = useState("");
     const [IsActive, SetIsActive] = useState("");
  
   const [Age, SetAge] = useState("");
@@ -182,33 +181,40 @@ const StudentCurd = () => {
     const [EditCourceName, SetEditCourceName] = useState("");
 
    
-  //Insert dummy data into table...
-  // const rows = [
-  //   {
-  //     id: 1,
-  //     Name: "Swara",
-  //     age: 23,
-  //     Address: "pune",
-  //     Class: "second",
+  //Get dummy data to show dropdown...
+    
+    const GetCourceCode = [
+        {courceCode: "J-201"    },
+        {courceCode:"C#-201"    },
+        {courceCode:"P-201"     },
+        {courceCode:"A-201"     },
+        {courceCode:"Python-201"},
+        {courceCode:"MT-201"    },
+        {courceCode:"AT-201"    },
+        {courceCode: "AWS-201"   },
+    ];
+   
+    const GetGrade = [
+       { grade:"A"     },
+       { grade:"A+"    },
+       { grade:"B"     },
+       { grade:"B+"    },
+       { grade:"C"     },
+       { grade:"C+"    },
+        { grade: "D" }
+    ];
+    const GetCourceName = [
 
-  //   },
-  //   {
-  //     id: 2,
-  //     Name: "Sunita",
-  //     age: 23,
-  //     Address: "pune",
-  //     Class: "second",
-
-  //   },
-  //   {
-  //     id: 3,
-  //     Name: "Mira",
-  //     age: 23,
-  //     Address: "pune",
-  //     Class: "second",
-
-  //   },
-  // ];
+        { courceName: "Java Developement"},
+        { courceName: "C# Developement"},
+        { courceName: "PHP"},
+        { courceName: "Android"},
+        { courceName: "Python"},
+        { courceName: " Manual Testing"},
+        { courceName: " Automation Testing"},
+        { courceName: " AWS "}
+     
+   ];
 
   const refreshPage = () => {
     setTimeout(() => {
@@ -258,7 +264,7 @@ const StudentCurd = () => {
       .post(url1, formData)
       .then((result) => {
         getData();
-        //Clear();
+        Clear();
           toast.error("Error adding student", { position: "top-center" });
       })
       .catch(() => {
@@ -315,15 +321,17 @@ const StudentCurd = () => {
         CourceName: EditCourceName,
 
       //Photo: currentPhotoUrl.split(',')[1], // Extract base64 part
-      PhotoBase64: currentPhotoUrl ? await getBase64(selectedFile) : null,
+        PhotoBase64: currentPhotoUrl ? await getBase64(selectedFile) : null,
+      
     };
 
     axios
-      .put(`https://localhost:7195/api/home/${id}`, updatedData)
+        .put(`https://localhost:7195/api/home/${id}`, updatedData)
       .then((response) => {
           toast.success("Data updated successfully", { position: "top-center" });
         // Close the modal after successful update
-        refreshPage();
+          refreshPage();
+
       })
       .catch((error) => {
           console.error(error, { position: "top-center" });
@@ -453,8 +461,12 @@ const StudentCurd = () => {
     
 
   useEffect(() => {
-    Getdata();
+      Getdata();
+    
   }, [searchTerm]);
+
+    
+
 
   const Getdata = () => {
     axios
@@ -546,7 +558,7 @@ const StudentCurd = () => {
       </Row>
       <br></br>
 
-      <Modal show={showAddModal} onHide={handleAddCloseModal} size="lg">
+          <Modal /*style={{ backgroundColor: 'gray' }}*/ show={showAddModal} onHide={handleAddCloseModal} size="lg">
         <Modal.Header closeButton>
           <Modal.Title>Add New Student</Modal.Title>
         </Modal.Header>
@@ -644,7 +656,7 @@ const StudentCurd = () => {
                                   onChange={(e) => SetCourceName(e.target.value)}
                               >
                                   <option value="">Select CourceName</option>
-                                  {data && data.length > 0 && data.map(
+                                  {GetCourceName && GetCourceName.length > 0 && GetCourceName.map(
                                       (item, index) => (
                                           <option key={index} value={item.courceName}>{item.courceName}</option>
                                       )
@@ -661,7 +673,7 @@ const StudentCurd = () => {
                                   onChange={(e) => SetCourceCode(e.target.value)}
                               >
                                   <option value="">Select CourceCode</option>
-                                  {data && data.length > 0 && data.map(
+                                  {GetCourceCode && GetCourceCode.length > 0 && GetCourceCode.map(
                                       (item, index) => (
                                           <option key={index} value={item.courceCode}>{item.courceCode}</option>
                                       )
@@ -692,7 +704,7 @@ const StudentCurd = () => {
                                   onChange={(e) => SetGrade(e.target.value)}
                               >
                                   <option value="">Select Grade</option>
-                                  {data && data.length > 0 && data.map(
+                                  {GetGrade && GetGrade.length > 0 && GetGrade.map(
                                       (item, index) => (
                                           <option key={index} value={item.grade}>{item.grade}</option>
                                       )
@@ -701,32 +713,6 @@ const StudentCurd = () => {
                           </Form.Group>
                       </Col>
 
-                      {/*<Col xs={12} md={6}>*/}
-                      {/*    <Form.Group>*/}
-                      {/*        <Form.Label>Choose an option:</Form.Label>*/}
-                      {/*        <div className="d-flex align-items-center">*/}
-                      {/*            <Form.Select*/}
-                      {/*                value={Grade}*/}
-                      {/*                onChange={handleOptionChange}*/}
-                      {/*                className="me-2"*/}
-                      {/*            >*/}
-                      {/*                <option value="">Select an option</option>*/}
-                      {/*                {data && data.length > 0 && data.map(*/}
-                      {/*                    (item, index) => (*/}
-                      {/*                        <option key={index} value={item.grade}>{item.grade}</option>*/}
-                      {/*                    )*/}
-                      {/*                )}*/}
-                      {/*            </Form.Select>*/}
-                      {/*            <Form.Control*/}
-                      {/*                type="text"*/}
-                      {/*                value={customValue}*/}
-                      {/*                onChange={handleCustomValueChange}*/}
-                      {/*                placeholder="Enter a custom value"*/}
-                      {/*                disabled={!!Grade} // Disable input when an option is selected*/}
-                      {/*            />*/}
-                      {/*        </div>*/}
-                      {/*    </Form.Group>*/}
-                      {/*</Col>*/}
                   </Row>
 
           <br></br>
@@ -838,7 +824,7 @@ const StudentCurd = () => {
             variant="success"
             onClick={() => {
               HandleSave();
-            //  refreshPage();
+            refreshPage();
               handleAddCloseModal();
             }}
           >
@@ -858,11 +844,11 @@ const StudentCurd = () => {
       >
         <thead>
           <tr style={{ textAlign: "center" }}>
-            {/* <th>No</th>*/}
+          
             <th>SelectRow</th>
-            <th>StudentId</th>
+         {/*  <th>StudentId</th>*/}
             <th>Name</th>
-            <th>Date-Of-Birth</th>
+            <th>DOB</th>
             <th>Age</th>
             <th>Gender</th>
             <th>Email Id</th>
@@ -902,7 +888,7 @@ const StudentCurd = () => {
 
                                 
                             </td>
-                            <td>{item.id}</td>
+                           {/* <td>{item.id}</td>*/}
                       <td>{item.name}</td>
                       <td>
                         {item.dob
@@ -981,9 +967,7 @@ const StudentCurd = () => {
         </tbody>
       </Table>
 
-
-
-      <Dialog open={open} onClose={handleCloseDialog}>
+        <Dialog style={{ backgroundColor: 'gray' }} open={open} onClose={handleCloseDialog}>
         <DialogTitle>Confirmation</DialogTitle>
         <DialogContent>
           <DialogContentText>
@@ -997,7 +981,8 @@ const StudentCurd = () => {
           </Button>
           <Button
             onClick={() => {
-              confirmDelete();
+                          confirmDelete();
+                          handleDeleteSelectedRows();
               refreshPage();
             }}
             variant="danger"
@@ -1013,8 +998,8 @@ const StudentCurd = () => {
               left: "50%",
               transform: "translate(-50%, -50%)",
           }}>
-        {" "}
-        <Modal
+              {" "}
+              <Modal style={{ backgroundColor: 'gray' }}
           show={showPreviewModal}
           onHide={handleClosePreviewModal}
           animation={true}
@@ -1024,16 +1009,31 @@ const StudentCurd = () => {
           </Modal.Header>
           <Modal.Body>
             {previewData && (
-              <div>
-                <p>Name: {previewData.name}</p>
-                <p>DOB: {previewData.dob}</p>
-                <p>Age: {previewData.age}</p>
-                <p>Gender: {previewData.gender}</p>
-                <p>Email Id: {previewData.emailId}</p>
-                <p>City: {previewData.city}</p>
-                <p>Standard: {previewData.standard}</p>
-                <p>Mobile No: {previewData.mobileNo}</p>
-             
+                          <div>
+                              <Row >                         
+                              <Col xs={12} md={6}> <div>
+                                  <p> Name: {previewData.name}         </p> 
+                                  <p> DOB: {previewData.dob}         </p> 
+                                                                    
+                                  <p> Age: {previewData.age}         </p> 
+                                  <p> Gender: {previewData.gender}   </p> 
+                                                                   
+                                  <p> Email Id: {previewData.emailId}</p> 
+                                      <p> City: {previewData.city}</p>  </div></Col>
+                              
+                                  <Col xs={12} md={6}><div>
+                                  <p> Standard: {previewData.standard}</p> 
+                                      <p> Mobile No: {previewData.mobileNo} </p> 
+                                         
+                                  <p> Cource Name: {previewData.courceName}</p> 
+                                  <p> Cource Code: {previewData.courceCode}</p> 
+                                              
+                                  <p> Grade: {previewData.grade}              </p>   
+                                      <p> Cource Credits: {previewData.credits}  </p> 
+                                                 
+                                     </div>                                                                         
+                                  </Col>  </Row>
+                                    <p> Enrollment Date: {previewData.enrollmentDate}</p>  
 
                 {previewData.photo && (
                   <img
@@ -1043,7 +1043,8 @@ const StudentCurd = () => {
                   />
                 )}
               </div>
-            )}
+                      )}
+          
           </Modal.Body>
         </Modal>{" "}
           </div>
@@ -1075,7 +1076,8 @@ const StudentCurd = () => {
               </Modal>{" "}
           </div>
       <div>
-        <Modal
+              <Modal
+                  style={{ backgroundColor: 'gray' }}
           show={showEditModal}
           onHide={handleCloseEditModal}
           animation={true}
@@ -1164,36 +1166,28 @@ const StudentCurd = () => {
                               </Form.Group>
                           </Col>
                       </Row><Row>
-                          <Col xs={12} md={6}>
+                      <Col xs={12} md={6}>
                               <Form.Group>
                                   <Form.Label></Form.Label>
-                                  <Form.Select
+                                  <input
+                                      type="text"
+                                      className="form-control"
+                                      placeholder="EditCourceName"
                                       value={EditCourceName}
-                                      onChange={(e) => {
-                                          SetEditCourceName(e.target.value);
-                                      }}
-                                  >
-                                      <option value="">Select CourceName</option>
-                                      {data && data.length > 0 && data.map((item, index) => (
-                                          <option key={index} value={item.courceName}>{item.courceName}</option>
-                                      ))}
-                                  </Form.Select>
+                                      onChange={(e) => SetEditCourceName(e.target.value)}
+                                  />
                               </Form.Group>
                           </Col>
                           <Col xs={12} md={6}>
                               <Form.Group>
                                   <Form.Label></Form.Label>
-                                  <Form.Select
+                                  <input
+                                      type="text"
+                                      className="form-control"
+                                      placeholder="Edit CourceCode"
                                       value={EditCourceCode}
-                                      onChange={(e) => {
-                                          SetEditCourceCode(e.target.value);
-                                      }}
-                                  >
-                                      <option value="">Select CourceCode</option>
-                                      {data && data.length > 0 && data.map((item, index) => (
-                                          <option key={index} value={item.courceCode}>{item.courceCode}</option>
-                                      ))}
-                                  </Form.Select>
+                                      onChange={(e) => SetEditCourceCode(e.target.value)}
+                                  />
                               </Form.Group>
                           </Col>
                       </Row>
@@ -1213,17 +1207,13 @@ const StudentCurd = () => {
                           <Col xs={12} md={6}>
                               <Form.Group>
                                   <Form.Label></Form.Label>
-                                  <Form.Select
+                                  <input
+                                      type="text"
+                                      className="form-control"
+                                      placeholder="Edit Grade"
                                       value={EditGrade}
-                                      onChange={(e) => {
-                                          SetEditGrade(e.target.value);
-                                      }}
-                                  >
-                                      <option value="">Select Grade</option>
-                                      {data && data.length > 0 && data.map((item, index) => (
-                                          <option key={index} value={item.grade}>{item.grade}</option>
-                                      ))}
-                                  </Form.Select>
+                                      onChange={(e) => SetEditGrade(e.target.value)}
+                                  />
                               </Form.Group>
                           </Col>
 

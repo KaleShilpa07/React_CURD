@@ -51,7 +51,7 @@ namespace ReactCURD_EX
             public string? Age { get; set; }
             public string? Standard { get; set; }
             public byte[] Photo { get; set; }
-            public string? PhotoBase64 { get; set; }
+            public string PhotoBase64 { get; set; }
             public DateTime? DOB { get; set; }
             public string? Gender { get; set; }
             public string? MobileNo { get; set; }

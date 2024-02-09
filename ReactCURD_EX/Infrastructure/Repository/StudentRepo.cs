@@ -111,94 +111,87 @@ namespace ReactCURD_EX.Infrastructure.Repository
 
             return result;
         }
-        public async Task<bool> EditStudent(int id, StudentDetailsDTO student)
+       public async Task<bool> EditStudent(int id, StudentDetailsDTO student)
+{
+    if (student == null || string.IsNullOrEmpty(student.PhotoBase64))
+    {
+        return false;
+    }
+
+    // Start a database transaction
+    using (var transaction = _cc.Database.BeginTransaction())
+    {
+        try
         {
-            // Start a database transaction
-            using (var transaction = _cc.Database.BeginTransaction())
+            // Retrieve the existing student from the database
+            var existingStudent = await _cc.Students.FindAsync(id);
+
+            if (existingStudent == null)
             {
-                try
-                {
-                    // Retrieve the existing student from the database
-                    var existingStudent = await _cc.Students.FindAsync(id);
-
-                    if (existingStudent == null)
-                    {
-                        // Student not found
-                        return false;
-                    }
-
-                    // Update the existing student properties
-
-                    if (!string.IsNullOrEmpty(student.PhotoBase64))
-                    {
-                        student.Photo = Convert.FromBase64String(student.PhotoBase64);
-                    }
-                    existingStudent.Id=student.Id;
-                    existingStudent.Photo = Convert.FromBase64String(student.PhotoBase64);
-                    existingStudent.Name = student.Name;
-                    existingStudent.City = student.City;
-                    existingStudent.Age = student.Age;
-                    existingStudent.Standard = student.Standard;
-                    existingStudent.DOB = student.DOB;
-                    existingStudent.Gender = student.Gender;
-                    existingStudent.MobileNo = student.MobileNo;
-                    existingStudent.EmailId = student.EmailId;
-                    existingStudent.IsActive = student.IsActive;
-
-                    // Update the student data in the Student table
-                    _cc.Students.Update(existingStudent);
-                    await _cc.SaveChangesAsync();
-
-                    // Retrieve the existing enrollment for the student from the database
-                    var existingEnrollment = await _cc.enrollments
-                        .Where(e => e.Id == id)
-                        .FirstOrDefaultAsync();
-
-                    if (existingEnrollment == null)
-                    {
-                        // Enrollment not found
-                        return false;
-                    }
-
-                    // Update the existing enrollment properties
-                    existingEnrollment.EnrollmentDate = student.EnrollmentDate;
-
-                    // Update the enrollment data in the Enrollment table
-                    _cc.enrollments.Update(existingEnrollment);
-                    await _cc.SaveChangesAsync();
-
-                    // Retrieve the existing course for the enrollment from the database
-                    var existingCourse = await _cc.courses.FindAsync(existingEnrollment.CourceId);
-
-                    if (existingCourse == null)
-                    {
-                        // Course not found
-                        return false;
-                    }
-
-                    // Update the existing course properties
-                    existingCourse.CourceName = student.CourceName;
-                    existingCourse.CourceCode = student.CourceCode;
-                    existingCourse.Credits = student.Credits;
-
-                    // Update the course data in the Course table
-                    _cc.courses.Update(existingCourse);
-                    await _cc.SaveChangesAsync();
-
-                    // Commit the transaction
-                    transaction.Commit();
-
-                    // Return true indicating success
-                    return true;
-                }
-                catch (Exception)
-                {
-                    // An error occurred, roll back the transaction
-                    transaction.Rollback();
-                    throw;  // Rethrow the exception to signal failure
-                }
+                // Student not found
+                return false;
             }
+
+            // Update the existing student properties
+            existingStudent.Name = student.Name;
+            existingStudent.City = student.City;
+            existingStudent.Age = student.Age;
+            existingStudent.Standard = student.Standard;
+            existingStudent.DOB = student.DOB;
+            existingStudent.Gender = student.Gender;
+            existingStudent.MobileNo = student.MobileNo;
+            existingStudent.EmailId = student.EmailId;
+            existingStudent.IsActive = student.IsActive;
+
+            // Update the student photo
+            existingStudent.Photo = Convert.FromBase64String(student.PhotoBase64);
+
+            // Update the student data in the Student table
+            _cc.Students.Update(existingStudent);
+            await _cc.SaveChangesAsync();
+
+            // Retrieve the existing enrollment for the student from the database
+            var existingEnrollment = await _cc.enrollments.FirstOrDefaultAsync(e => e.Id == id);
+
+            if (existingEnrollment != null)
+            {
+                // Update the existing enrollment properties
+                existingEnrollment.EnrollmentDate = student.EnrollmentDate;
+
+                // Update the enrollment data in the Enrollment table
+                _cc.enrollments.Update(existingEnrollment);
+                await _cc.SaveChangesAsync();
+            }
+
+            // Retrieve the existing course for the enrollment from the database
+            var existingCourse = await _cc.courses.FindAsync(existingEnrollment?.CourceId);
+
+            if (existingCourse != null)
+            {
+                // Update the existing course properties
+                existingCourse.CourceName = student.CourceName;
+                existingCourse.CourceCode = student.CourceCode;
+                existingCourse.Credits = student.Credits;
+
+                // Update the course data in the Course table
+                _cc.courses.Update(existingCourse);
+                await _cc.SaveChangesAsync();
+            }
+
+            // Commit the transaction
+            await transaction.CommitAsync();
+
+            // Return true indicating success
+            return true;
         }
+        catch (Exception)
+        {
+            // An error occurred, roll back the transaction
+            await transaction.RollbackAsync();
+            throw;  // Rethrow the exception to signal failure
+        }
+    }
+}
 
         public async Task<StudentDetailsDTO> GetStudents(int? id)
         {

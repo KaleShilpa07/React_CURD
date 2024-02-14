@@ -10,8 +10,8 @@ namespace ReactCURD_EX
         {
 
         }
-         public DbSet<Skill> skills { get; set; }
-        public DbSet<Registration> registrations { get; set; }
+         public DbSet<SignUpFormModel> signUpFormModels { get; set; }
+        public DbSet<LoginFormModel> loginFormModels { get; set; }
 
         public DbSet<Cource> courses { get; set; }
         public DbSet<Enrollment> enrollments { get; set; }

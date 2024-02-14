@@ -1,4 +1,5 @@
 ﻿import React, { Fragment, useState, useEffect } from "react";
+
 import {
     Dialog,
     DialogTitle,
@@ -94,10 +95,8 @@ const StudentCurd = () => {
     const handleClosePreviewModal = () => {
         setShowPreviewModal(false);
     };
-    //
+   
     //Delete Data
-
-
     const [selectedRows, setSelectedRows] = useState([]);
 
     const handleDeleteSelectedRows = async () => {
@@ -121,7 +120,6 @@ const StudentCurd = () => {
               
             });
     };
-
     //const handleDeleteSelectedRows = async () => {
     //    try {
     //        await axios.delete('https://localhost:7195/api/home/deleteMultiple', {
@@ -205,7 +203,30 @@ const StudentCurd = () => {
     const [EditCourceCode, SetEditCourceCode] = useState("");
     const [EditCourceName, SetEditCourceName] = useState("");
 
+    const [selectAll, setSelectAll] = useState(false);
 
+    const handleSelectAll = (e) => {
+        const isChecked = e.target.checked;
+        setSelectAll(isChecked);
+        const allCheckbox = document.querySelectorAll('input[type="checkbox"][name="rowCheckbox"]');
+        const selectedIds = [];
+
+        allCheckbox.forEach((checkbox) => {
+            checkbox.checked = isChecked;
+            const itemId = parseInt(checkbox.value, 10);
+            if (isChecked) {
+                selectedIds.push(itemId);
+            }
+        });
+    }
+        const handleCheckboxChange = (e) => {
+            const itemId = parseInt(e.target.value, 10);
+            setSelectedRows((prev) =>
+                e.target.checked
+                    ? [...prev, itemId]
+                    : prev.filter((id) => id !== itemId)
+            );
+        };
     //Get dummy data to show dropdown...
 
     const GetCourceCode = [
@@ -218,7 +239,6 @@ const StudentCurd = () => {
         { courceCode: "AT-201" },
         { courceCode: "AWS-201" },
     ];
-
     const GetGrade = [
         { grade: "A" },
         { grade: "A+" },
@@ -289,7 +309,7 @@ const StudentCurd = () => {
             .post(url1, formData)
             .then((result) => {
                 getData();
-                //Clear();
+                Clear();
                 toast.error("Error adding student", { position: "top-center" });
             })
             .catch(() => {
@@ -483,15 +503,10 @@ const StudentCurd = () => {
     const [checkboxesDisabled, setCheckboxesDisabled] = useState(true);
 
 
-
-
     useEffect(() => {
         Getdata();
-
+      
     }, [searchTerm]);
-
-
-
 
     const Getdata = () => {
         axios
@@ -511,7 +526,6 @@ const StudentCurd = () => {
     };
 
 
-
     //  const [selectedOption, setSelectedOption] = useState(""); // State to store the selected option
     //const [customValue, setCustomValue] = useState(""); // State to store the custom value entered in the input field
 
@@ -529,11 +543,11 @@ const StudentCurd = () => {
     //    SetGrade(""); // Clear the selected option when a custom value is entered
     //};
     return (
-        <Fragment>
+        <Fragment >
             <br></br>
-            <ToastContainer />
+            <ToastContainer style={{marginTop:"60px" }} />
 
-            <Container>
+            <Container style={{marginTop:"25px" }}>
                 <Row>
                     <Col
                         lg={4}
@@ -591,7 +605,7 @@ const StudentCurd = () => {
             </Row>
             <br></br>
 
-            <Modal /*style={{ backgroundColor: 'gray' }}*/ show={showAddModal} onHide={handleAddCloseModal} size="lg">
+            <Modal style={{ backgroundColor: 'gray',marginTop:"70px" }} show={showAddModal} onHide={handleAddCloseModal} size="lg">
                 <Modal.Header closeButton>
                     <Modal.Title>Add New Student</Modal.Title>
                 </Modal.Header>
@@ -779,13 +793,13 @@ const StudentCurd = () => {
 
                                     </label>
                                 </div>
-                            </Form.Group>
+                            </Form.Group> &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;
                         </Col>
 
 
                         <Col xs={12} md={6}>
                             <Form.Group>
-                                <label>IsActive &nbsp;:&nbsp;&nbsp;
+                                <label>IsActive &nbsp;&nbsp;&nbsp;
                                     <Form.Check
                                         inline
                                         label="Yes"
@@ -813,7 +827,7 @@ const StudentCurd = () => {
 
                     </Row>
                     <Row>
-                        <Col xs={12} md={4} style={{ marginTop: "24px", width: "320px" }}>
+                        <Col xs={12} md={6} style={{ marginTop: "24px", width: "350px" }}>
                             <Form.Group>
                                 <Form.Label> </Form.Label>
                                 <DatePicker
@@ -823,11 +837,11 @@ const StudentCurd = () => {
                                     placeholderText="Date of Birth"
                                 />
                             </Form.Group>
-                        </Col>
+                        </Col>&nbsp;&nbsp;
                         <Col
                             xs={12}
-                            md={4}
-                            style={{ marginLeft: "80px", marginTop: "24px", width: "320px" }}
+                            md={6}
+                            style={{ marginLeft: "80px", marginTop: "24px", width: "350px" }}
                         >
                             <Form.Group>
                                 <Form.Label> </Form.Label>
@@ -839,13 +853,25 @@ const StudentCurd = () => {
                                 />
                             </Form.Group>
                         </Col>
+                       
                     </Row>
                     <Row>
+                      
                         <Col xs={12} md={6} style={{ marginTop: "30px" }}>
-                            <Form.Group>
+                               <Form.Group>
                                 <Form.Label></Form.Label>
-                                <input type="file" onChange={(e) => handleFileChange(e)} />
+                                <input type="file" onChange={(e) => handleFileChange(e)} style={{ marginBottom:"30px" }} /> 
+                                    {selectedFile && (
+                                        <img
+                                            src={URL.createObjectURL(selectedFile)}
+                                            alt="Selected File"
+                                        style={{ maxWidth: "100%", maxHeight: "100px" }}
+                                       
+                                        />
+
+                                )}
                             </Form.Group>
+                           
                         </Col>
                     </Row>
                 </Modal.Body>
@@ -878,16 +904,20 @@ const StudentCurd = () => {
                 <thead>
                     <tr style={{ textAlign: "center" }}>
 
-                        <th>SelectRow</th>
+                        <th>  <input
+                                type="checkbox"
+                                onChange={handleSelectAll}
+                                checked={selectAll}
+                            /></th>
                         {/*  <th>StudentId</th>*/}
                         <th>Name</th>
                         <th>DOB</th>
                         <th>Age</th>
                         <th>Gender</th>
-                        <th>Email Id</th>
+                        <th>Email</th>
                         <th>City</th>
                         <th>Standard</th>
-                        <th>Mobile No</th>
+                        <th>Mobile</th>
                         <th>Photo</th>
                         <th>CourceName</th>
                         <th>CourceCode</th>
@@ -908,15 +938,9 @@ const StudentCurd = () => {
                                         <td>
                                             <input
                                                 type="checkbox"
+                                                name="rowCheckbox"
                                                 value={item.id}
-                                                onChange={(e) => {
-                                                    const itemId = parseInt(e.target.value, 10);
-                                                    setSelectedRows(prev => (
-                                                        e.target.checked
-                                                            ? [...prev, itemId]
-                                                            : prev.filter(id => id !== itemId)
-                                                    ));
-                                                }}
+                                                onChange={handleCheckboxChange}
                                             />
 
 
@@ -1033,7 +1057,7 @@ const StudentCurd = () => {
                 transform: "translate(-50%, -50%)",
             }}>
                 {" "}
-                <Modal style={{ backgroundColor: 'gray' }}
+                <Modal style={{ backgroundColor: 'gray', marginTop:"60px"  }}
                     show={showPreviewModal}
                     onHide={handleClosePreviewModal}
                     animation={true}
@@ -1083,7 +1107,7 @@ const StudentCurd = () => {
                 </Modal>{" "}
             </div>
             <div>
-                <Modal
+                <Modal style={{ backgroundColor: 'gray', marginTop: "70px" }}
                     show={showPreviewImage}
                     onHide={handleClosePreviewModalImage}
                     animation={true}
@@ -1111,7 +1135,7 @@ const StudentCurd = () => {
             </div>
             <div>
                 <Modal
-                    style={{ backgroundColor: 'gray' }}
+                    style={{ backgroundColor: 'gray', marginTop: "70px" }}
                     show={showEditModal}
                     onHide={handleCloseEditModal}
                     animation={true}
@@ -1251,8 +1275,6 @@ const StudentCurd = () => {
                                 </Form.Group>
                             </Col>
 
-
-
                         </Row>
                         <Row>
                             <Col xs={12} md={4} style={{ marginTop: "24px", width: "265px" }} >
@@ -1282,10 +1304,10 @@ const StudentCurd = () => {
                                                 checked={EditGender === "Female" || EditGender === "female"}
                                                 onChange={() => SetEditGender("Female")}
                                             />
-                                        </label>
-                                    </div>
+                                        </label>   </div>
                                 </Form.Group>
-                            </Col>
+
+                            </Col>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;
 
                             <Col xs={12} md={4} style={{ marginTop: "24px", width: "225px", marginLeft: "0px" }} >
                                 <Form.Group>
@@ -1322,7 +1344,7 @@ const StudentCurd = () => {
 
                         <Row>
                             {" "}
-                            <Col xs={12} md={6} style={{ marginTop: "24px", width: "220px" }}>
+                            <Col xs={12} md={6} style={{ marginTop: "24px", width: "300px" }}>
                                 <Form.Group>
                                     <Form.Label> </Form.Label>
                                     <DatePicker
@@ -1336,8 +1358,8 @@ const StudentCurd = () => {
                                         }
                                     />
                                 </Form.Group>
-                            </Col>
-                            <Col xs={12} md={4} style={{ marginTop: "24px", width: "260px" }}>
+                            </Col>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <Col xs={12} md={6} style={{ marginTop: "24px", width: "300px" }}>
                                 <Form.Group>
                                     <Form.Label> </Form.Label>
                                     <DatePicker

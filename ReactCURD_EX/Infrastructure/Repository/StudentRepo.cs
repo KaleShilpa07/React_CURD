@@ -13,7 +13,36 @@ namespace ReactCURD_EX.Infrastructure.Repository
         {
             _cc = context;
         }
+        public async Task<LoginFormModel> Login(LoginFormModel loginModel)
+        {
+            return await _cc.loginFormModels.FirstOrDefaultAsync(u => u.Email == loginModel.Email && u.Password == loginModel.Password);
+        }
 
+        public async Task SignUp(SignUpFormModel signUpModel)
+        {
+            // First, save the signup data
+            var signUpEntity = new SignUpFormModel
+            {
+                Name = signUpModel.Name,
+                Email = signUpModel.Email,
+                Password = signUpModel.Password
+            };
+
+            _cc.signUpFormModels.Add(signUpEntity);
+            await _cc.SaveChangesAsync();
+
+            // Then, save the login data
+            var loginEntity = new LoginFormModel
+            {
+                Email = signUpModel.Email,
+                Password = signUpModel.Password
+            };
+
+            _cc.loginFormModels.Add(loginEntity);
+            await _cc.SaveChangesAsync();
+        }
+    
+    
         public async Task<int> AddStudent(StudentDetailsDTO studentDetails)
         {
             using (var transaction = _cc.Database.BeginTransaction())
@@ -237,10 +266,10 @@ namespace ReactCURD_EX.Infrastructure.Repository
             return result;
         }
 
-        public List<StudentDetailsDTO> SearchStudents(string searchterm)
+        public List<StudentDetailsDTO> SearchStudents(string searchTerm)
         {
             var filteredStudents = _cc.enrollments
-      .Where(s => s.Cource.CourceName.Contains(searchterm) || s.Student.Name.Contains(searchterm))
+      .Where(s => s.Cource.CourceName.Contains(searchTerm) || s.Student.Name.Contains(searchTerm))
       .Select(s => new StudentDetailsDTO
       { Name= s.Student.Name,
           City = s.Student.City,

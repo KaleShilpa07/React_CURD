@@ -20,6 +20,7 @@ namespace ReactCURD_EX.Controllers
             _cc = cc;
 
         }
+
         //[HttpGet]
 
         //public async Task<ActionResult<IEnumerable<Student>>> GetStudent()
@@ -61,7 +62,7 @@ namespace ReactCURD_EX.Controllers
         //}
 
         [HttpGet("{id}")]
-       
+
         public async Task<IActionResult> GetStudents(int? id)
         {
             try
@@ -229,14 +230,45 @@ namespace ReactCURD_EX.Controllers
 
 
         [HttpGet("search")]
-        public IActionResult SearchStudents(string searchterm)
+        public IActionResult SearchStudents(string searchTerm)
         {
-            var filteredStudents = _studentRepository.SearchStudents(searchterm);
+            var filteredStudents = _studentRepository.SearchStudents(searchTerm);
             return Ok(filteredStudents);
         }
+        // POST: api/Home/login
+        [HttpPost("signup")]
+        public async Task<IActionResult> SignUp(SignUpFormModel signUpModel)
+        {
+            if (ModelState.IsValid)
+            {
+                await _studentRepository.SignUp(signUpModel);
+                return Ok(new { Message = "Signup successful." });
+            }
+            return BadRequest(ModelState);
+        }
+
+        // POST: api/Home/login
+        [HttpPost("login")]
+        public async Task<IActionResult> Login(LoginFormModel loginModel)
+        {
+            try
+            {
+                var user = await _studentRepository.Login(loginModel);
+
+                if (user != null)
+                {
+                    return Ok(user);
+                }
+                else
+                {
+                    return NotFound("Invalid email or password");
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred while processing your request: {ex.Message}");
+            }
+        }
     }
-
-
-
 }
 

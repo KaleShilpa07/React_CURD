@@ -38,10 +38,10 @@ const SignUp = () => {
 
     return (
         <>
-            <div className='d-flex justify-content-center align-items-center p-3 border bg-light-blue vh-100'>
-                <div className='bg-white p-3 rounded w-2'>
+            <div id='SignUppage' className='d-flex border bg-light-blue '>
+                 <div>
                     <form onSubmit={handleSubmit}>
-                        <h3><strong>SignUp</strong></h3>
+                        <h3 style={{ textAlign: "center" }}><strong>SignUp</strong></h3>
                         <div className='mb-3'>
                             <label htmlFor='name' className='col-lg-2 col-form-label'><strong>Name:</strong></label>
                             <input onChange={handleInput} name='name' type='text' placeholder='Enter Name' className='form-control rounded-2' />
@@ -66,7 +66,7 @@ const SignUp = () => {
                         </div>
                         <button type='submit' className='btn btn-success w-100 rounded-2 '><strong>SignUp</strong></button>
                         <p>You agree to our terms and conditions..</p>
-                        <Link to="/Login" className='btn btn-default border w-100 bg-light text-decoration-none rounded-2 '><strong>Login</strong></Link>
+                        <Link to="/" className='btn btn-primary border rounded-2 ' style={{ textAlign: "center", marginLeft: "115px" }}><strong >Login</strong></Link>
                     </form>
                 </div>
             </div>

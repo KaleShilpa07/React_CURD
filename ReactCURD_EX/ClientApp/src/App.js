@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import './custom.css';
-import Routing from './components/Routing';
+import NewsRoute from './components/NewsRoute';
 
 export default class App extends Component {
     static displayName = App.name;
@@ -9,7 +9,8 @@ export default class App extends Component {
     render() {
         return (
             < div className="app-container">
-                <Routing/>
+
+                <NewsRoute />
             </div>
         );
     }

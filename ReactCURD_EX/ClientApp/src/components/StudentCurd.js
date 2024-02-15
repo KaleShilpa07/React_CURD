@@ -547,7 +547,7 @@ const StudentCurd = () => {
             <br></br>
             <ToastContainer style={{marginTop:"60px" }} />
 
-            <Container style={{marginTop:"25px" }}>
+            <Container style={{marginTop:"50px" }}>
                 <Row>
                     <Col
                         lg={4}
@@ -919,12 +919,12 @@ const StudentCurd = () => {
                         <th>Standard</th>
                         <th>Mobile</th>
                         <th>Photo</th>
-                        <th>CourceName</th>
+                        <th>Cources</th>
                         <th>CourceCode</th>
                         <th>Credit</th>
                         <th>Grade</th>
-                        <th>EnrollmentDate</th>
-                        <th>IsActive</th>
+                        <th>Enroll Date</th>
+                        <th>Active</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -933,7 +933,7 @@ const StudentCurd = () => {
                         ? data.map((item, index) => {
                             return (
                                 <>
-                                    <tr key={index} style={{ textAlign: "center" }}>
+                                    <tr key={index} style={{ textAlign: "center", height:"Auto" }}>
                                         {/*  <td>{index + 1}</td>*/}
                                         <td>
                                             <input

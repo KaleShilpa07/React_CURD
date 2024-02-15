@@ -3,8 +3,14 @@ import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Validation from './LoginValidation';
+
  
 const Login = () => {
+    const refreshPage = () => {
+        setTimeout(() => {
+            window.location.reload();
+        }, 500);
+    };
     const Navigate = useNavigate(); // Import useHistory hook
     const [values, setValue] = useState({
         email: '',
@@ -25,9 +31,11 @@ const Login = () => {
         const data = await response.json();
         if (response.ok) {
             console.log('Login successful:', data);
-            toast.success('Login Success', { position: "top-center", autoClose: 3000 });
+            toast.success('Login Success', { position: "top-center", autoClose:3000 });
             // Redirect to the next page upon successful login
-            Navigate('/Nav');
+            Navigate('/StudentCurd');
+            refreshPage();
+            
         }
         else {
             console.error('Login failed:', data.message);
@@ -46,10 +54,10 @@ const Login = () => {
     console.log('Login page open...');
     return (
         <>
-            <div className='d-flex justify-content-center align-items-center p-3 border bg-light-blue  max-content; vh-100'>
-                <div className='bg-white p-3 rounded w-2'>
-                    <form action='' onSubmit={handleSubmit}>
-                        <h3>
+            <div id='loginpage' className='d-flex border bg-light-blue '>
+                <div>
+                    <form id='Lform' action='' onSubmit={handleSubmit}>
+                        <h3 style={{ textAlign: "center" }}>
                             <strong>Login Page</strong>
                         </h3>
                         <div className='mb-3'>
@@ -95,10 +103,11 @@ const Login = () => {
                         </button>
                         <p>You are agree to our terms and conditions..</p>
                         <Link
+                            style={{ textAlign:"center",marginLeft:"80px" }}
                             to='/signup'
-                            className='btn btn-default border w-100 bg-light text-decoration-none rounded-2 '
+                            className='btn btn-primary border  rounded-2 '
                         >
-                            <strong>Create Account</strong>
+                            <strong  >Create Account</strong>
                         </Link>
                     </form>
                 </div>

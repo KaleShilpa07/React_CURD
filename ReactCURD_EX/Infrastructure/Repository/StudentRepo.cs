@@ -269,7 +269,13 @@ namespace ReactCURD_EX.Infrastructure.Repository
         public List<StudentDetailsDTO> SearchStudents(string searchTerm)
         {
             var filteredStudents = _cc.enrollments
-      .Where(s => s.Cource.CourceName.Contains(searchTerm) || s.Student.Name.Contains(searchTerm))
+      .Where(s => s.Cource.CourceName.Contains(searchTerm) 
+      || s.Student.City.Contains(searchTerm) 
+      || s.Student.Name.Contains(searchTerm)
+      || s.Student.Standard.Contains(searchTerm)
+      || s.Student.EmailId.Contains(searchTerm)
+      || s.Student.Age.Contains(searchTerm)
+      || s.Student.Gender.Contains(searchTerm))
       .Select(s => new StudentDetailsDTO
       { Name= s.Student.Name,
           City = s.Student.City,
@@ -293,17 +299,38 @@ namespace ReactCURD_EX.Infrastructure.Repository
         }
         public async Task<int> DeleteMultiple(List<int> ids)
         {
-            var itemsToDelete = await _cc.Students.Where(i => ids.Contains(i.Id)).ToListAsync();
-
-            if (itemsToDelete == null || itemsToDelete.Count == 0)
+            try
             {
-                return 0; // Indicates that no items were found or deleted
+                // Retrieve the list of students to delete from the database
+                var studentsToDelete = await _cc.Students.Include(s => s.Enrollments).Where(s => ids.Contains(s.Id)).ToListAsync();
+
+                // Retrieve the enrollment IDs and course IDs to be deleted
+                var enrollmentIdsToDelete = studentsToDelete.SelectMany(s => s.Enrollments.Select(e => e.EnrollmentId)).ToList();
+                var courseIdsToDelete = studentsToDelete.SelectMany(s => s.Enrollments.Select(e => e.CourceId)).ToList();
+
+                // Remove each student from the Students table
+                _cc.Students.RemoveRange(studentsToDelete);
+
+                // Remove related enrollment records
+                var enrollmentsToDelete = await _cc.enrollments.Where(e => enrollmentIdsToDelete.Contains(e.Id)).ToListAsync();
+                _cc.enrollments.RemoveRange(enrollmentsToDelete);
+
+                // Remove related course records
+                var coursesToDelete = await _cc.courses.Where(c => courseIdsToDelete.Contains(c.CourceId)).ToListAsync();
+                _cc.courses.RemoveRange(coursesToDelete);
+
+                // Save changes to the database
+                await _cc.SaveChangesAsync();
+
+                // Return the number of students deleted
+                return studentsToDelete.Count;
+            }
+            catch (Exception)
+            {
+                // Handle any exceptions here
+                throw; // Rethrow the exception to signal failure
             }
 
-            _cc.Students.RemoveRange(itemsToDelete);
-            int deletedCount = await _cc.SaveChangesAsync();
-
-            return deletedCount;
         }
     }
 }

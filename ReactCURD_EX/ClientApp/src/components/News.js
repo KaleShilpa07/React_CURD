@@ -90,7 +90,7 @@ class News extends Component {
                             className="btn btn-primary border rounded-2"
                         >
                             <strong>Go News Gallary</strong>
-                        </Link>
+                        </Link> 
                     </div>
                     </h1>
                 {this.state.loading && <Spinner />}

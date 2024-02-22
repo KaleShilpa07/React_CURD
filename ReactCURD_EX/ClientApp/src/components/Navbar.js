@@ -8,28 +8,32 @@ export class Navbar extends Component {
         return (
             <>
                 <div>
-                    <Form style={{ marginTop:"0px" }} className="navbar fixed-top navbar-expand-lg  navbar-dark bg-dark">
-                        <div className="container-fluid">
-                            <Link className="navbar-brand" to="/science">News Gallary</Link>
-                            <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                                <span className="navbar-toggler-icon"></span>
-                            </button>
-                            <div className="collapse navbar-collapse" id="navbarSupportedContent">
-                                <ul className="navbar-nav me-auto mb-2 mb-lg-0">
-                                    <li> <Link className="nav-link" to="/Business">Business</Link></li>
-                                    <li> <Link className="nav-link" to="/entertainment" >Entertainment</Link></li>
-                                    <li> <Link className="nav-link" to="/general" >General</Link></li>
-                                    <li> <Link className="nav-link" to="/health" >Health</Link></li>
-                                    <li> <Link className="nav-link" to="/science">Science</Link></li>
-                                    <li> <Link className="nav-link" to="/sports">Sports</Link></li>
-                                    <li> <Link className="nav-link" to="/technology" >Technology</Link></li>
-                               </ul>
-                                <Link className="btn btn-primary btn-sm mx-1" to="/Nav" role="button">Back Home</Link>
 
+                    <div className="container my-3">
 
+                        <h1 className="text-center" style={{ marginTop: "100px" }}>News Gallary </h1>
+
+                        <div style={{ position: "fixed", top: "170px", alignContent:"center", left: "590px", zIndex: "999" }}>
+                            <div className="row">
+                                <div className="col">
+                                    <Link className="btn btn-primary border rounded-2 mb-2 d-block" to="/Business"><strong>Business</strong></Link>
+                                    <Link className="btn btn-primary border rounded-2 mb-2 d-block" to="/entertainment"><strong>Entertainment</strong></Link>
+                                    <Link className="btn btn-primary border rounded-2 mb-2 d-block" to="/general"><strong>General</strong></Link>
+                                    <Link className="btn btn-primary border rounded-2 mb-2 d-block" to="/technology"><strong>Technology</strong></Link>
+
+                                </div>
+                                <div className="col">
+                                    <Link className="btn btn-primary border rounded-2 mb-2 d-block" to="/health"><strong>Health</strong></Link>
+                                    <Link className="btn btn-primary border rounded-2 mb-2 d-block" to="/science"><strong>Science</strong></Link>
+                                    <Link className="btn btn-primary border rounded-2 mb-2 d-block" to="/sports"><strong>Sports</strong></Link>
+                                       </div>
                             </div>
-                        </div>
-                    </Form>
+                            </div>
+
+                    </div>
+                          
+                        
+                  
                 </div></>
         )
     }

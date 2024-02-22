@@ -14,7 +14,8 @@ import TextForm from './TextForm';
 export class NewsRoute extends Component {
 
     RenderNav = ({ children }) => {
-        const isLoginPage = window.location.pathname === "/";
+        const isLoginPage = window.location.pathname === "/" || window.location.pathname === "/signup";
+        
         return isLoginPage ? children : <><Nav /> {children} </>;
     };
 

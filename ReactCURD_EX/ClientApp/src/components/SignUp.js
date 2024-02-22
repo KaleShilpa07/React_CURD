@@ -41,7 +41,7 @@ const SignUp = () => {
             <div id='SignUppage' className='d-flex border bg-light-blue '>
                  <div>
                     <form onSubmit={handleSubmit}>
-                        <h3 style={{ textAlign: "center" }}><strong>SignUp</strong></h3>
+                        <h3 style={{ textAlign: "center" }}><strong class="light-underline">SignUp</strong></h3>
                         <div className='mb-3'>
                             <label htmlFor='name' className='col-lg-2 col-form-label'><strong>Name:</strong></label>
                             <input onChange={handleInput} name='name' type='text' placeholder='Enter Name' className='form-control rounded-2' />

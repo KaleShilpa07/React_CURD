@@ -6,7 +6,8 @@ import {
     DialogContent,
     DialogContentText,
     DialogActions,
-    IconButton,
+    TableContainer,
+    IconButton, Paper
 } from "@mui/material";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -27,6 +28,13 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import "react-toastify/dist/ReactToastify.css";
 
 const StudentCurd = () => {
+
+    const refreshPage = () => {
+        setTimeout(() => {
+            window.location.reload();
+        }, 5000);
+    };
+
     const [currentPhotoUrl, setCurrentPhotoUrl] = useState("");
     const [previewData, setPreviewData] = useState(false);
 
@@ -42,9 +50,24 @@ const StudentCurd = () => {
         SetEditPhotoBase64();
         setSelectedFile(e.target.files[0]);
     };
+    // Function to convert a file to base64
+    const getBase64 = (file) => {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+
+            reader.onload = () => {
+                resolve(reader.result.split(",")[1]); // Extract base64 part
+            };
+
+            reader.onerror = (error) => {
+                reject(error);
+            };
+        });
+    };
+
 
     const [searchTerm, setSearchTerm] = useState("");
-
     const handleSearch = () => {
         axios
             .get(`https://localhost:7195/api/home/search?searchTerm=${searchTerm}`)
@@ -67,23 +90,21 @@ const StudentCurd = () => {
         setOpen(false);
     };
 
-    //
+    //Edit modal
     const [showEditModal, setShowEditModal] = useState(false);
     const handleEditModal = () => {
         setShowEditModal(true);
     };
-
     const handleCloseEditModal = () => {
         setShowEditModal(false);
     };
 
-    //
+    // Preview modal
 
     const [showPreviewImage, setShowPreviewImage] = useState(false);
     const handlePreviewModalImage = () => {
         setShowPreviewImage(true);
     };
-
     const handleClosePreviewModalImage = () => {
         setShowPreviewImage(false);
     };
@@ -91,14 +112,12 @@ const StudentCurd = () => {
     const handlePreviewModal = () => {
         setShowPreviewModal(true);
     };
-
     const handleClosePreviewModal = () => {
         setShowPreviewModal(false);
     };
    
     //Delete Data
     const [selectedRows, setSelectedRows] = useState([]);
-
     const handleDeleteSelectedRows = async () => {
 
         if (selectedRows.length === 0) {
@@ -120,28 +139,6 @@ const StudentCurd = () => {
               
             });
     };
-    //const handleDeleteSelectedRows = async () => {
-    //    try {
-    //        await axios.delete('https://localhost:7195/api/home/deleteMultiple', {
-    //            data: selectedRows,
-
-    //        });
-    //        setTimeout(() => {
-    //            window.location.reload();
-    //        }, 5000);
-    //        // Handle success
-    //        toast.success("Data deleted successfully", { position: "top-center" });
-
-    //        // Handle additional logic (e.g., update UI or fetch updated data)
-    //    } catch (error) {
-    //        // Handle error
-
-    //        // Display an error toast
-    //        toast.error("Please Select Row To Delete Multiple Records..", { position: "top-center" });
-    //    }
-    //};
-
-    //
     const HandleMultiDelete = (id) => {
         handleClickOpen(id);
     }
@@ -163,48 +160,22 @@ const StudentCurd = () => {
             });
     };
 
-    const [data, Setdata] = useState([]);
-
-    const [Name, SetName] = useState("");
-    const [IsActive, SetIsActive] = useState("");
-
-    const [Age, SetAge] = useState("");
-    const [City, SetCity] = useState("");
-    const [Standard, SetStandard] = useState("");
-    const [DOB, SetDOB] = useState("");
-    const [Gender, SetGender] = useState("");
-    const [MobileNo, SetMobileNo] = useState("");
-    const [EmailId, SetEmailId] = useState("");
-
-
-    const [CourceName, SetCourceName] = useState("");
-    const [CourceCode, SetCourceCode] = useState("");
-    const [Credits, SetCredits] = useState("");
-    const [Grade, SetGrade] = useState("");
-    const [EnrollmentDate, SetEnrollmentDate] = useState("");
-
-    const [Editid, SetEditid] = useState("");
-    const [Editname, SetEditName] = useState("");
-    const [EditAge, SetEditAge] = useState("");
-    const [EditCity, SetEditCity] = useState("");
-    const [EditStandard, SetEditStandard] = useState("");
-    const [EditPhotoBase64, SetEditPhotoBase64] = useState("");
-    const [EditDOB, SetEditDOB] = useState(new Date()); // Initial value, you can replace it with your actual initial value
-
-    const [EditGender, SetEditGender] = useState("");
-    const [EditIsActive, SetEditIsActive] = useState("");
-    const [EditMobileNo, SetEditMobileNo] = useState("");
-    const [EditEmailId, SetEditEmailId] = useState("");
-
-
-    const [EditCredits, SetEditCredits] = useState("");
-    const [EditGrade, SetEditGrade] = useState("");
-    const [EditEnrollmentDate, SetEditEnrollmentDate] = useState("");
-    const [EditCourceCode, SetEditCourceCode] = useState("");
-    const [EditCourceName, SetEditCourceName] = useState("");
-
+    //select multiple checkboxes using id and delete rec
     const [selectAll, setSelectAll] = useState(false);
+    //const handleSelectAll = (e) => {
+    //    const isChecked = e.target.checked;
+    //    setSelectAll(isChecked);
+    //    const allCheckbox = document.querySelectorAll('input[type="checkbox"][name="rowCheckbox"]');
+    //    const selectedIds = [];
 
+    //    allCheckbox.forEach((checkbox) => {
+    //        checkbox.checked = isChecked;
+    //        const itemId = parseInt(checkbox.value);
+    //        if (isChecked) {
+    //            selectedIds.push(itemId);
+    //        }
+    //    });
+    //}
     const handleSelectAll = (e) => {
         const isChecked = e.target.checked;
         setSelectAll(isChecked);
@@ -213,22 +184,61 @@ const StudentCurd = () => {
 
         allCheckbox.forEach((checkbox) => {
             checkbox.checked = isChecked;
-            const itemId = parseInt(checkbox.value, 10);
+            const itemId = parseInt(checkbox.value);
             if (isChecked) {
                 selectedIds.push(itemId);
             }
+            // Call handleCheckboxChange for each checkbox
+            handleCheckboxChange({ target: checkbox });
         });
-    }
-        const handleCheckboxChange = (e) => {
-            const itemId = parseInt(e.target.value, 10);
-            setSelectedRows((prev) =>
-                e.target.checked
-                    ? [...prev, itemId]
-                    : prev.filter((id) => id !== itemId)
-            );
-        };
-    //Get dummy data to show dropdown...
 
+    // Update selected rows state with all item ids when "Select All" is checked
+        setSelectedRows(isChecked ? selectedIds : []);
+    }
+    const handleCheckboxChange = (e) => {
+        const itemId = parseInt(e.target.value);
+        setSelectedRows((prev) =>
+            e.target.checked
+                ? [...prev, itemId]
+                : prev.filter((id) => id !== itemId)
+        );
+    };
+
+
+    const [data, Setdata] = useState([]);
+    const [Name, SetName] = useState("");
+    const [IsActive, SetIsActive] = useState("");
+    const [Age, SetAge] = useState("");
+    const [City, SetCity] = useState("");
+    const [Standard, SetStandard] = useState("");
+    const [DOB, SetDOB] = useState("");
+    const [Gender, SetGender] = useState("");
+    const [MobileNo, SetMobileNo] = useState("");
+    const [EmailId, SetEmailId] = useState("");
+    const [CourceName, SetCourceName] = useState("");
+    const [CourceCode, SetCourceCode] = useState("");
+    const [Credits, SetCredits] = useState("");
+    const [Grade, SetGrade] = useState("");
+    const [EnrollmentDate, SetEnrollmentDate] = useState("");
+    const [Editid, SetEditid] = useState("");
+    const [Editname, SetEditName] = useState("");
+    const [EditAge, SetEditAge] = useState("");
+    const [EditCity, SetEditCity] = useState("");
+    const [EditStandard, SetEditStandard] = useState("");
+    const [EditPhotoBase64, SetEditPhotoBase64] = useState("");
+    const [EditDOB, SetEditDOB] = useState(new Date()); // Initial value, you can replace it with your actual initial value
+    const [EditGender, SetEditGender] = useState("");
+    const [EditIsActive, SetEditIsActive] = useState("");
+    const [EditMobileNo, SetEditMobileNo] = useState("");
+    const [EditEmailId, SetEditEmailId] = useState("");
+    const [EditCredits, SetEditCredits] = useState("");
+    const [EditGrade, SetEditGrade] = useState("");
+    const [EditEnrollmentDate, SetEditEnrollmentDate] = useState("");
+    const [EditCourceCode, SetEditCourceCode] = useState("");
+    const [EditCourceName, SetEditCourceName] = useState("");
+
+
+    //Get dummy data to show dropdown...
     const GetCourceCode = [
         { courceCode: "J-201" },
         { courceCode: "C#-201" },
@@ -261,27 +271,37 @@ const StudentCurd = () => {
 
     ];
 
-    const refreshPage = () => {
-        setTimeout(() => {
-            window.location.reload();
-        }, 5000);
-    };
-    // Function to convert a file to base64
-    const getBase64 = (file) => {
-        return new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
+    //clear data into form
+    const Clear = () => {
+        SetName("");
+        SetCity("");
+        SetAge("");
+        SetDOB("");
+        SetGender("");
+        SetMobileNo("");
+        SetEmailId("");
+        SetStandard("");
+        SetIsActive("");
 
-            reader.onload = () => {
-                resolve(reader.result.split(",")[1]); // Extract base64 part
-            };
-
-            reader.onerror = (error) => {
-                reject(error);
-            };
-        });
+        SetEditCourceName("");
+        SetEditCourceCode("");
+        SetEditCredits("");
+        SetEditGrade("");
+        SetEditEnrollmentDate("");
+        EditPhotoBase64("");
+        SetEditCity("");
+        SetEditid("");
+        SetEditName("");
+        SetEditAge("");
+        SetEditDOB("");
+        SetEditMobileNo("");
+        SetEditEmailId("");
+        SetEditGender("");
+        SetEditIsActive("");
+        SetEditStandard("");
+        SetEditPhotoBase64("");
     };
-    //Save Data
+    //Save student Data
     const HandleSave = async () => {
         const url1 = "https://localhost:7195/api/home";
         const formData = {
@@ -317,35 +337,7 @@ const StudentCurd = () => {
                 toast.success("Student Add Successfully..", { position: "top-center" });
             });
     };
-    const Clear = () => {
-        SetName("");
-        SetCity("");
-        SetAge("");
-        SetDOB("");
-        SetGender("");
-        SetMobileNo("");
-        SetEmailId("");
-        SetStandard("");
-        SetIsActive("");
-
-        SetEditCourceName("");
-        SetEditCourceCode("");
-        SetEditCredits("");
-        SetEditGrade("");
-        SetEditEnrollmentDate("");
-        EditPhotoBase64("");
-        SetEditCity("");
-        SetEditid("");
-        SetEditName("");
-        SetEditAge("");
-        SetEditDOB("");
-        SetEditMobileNo("");
-        SetEditEmailId("");
-        SetEditGender("");
-        SetEditIsActive("");
-        SetEditStandard("");
-        SetEditPhotoBase64("");
-    };
+    //Update student data
     const handleUpdate = async (id) => {
         const updatedData = {
             id: Editid,
@@ -407,8 +399,6 @@ const StudentCurd = () => {
                 SetEditGrade(result.data.grade);
                 SetEditEnrollmentDate(result.data.enrollmentDate);
                 SetEditCourceCode(result.data.courceCode);
-
-
                 setCurrentPhotoUrl(`data:image/png;base64,${result.data.photo}`);
                 SetEditid(id);
                 setShowEditModal(true); // You might need this line if you want to ensure the modal is visible after fetching data
@@ -418,22 +408,6 @@ const StudentCurd = () => {
                 toast.error("Error fetching student data for edit", { position: "top-center" });
             });
     };
-    // const HandleDelete = (id) => {
-    //   if (window.confirm("Are You sure to delete Student...") === true) {
-    //     axios
-    //       .delete(`https://localhost:7195/api/home/${id}`)
-    //       .then((result) => {
-    //         if (result.status === 200) {
-    //           toast.success("Student Delete SuccessFully..");
-    //           refreshPage();
-    //         }
-    //       })
-    //       .catch((error) => {
-    //         toast.error(error);
-    //       });
-    //   }
-    // };
-
 
     const HandlePreview = (id) => {
         handlePreviewModal();
@@ -479,11 +453,9 @@ const StudentCurd = () => {
     };
 
     const [showAddModal, setAddShowModal] = useState(false);
-
     const handleAddShowModal = () => {
         setAddShowModal(true);
     };
-
     const handleAddCloseModal = () => {
         setAddShowModal(false);
     };
@@ -501,7 +473,6 @@ const StudentCurd = () => {
     };
     // Disable all checkboxes by default
     const [checkboxesDisabled, setCheckboxesDisabled] = useState(true);
-
 
     useEffect(() => {
         Getdata();
@@ -525,28 +496,12 @@ const StudentCurd = () => {
             });
     };
 
-
-    //  const [selectedOption, setSelectedOption] = useState(""); // State to store the selected option
-    //const [customValue, setCustomValue] = useState(""); // State to store the custom value entered in the input field
-
-    //// Options for the dropdown
-
-    //// Function to handle change in selected option
-    //const handleOptionChange = (e) => {
-    //    SetGrade(e.target.value); // Update the selected option
-    //    setCustomValue(""); // Clear the custom value when an option is selected from the dropdown
-    //};
-
-    //// Function to handle change in custom value
-    //const handleCustomValueChange = (e) => {
-    //    setCustomValue(e.target.value); // Update the custom value
-    //    SetGrade(""); // Clear the selected option when a custom value is entered
-    //};
     return (
         <Fragment >
             <br></br>
             <ToastContainer style={{marginTop:"60px" }} />
 
+            {/*search data and Delete All btn*/}
             <Container style={{marginTop:"50px" }}>
                 <Row>
                     <Col
@@ -589,6 +544,8 @@ const StudentCurd = () => {
                     </Col>
                 </Row>
             </Container>
+
+            {/*  Add student button*/}
             <Row>
                 {" "}
                 <div>
@@ -599,13 +556,271 @@ const StudentCurd = () => {
                         onClick={handleAddShowModal}
                     >
                         <AddCircleOutlineIcon />
-                        Add
+                       &nbsp; Add New
                     </IconButton>{" "}
                 </div>
             </Row>
             <br></br>
 
-            <Modal style={{ backgroundColor: 'gray',marginTop:"70px" }} show={showAddModal} onHide={handleAddCloseModal} size="lg">
+            {/* Get Table Data*/}
+            <TableContainer component={Paper} sx={{
+                marginBottom: 2, padding: '0.5%', position: "fixed",
+                top: "120px"
+            }}>
+            <Table
+                striped
+                bordered
+                style={{
+                    padding:"20px",
+                    marginRight: "40px",
+                    top: "100px",
+                    overflowX: "auto", // Add this line for horizontal scrollbar
+                    maxWidth: "100%", // Ensure the table takes the full width
+                }}
+            >
+                    <thead>
+                        <tr style={{ textAlign: "center", backgroundColor:"#DCD6D4" }}>
+
+                        <th>  <input
+                                type="checkbox"
+                                onChange={handleSelectAll}
+                                checked={selectAll}
+                            /></th>
+                        {/*  <th>StudentId</th>*/}
+                        <th>Name</th>
+                        <th>DOB</th>
+                        <th>Age</th>
+                        <th>Gender</th>
+                        <th>Email</th>
+                        <th>City</th>
+                        <th>Standard</th>
+                        <th>Mobile</th>
+                        <th>Photo</th>
+                        <th>Cources</th>
+                        <th>CourceCode</th>
+                        <th>Credit</th>
+                        <th>Grade</th>
+                        <th>Enroll Date</th>
+                        <th>Active</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {data && data.length > 0
+                        ? data.map((item, index) => {
+                            return (
+                                <>
+                                    <tr key={index} style={{ textAlign: "center", height:"Auto" }}>
+                                        {/*  <td>{index + 1}</td>*/}
+                                        <td>
+                                            <input
+                                                type="checkbox"
+                                                name="rowCheckbox"
+                                                value={item.id}
+                                                onChange={handleCheckboxChange}
+                                            />
+
+
+                                        </td>
+                                        {/* <td>{item.id}</td>*/}
+                                        <td>{item.name}</td>
+                                        <td>
+                                            {item.dob
+                                                ? new Date(item.dob).toLocaleDateString()
+                                                : "N/A"}
+                                        </td>
+
+                                        <td>{item.age}</td>
+                                        <td>{item.gender}</td>
+                                        <td>{item.emailId}</td>
+                                        <td>{item.city}</td>
+                                        <td>{item.standard}</td>
+                                        <td>{item.mobileNo}</td>
+                                        <td>
+                                            <div
+                                                style={{
+                                                    textAlign: "center",
+                                                    maxWidth: "50px",
+                                                    maxHeight: "50px",
+                                                    overflow: "hidden",
+                                                }}
+                                            >
+                                                {item.photo !== null ? (
+                                                    <img
+                                                        style={{
+                                                            width: "100%",
+                                                            height: "100%",
+                                                            objectFit: "cover",
+                                                        }}
+                                                        src={`data:image/png;base64,${item.photo}`}
+                                                        alt={`${item.name}`}
+                                                        onClick={() => HandlePreview2(item.id)}
+                                                    />
+                                                ) : (
+                                                    ".."
+                                                )}
+                                            </div>
+                                        </td>
+
+                                        <td>{item.courceName}</td>
+                                        <td>{item.courceCode}</td>
+                                        <td>{item.credits}</td>
+                                        <td>{item.grade} </td>
+                                        <td>{item.enrollmentDate}</td>
+                                        <td className="text-center">
+                                            <input
+                                                type="checkbox"
+                                                defaultChecked={item.isActive}
+                                                onChange={() => handleIsActiveChange(item.id)}
+                                                disabled={checkboxesDisabled}
+                                                id={`checkbox_${item.id}`}
+                                            /></td>
+                                        <td colSpan={2}>
+                                            <EditIcon
+                                                style={{ cursor: "pointer", color: "blue" }} // Set color or other styles as needed
+                                                onClick={() => HandleEdit(item.id)}
+                                            ></EditIcon>
+                                            &nbsp;
+                                            <VisibilityIcon
+                                                onClick={() => HandlePreview(item.id)}
+                                                style={{ cursor: "pointer" }}
+                                            />
+                                            &nbsp;
+                                            <DeleteIcon
+                                                onClick={() => {
+                                                    HandleDelete(item.id);
+                                                }}
+                                                style={{ cursor: "pointer", color: "red" }} // Customize the color
+                                            />
+                                        </td>
+                                    </tr>
+                                </>
+                            );
+                        })
+                        : "... No data here "}
+                </tbody>
+            </Table>
+            </TableContainer>
+
+            {/* Confirm delete*/}
+            <Dialog style={{ backgroundColor: 'gray' }} open={open} onClose={handleCloseDialog}>
+                <DialogTitle>Confirmation</DialogTitle>
+                <DialogContent>
+                    <DialogContentText>
+                        Are you sure you want to delete this student?
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+
+                    <Button onClick={handleCloseDialog} color="primary">
+                        Cancel
+                    </Button>
+                    <Button
+                        onClick={() => {
+                            handleDeleteSelectedRows();
+                            confirmDelete();
+                            refreshPage();
+
+                        }}
+                        variant="danger"
+                    >
+                        Confirm
+                    </Button>
+                </DialogActions>
+            </Dialog>
+
+            {/*Image Preview Data */}
+            <div>
+                <Modal style={{ backgroundColor: 'gray', marginTop: "70px" }}
+                    show={showPreviewImage}
+                    onHide={handleClosePreviewModalImage}
+                    animation={true}
+                >
+                    <Modal.Header closeButton>
+                        <marquee> <Modal.Title> {previewData && (
+
+                            <h >{previewData.name}'s Photo and MobileNo: {previewData.mobileNo} </h>)}
+                        </Modal.Title></marquee>
+                    </Modal.Header>
+                    <Modal.Body>
+                        {previewData && (
+                            <div >
+                                {previewData.photo && (
+                                    <img
+                                        src={`data:image/png;base64,${previewData.photo}`}
+                                        alt={`Photo of ${previewData.name}`}
+                                        style={{ maxWidth: "100%", maxHeight: "600px" }}
+                                    />
+                                )}
+                            </div>
+                        )}
+                    </Modal.Body>
+                </Modal>{" "}
+            </div>
+
+
+            {/*Student Preview Data */}
+            <div style={{
+                position: "fixed",
+                origin: "50%",
+                top: "50%",
+                left: "50%",
+                transform: "translate(-50%, -50%)",
+            }}>
+                {" "}
+                <Modal style={{ backgroundColor: 'gray', marginTop: "60px" }}
+                    show={showPreviewModal}
+                    onHide={handleClosePreviewModal}
+                    animation={true}
+                >
+                    <Modal.Header closeButton>
+                        <Modal.Title>Student Preview</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        {previewData && (
+                            <div>
+                                <Row >
+                                    <Col xs={12} md={6}> <div>
+                                        <p> Name: {previewData.name}         </p>
+                                        <p> DOB: {previewData.dob}         </p>
+
+                                        <p> Age: {previewData.age}         </p>
+                                        <p> Gender: {previewData.gender}   </p>
+
+                                        <p> Email Id: {previewData.emailId}</p>
+                                        <p> City: {previewData.city}</p>  </div></Col>
+
+                                    <Col xs={12} md={6}><div>
+                                        <p> Standard: {previewData.standard}</p>
+                                        <p> Mobile No: {previewData.mobileNo} </p>
+
+                                        <p> Cource Name: {previewData.courceName}</p>
+                                        <p> Cource Code: {previewData.courceCode}</p>
+
+                                        <p> Grade: {previewData.grade}              </p>
+                                        <p> Cource Credits: {previewData.credits}  </p>
+
+                                    </div>
+                                    </Col>  </Row>
+                                <p> Enrollment Date: {previewData.enrollmentDate}</p>
+
+                                {previewData.photo && (
+                                    <img
+                                        src={`data:image/png;base64,${previewData.photo}`}
+                                        alt={`Photo of ${previewData.name}`}
+                                        style={{ maxWidth: "100%", maxHeight: "400px" }}
+                                    />
+                                )}
+                            </div>
+                        )}
+
+                    </Modal.Body>
+                </Modal>{" "}
+            </div>
+
+
+            {/* Add Model*/}
+            <Modal style={{ backgroundColor: 'gray', marginTop: "70px" }} show={showAddModal} onHide={handleAddCloseModal} size="lg">
                 <Modal.Header closeButton>
                     <Modal.Title>Add New Student</Modal.Title>
                 </Modal.Header>
@@ -853,25 +1068,25 @@ const StudentCurd = () => {
                                 />
                             </Form.Group>
                         </Col>
-                       
+
                     </Row>
                     <Row>
-                      
+
                         <Col xs={12} md={6} style={{ marginTop: "30px" }}>
-                               <Form.Group>
+                            <Form.Group>
                                 <Form.Label></Form.Label>
-                                <input type="file" onChange={(e) => handleFileChange(e)} style={{ marginBottom:"30px" }} /> 
-                                    {selectedFile && (
-                                        <img
-                                            src={URL.createObjectURL(selectedFile)}
-                                            alt="Selected File"
+                                <input type="file" onChange={(e) => handleFileChange(e)} style={{ marginBottom: "30px" }} />
+                                {selectedFile && (
+                                    <img
+                                        src={URL.createObjectURL(selectedFile)}
+                                        alt="Selected File"
                                         style={{ maxWidth: "100%", maxHeight: "100px" }}
-                                       
-                                        />
+
+                                    />
 
                                 )}
                             </Form.Group>
-                           
+
                         </Col>
                     </Row>
                 </Modal.Body>
@@ -891,248 +1106,8 @@ const StudentCurd = () => {
                     </Button>
                 </Modal.Footer>
             </Modal>
-            <Table
-                striped
-                bordered
-                style={{
-                    marginRight: "40px",
-                    top: "100px",
-                    overflowX: "auto", // Add this line for horizontal scrollbar
-                    maxWidth: "100%", // Ensure the table takes the full width
-                }}
-            >
-                <thead>
-                    <tr style={{ textAlign: "center" }}>
 
-                        <th>  <input
-                                type="checkbox"
-                                onChange={handleSelectAll}
-                                checked={selectAll}
-                            /></th>
-                        {/*  <th>StudentId</th>*/}
-                        <th>Name</th>
-                        <th>DOB</th>
-                        <th>Age</th>
-                        <th>Gender</th>
-                        <th>Email</th>
-                        <th>City</th>
-                        <th>Standard</th>
-                        <th>Mobile</th>
-                        <th>Photo</th>
-                        <th>Cources</th>
-                        <th>CourceCode</th>
-                        <th>Credit</th>
-                        <th>Grade</th>
-                        <th>Enroll Date</th>
-                        <th>Active</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {data && data.length > 0
-                        ? data.map((item, index) => {
-                            return (
-                                <>
-                                    <tr key={index} style={{ textAlign: "center", height:"Auto" }}>
-                                        {/*  <td>{index + 1}</td>*/}
-                                        <td>
-                                            <input
-                                                type="checkbox"
-                                                name="rowCheckbox"
-                                                value={item.id}
-                                                onChange={handleCheckboxChange}
-                                            />
-
-
-                                        </td>
-                                        {/* <td>{item.id}</td>*/}
-                                        <td>{item.name}</td>
-                                        <td>
-                                            {item.dob
-                                                ? new Date(item.dob).toLocaleDateString()
-                                                : "N/A"}
-                                        </td>
-
-                                        <td>{item.age}</td>
-                                        <td>{item.gender}</td>
-                                        <td>{item.emailId}</td>
-                                        <td>{item.city}</td>
-                                        <td>{item.standard}</td>
-                                        <td>{item.mobileNo}</td>
-                                        <td>
-                                            <div
-                                                style={{
-                                                    textAlign: "center",
-                                                    maxWidth: "50px",
-                                                    maxHeight: "50px",
-                                                    overflow: "hidden",
-                                                }}
-                                            >
-                                                {item.photo !== null ? (
-                                                    <img
-                                                        style={{
-                                                            width: "100%",
-                                                            height: "100%",
-                                                            objectFit: "cover",
-                                                        }}
-                                                        src={`data:image/png;base64,${item.photo}`}
-                                                        alt={`${item.name}`}
-                                                        onClick={() => HandlePreview2(item.id)}
-                                                    />
-                                                ) : (
-                                                    ".."
-                                                )}
-                                            </div>
-                                        </td>
-
-                                        <td>{item.courceName}</td>
-                                        <td>{item.courceCode}</td>
-                                        <td>{item.credits}</td>
-                                        <td>{item.grade} </td>
-                                        <td>{item.enrollmentDate}</td>
-                                        <td className="text-center">
-                                            <input
-                                                type="checkbox"
-                                                defaultChecked={item.isActive}
-                                                onChange={() => handleIsActiveChange(item.id)}
-                                                disabled={checkboxesDisabled}
-                                                id={`checkbox_${item.id}`}
-                                            /></td>
-                                        <td colSpan={2}>
-                                            <EditIcon
-                                                style={{ cursor: "pointer", color: "blue" }} // Set color or other styles as needed
-                                                onClick={() => HandleEdit(item.id)}
-                                            ></EditIcon>
-                                            &nbsp;
-                                            <VisibilityIcon
-                                                onClick={() => HandlePreview(item.id)}
-                                                style={{ cursor: "pointer" }}
-                                            />
-                                            &nbsp;
-                                            <DeleteIcon
-                                                onClick={() => {
-                                                    HandleDelete(item.id);
-                                                }}
-                                                style={{ cursor: "pointer", color: "red" }} // Customize the color
-                                            />
-                                        </td>
-                                    </tr>
-                                </>
-                            );
-                        })
-                        : "... No data here "}
-                </tbody>
-            </Table>
-
-            <Dialog style={{ backgroundColor: 'gray' }} open={open} onClose={handleCloseDialog}>
-                <DialogTitle>Confirmation</DialogTitle>
-                <DialogContent>
-                    <DialogContentText>
-                        Are you sure you want to delete this student?
-                    </DialogContentText>
-                </DialogContent>
-                <DialogActions>
-
-                    <Button onClick={handleCloseDialog} color="primary">
-                        Cancel
-                    </Button>
-                    <Button
-                        onClick={() => {
-                            handleDeleteSelectedRows();
-                            confirmDelete();
-                            refreshPage();
-
-                        }}
-                        variant="danger"
-                    >
-                        Confirm
-                    </Button>
-                </DialogActions>
-            </Dialog>
-            <div style={{
-                position: "fixed",
-                origin: "50%",
-                top: "50%",
-                left: "50%",
-                transform: "translate(-50%, -50%)",
-            }}>
-                {" "}
-                <Modal style={{ backgroundColor: 'gray', marginTop:"60px"  }}
-                    show={showPreviewModal}
-                    onHide={handleClosePreviewModal}
-                    animation={true}
-                >
-                    <Modal.Header closeButton>
-                        <Modal.Title>Student Preview</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                        {previewData && (
-                            <div>
-                                <Row >
-                                    <Col xs={12} md={6}> <div>
-                                        <p> Name: {previewData.name}         </p>
-                                        <p> DOB: {previewData.dob}         </p>
-
-                                        <p> Age: {previewData.age}         </p>
-                                        <p> Gender: {previewData.gender}   </p>
-
-                                        <p> Email Id: {previewData.emailId}</p>
-                                        <p> City: {previewData.city}</p>  </div></Col>
-
-                                    <Col xs={12} md={6}><div>
-                                        <p> Standard: {previewData.standard}</p>
-                                        <p> Mobile No: {previewData.mobileNo} </p>
-
-                                        <p> Cource Name: {previewData.courceName}</p>
-                                        <p> Cource Code: {previewData.courceCode}</p>
-
-                                        <p> Grade: {previewData.grade}              </p>
-                                        <p> Cource Credits: {previewData.credits}  </p>
-
-                                    </div>
-                                    </Col>  </Row>
-                                <p> Enrollment Date: {previewData.enrollmentDate}</p>
-
-                                {previewData.photo && (
-                                    <img
-                                        src={`data:image/png;base64,${previewData.photo}`}
-                                        alt={`Photo of ${previewData.name}`}
-                                        style={{ maxWidth: "100%", maxHeight: "400px" }}
-                                    />
-                                )}
-                            </div>
-                        )}
-
-                    </Modal.Body>
-                </Modal>{" "}
-            </div>
-            <div>
-                <Modal style={{ backgroundColor: 'gray', marginTop: "70px" }}
-                    show={showPreviewImage}
-                    onHide={handleClosePreviewModalImage}
-                    animation={true}
-                >
-                    <Modal.Header closeButton>
-                        <marquee> <Modal.Title> {previewData && (
-
-                            <h >{previewData.name}'s Photo and MobileNo: {previewData.mobileNo} </h>)}
-                        </Modal.Title></marquee>
-                    </Modal.Header>
-                    <Modal.Body>
-                        {previewData && (
-                            <div >
-                                {previewData.photo && (
-                                    <img
-                                        src={`data:image/png;base64,${previewData.photo}`}
-                                        alt={`Photo of ${previewData.name}`}
-                                        style={{ maxWidth: "100%", maxHeight: "600px" }}
-                                    />
-                                )}
-                            </div>
-                        )}
-                    </Modal.Body>
-                </Modal>{" "}
-            </div>
+            {/*  Edit Model*/}
             <div>
                 <Modal
                     style={{ backgroundColor: 'gray', marginTop: "70px" }}

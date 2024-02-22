@@ -9,7 +9,7 @@ const Login = () => {
     const refreshPage = () => {
         setTimeout(() => {
             window.location.reload();
-        }, 500);
+        }, 1000);
     };
     const Navigate = useNavigate(); // Import useHistory hook
     const [values, setValue] = useState({
@@ -31,7 +31,7 @@ const Login = () => {
         const data = await response.json();
         if (response.ok) {
             console.log('Login successful:', data);
-            toast.success('Login Success', { position: "top-center", autoClose:3000 });
+            toast.success('Login Success', { position: "top-center", autoClose:1000 });
             // Redirect to the next page upon successful login
             Navigate('/StudentCurd');
             refreshPage();
@@ -39,7 +39,7 @@ const Login = () => {
         }
         else {
             console.error('Login failed:', data.message);
-            toast.error('Login failed', { position: "top-center", autoClose: 3000 });
+            toast.error('Login failed', { position: "top-center", autoClose: 1000 });
           
         }
     };
@@ -58,7 +58,7 @@ const Login = () => {
                 <div>
                     <form id='Lform' action='' onSubmit={handleSubmit}>
                         <h3 style={{ textAlign: "center" }}>
-                            <strong>Login Page</strong>
+                            <strong class="light-underline">Login Page</strong>
                         </h3>
                         <div className='mb-3'>
                             <label htmlFor='Name' className='col-lg-2 col-form-label'>

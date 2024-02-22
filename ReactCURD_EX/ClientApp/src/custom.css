@@ -55,22 +55,27 @@ code {
   background-color: #1b6ec2;
   border-color: #1861ac;
 }
-
+.light-underline {
+    border-bottom: 1px solid lightblue; /* Adjust the color and opacity as needed */
+}
 #loginpage {
     margin-top: 0px;
     height: 100vh;
-    width: 100vw;
-    background-image: url('components/Logo.jpg');
+    width: 68vw;
+    margin-right:50%;
+    background-image: url('components/Bg3.png');
     overflow: hidden;
     background-repeat: no-repeat;
     background-attachment: fixed;
     background-position: center;
     background-size: cover;
-}#SignUppage {
+}
+#SignUppage {
     margin-top: 0px;
     height: 100vh;
-    width: 100vw;
-    background-image: url('components/Logo.jpg');
+    width: 68vw;
+    margin-right: 50%;
+    background-image: url('components/Bg3.png');
     overflow: hidden;
     background-repeat: no-repeat;
     background-attachment: fixed;

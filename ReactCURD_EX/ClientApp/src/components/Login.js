@@ -1,8 +1,9 @@
 ﻿import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { toast } from 'react-toastify';
+import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import Validation from './LoginValidation';
+
+import LoginValidation from "./Validations/LoginValidation";
 
  
 const Login = () => {
@@ -20,7 +21,7 @@ const Login = () => {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-        setErrors(Validation(values));
+        setErrors(LoginValidation(values));
         const response = await fetch("https://localhost:7195/api/home/login", {
             method: 'POST',
             headers: {
@@ -31,7 +32,7 @@ const Login = () => {
         const data = await response.json();
         if (response.ok) {
             console.log('Login successful:', data);
-            toast.success('Login Success', { position: "top-center", autoClose:1000 });
+            toast.success('Login Success', { position: "top-center", autoClose:5000 });
             // Redirect to the next page upon successful login
             Navigate('/StudentCurd');
             refreshPage();
@@ -39,7 +40,7 @@ const Login = () => {
         }
         else {
             console.error('Login failed:', data.message);
-            toast.error('Login failed', { position: "top-center", autoClose: 1000 });
+            toast.error('Error Login. Please try again.', { position: "top-center", autoClose: 1000 });
           
         }
     };
@@ -111,7 +112,7 @@ const Login = () => {
                         </Link>
                     </form>
                 </div>
-            </div>
+            </div> <ToastContainer /> {/* Include ToastContainer to render the toasts */}
         </>
     );
 };

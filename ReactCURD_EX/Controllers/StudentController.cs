@@ -27,7 +27,7 @@
 //                {
 //                    Stud = Stud.Where(m => m.Name.Contains(searchString)
 //                                           || m.City.Contains(searchString)
-//                                            || m.Standard.Contains(searchString)
+//                                            || m.Degree.Contains(searchString)
 //                                           );
 //                    return View(Stud);
 //                }

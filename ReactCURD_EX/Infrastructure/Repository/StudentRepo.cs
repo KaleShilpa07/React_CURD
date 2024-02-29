@@ -55,7 +55,7 @@ namespace ReactCURD_EX.Infrastructure.Repository
                         Name = studentDetails.Name,
                         City = studentDetails.City,
                         Age = studentDetails.Age,
-                        Standard = studentDetails.Standard,
+                        Degree = studentDetails.Degree,
                         Photo = studentDetails.Photo,
                         DOB = studentDetails.DOB,
                         Gender = studentDetails.Gender,
@@ -127,7 +127,7 @@ namespace ReactCURD_EX.Infrastructure.Repository
                 Name = s.Name,
                 City = s.City,
                 Age = s.Age,
-                Standard = s.Standard,
+                Degree = s.Degree,
                 Photo = s.Photo,
                 DOB = s.DOB,
                 Gender = s.Gender,
@@ -168,7 +168,7 @@ namespace ReactCURD_EX.Infrastructure.Repository
             existingStudent.Name = student.Name;
             existingStudent.City = student.City;
             existingStudent.Age = student.Age;
-            existingStudent.Standard = student.Standard;
+            existingStudent.Degree = student.Degree;
             existingStudent.DOB = student.DOB;
             existingStudent.Gender = student.Gender;
             existingStudent.MobileNo = student.MobileNo;
@@ -249,7 +249,7 @@ namespace ReactCURD_EX.Infrastructure.Repository
                 Name = studentWithDetails.Name,
                 City = studentWithDetails.City,
                 Age = studentWithDetails.Age,
-                Standard = studentWithDetails.Standard,
+                Degree = studentWithDetails.Degree,
                 Photo = studentWithDetails.Photo,
                 DOB = studentWithDetails.DOB,
                 Gender = studentWithDetails.Gender,
@@ -272,15 +272,14 @@ namespace ReactCURD_EX.Infrastructure.Repository
       .Where(s => s.Cource.CourceName.Contains(searchTerm) 
       || s.Student.City.Contains(searchTerm) 
       || s.Student.Name.Contains(searchTerm)
-      || s.Student.Standard.Contains(searchTerm)
+      || s.Student.Degree.Contains(searchTerm)
       || s.Student.EmailId.Contains(searchTerm)
-      || s.Student.Age.Contains(searchTerm)
       || s.Student.Gender.Contains(searchTerm))
       .Select(s => new StudentDetailsDTO
       { Name= s.Student.Name,
           City = s.Student.City,
           Age = s.Student.Age,
-          Standard = s.Student.Standard,
+          Degree = s.Student.Degree,
           DOB = s.Student.DOB,
           Photo = s.Student.Photo,
           Gender = s.Student.Gender,

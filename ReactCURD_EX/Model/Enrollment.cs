@@ -8,9 +8,10 @@ namespace ReactCURD_EX.Model
     {
         [Key]
         //[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int EnrollmentId { get; set; }
+       public int EnrollmentId { get; set; }
         public int CourceId { get; set; }
-        public DateTime EnrollmentDate { get; set; }
+        [Required(ErrorMessage = "EnrollmentDate is required")]
+        public DateTime? EnrollmentDate { get; set; }
 
         // Navigation properties
         public int Id { get; set; }

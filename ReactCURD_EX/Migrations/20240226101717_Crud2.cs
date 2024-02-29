@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace ReactCURD_EX.Migrations
 {
-    public partial class demo : Migration
+    public partial class Crud2 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -15,9 +15,9 @@ namespace ReactCURD_EX.Migrations
                 {
                     CourceId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    CourceName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    CourceCode = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Grade = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CourceName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CourceCode = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Grade = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Credits = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -26,30 +26,45 @@ namespace ReactCURD_EX.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "RegistrationTBL",
+                name: "LoginFormModelTBL",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
+                    LoginId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Adress = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Password = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_RegistrationTBL", x => x.Id);
+                    table.PrimaryKey("PK_LoginFormModelTBL", x => x.LoginId);
                 });
 
             migrationBuilder.CreateTable(
-                name: "SkillTBL",
+                name: "SignUpFormModelTBL",
                 columns: table => new
                 {
-                    SkillId = table.Column<int>(type: "int", nullable: false)
+                    SignUpId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    SkillName = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Password = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_SkillTBL", x => x.SkillId);
+                    table.PrimaryKey("PK_SignUpFormModelTBL", x => x.SignUpId);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "StudentDegree",
+                columns: table => new
+                {
+                    DegreeId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_StudentDegree", x => x.DegreeId);
                 });
 
             migrationBuilder.CreateTable(
@@ -60,10 +75,10 @@ namespace ReactCURD_EX.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     City = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Age = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Standard = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Age = table.Column<int>(type: "int", nullable: false),
+                    Degree = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Photo = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
-                    DOB = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    DOB = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Gender = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     MobileNo = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     EmailId = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -72,6 +87,27 @@ namespace ReactCURD_EX.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_StudTBL", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "StudentCources",
+                columns: table => new
+                {
+                    CourseId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CourceName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CourceCode = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DegreeId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_StudentCources", x => x.CourseId);
+                    table.ForeignKey(
+                        name: "FK_StudentCources_StudentDegree_DegreeId",
+                        column: x => x.DegreeId,
+                        principalTable: "StudentDegree",
+                        principalColumn: "DegreeId",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -104,6 +140,11 @@ namespace ReactCURD_EX.Migrations
                 name: "IX_enrollments_CourceId",
                 table: "enrollments",
                 column: "CourceId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_StudentCources_DegreeId",
+                table: "StudentCources",
+                column: "DegreeId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -112,16 +153,22 @@ namespace ReactCURD_EX.Migrations
                 name: "enrollments");
 
             migrationBuilder.DropTable(
-                name: "RegistrationTBL");
+                name: "LoginFormModelTBL");
 
             migrationBuilder.DropTable(
-                name: "SkillTBL");
+                name: "SignUpFormModelTBL");
+
+            migrationBuilder.DropTable(
+                name: "StudentCources");
 
             migrationBuilder.DropTable(
                 name: "courses");
 
             migrationBuilder.DropTable(
                 name: "StudTBL");
+
+            migrationBuilder.DropTable(
+                name: "StudentDegree");
         }
     }
 }

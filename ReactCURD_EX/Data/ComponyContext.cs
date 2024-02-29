@@ -1,6 +1,8 @@
 ﻿
 using Microsoft.EntityFrameworkCore;
 using ReactCURD_EX.Model;
+using System.ComponentModel.DataAnnotations;
+using System.Xml.Linq;
 
 namespace ReactCURD_EX
 {
@@ -14,11 +16,18 @@ namespace ReactCURD_EX
         public DbSet<LoginFormModel> loginFormModels { get; set; }
 
         public DbSet<Cource> courses { get; set; }
+        public DbSet<StudentCources> StudentCources { get; set; }
+        public DbSet<StudentDegree> StudentDegree { get; set; }
         public DbSet<Enrollment> enrollments { get; set; }
         public DbSet<Student> Students { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {  // Configure relationships
-
+        {
+            // Configure relationships
+            // Define the foreign key relationship
+            modelBuilder.Entity<StudentCources>()
+                .HasOne(c => c.studentDegree)
+                .WithMany(d => d.studentCources)
+                .HasForeignKey(c => c.DegreeId);
             // Many-to-Many relationship between Cource and Student through Enrollment
             modelBuilder.Entity<Enrollment>()
                 .HasKey(e => new { e.Id, e.CourceId });
@@ -43,13 +52,14 @@ namespace ReactCURD_EX
         }
 
         // DTO for Student
+        
         public class StudentDetailsDTO
         {
             public int Id { get; set; }
             public string? Name { get; set; }
             public string? City { get; set; }
-            public string? Age { get; set; }
-            public string? Standard { get; set; }
+            public int Age { get; set; }
+            public string? Degree { get; set; }
             public byte[]? Photo { get; set; }
             public string? PhotoBase64 { get; set; }
             public DateTime? DOB { get; set; }
@@ -57,14 +67,13 @@ namespace ReactCURD_EX
             public string? MobileNo { get; set; }
             public string? EmailId { get; set; }
             public bool IsActive { get; set; }
-
             public int CourceId { get; set; }
             public string? CourceName { get; set; }
             public string? CourceCode { get; set; }
             public string? Grade { get; set; }
             public int Credits { get; set; }
             public int EnrollmentId { get; set; }
-            public DateTime EnrollmentDate { get; set; }
+            public DateTime? EnrollmentDate { get; set; }
 
         }
     }

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ReactCURD_EX;
 
@@ -11,9 +12,10 @@ using ReactCURD_EX;
 namespace ReactCURD_EX.Migrations
 {
     [DbContext(typeof(ComponyContext))]
-    partial class ComponyContextModelSnapshot : ModelSnapshot
+    [Migration("20240226101717_Crud2")]
+    partial class Crud2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -79,8 +81,7 @@ namespace ReactCURD_EX.Migrations
                     b.Property<int>("CourceId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime?>("EnrollmentDate")
-                        .IsRequired()
+                    b.Property<DateTime>("EnrollmentDate")
                         .HasColumnType("datetime2");
 
                     b.Property<int>("EnrollmentId")
@@ -169,7 +170,8 @@ namespace ReactCURD_EX.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<int>("Age")
+                    b.Property<int?>("Age")
+                        .IsRequired()
                         .HasColumnType("int");
 
                     b.Property<string>("City")

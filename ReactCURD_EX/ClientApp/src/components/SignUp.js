@@ -1,11 +1,10 @@
 ﻿import React, { useState } from "react";
 import axios from 'axios';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import Validation from "./SignUpValidation";
 
-
+import SignUpValidation from "./Validations/SignUpValidation";
 const SignUp = () => {
     const [values, setValues] = useState({
         name: '',
@@ -13,17 +12,18 @@ const SignUp = () => {
         password: ''
     });
     const [errors, setErrors] = useState({});
-
+    const Navigate = useNavigate(); 
     const handleSubmit = async (event) => {
         event.preventDefault();
-        setErrors(Validation(values));
+        setErrors(SignUpValidation(values));
 
         if (Object.keys(errors).length === 0) {
             try {
                 const response = await axios.post('https://localhost:7195/api/home/signup', values);
                 console.log(response.data);
-                toast.success('Signup successful!', { position: "top-center", autoClose: 3000 }); // Display success toast
+                toast.success('Signup successful!', { position: "top-center", autoClose: 5000 }); // Display success toast
                 // Redirect user to login page or any other page after successful signup
+                Navigate('/');
             } catch (error) {
                 console.error('Error signing up:', error.message);
                 toast.error('Error signing up. Please try again.', { position: "top-center", autoClose: 3000 }); // Display error toast
@@ -41,7 +41,7 @@ const SignUp = () => {
             <div id='SignUppage' className='d-flex border bg-light-blue '>
                  <div>
                     <form onSubmit={handleSubmit}>
-                        <h3 style={{ textAlign: "center" }}><strong class="light-underline">SignUp</strong></h3>
+                        <h3 style={{ textAlign: "center" }}><strong className="light-underline">SignUp</strong></h3>
                         <div className='mb-3'>
                             <label htmlFor='name' className='col-lg-2 col-form-label'><strong>Name:</strong></label>
                             <input onChange={handleInput} name='name' type='text' placeholder='Enter Name' className='form-control rounded-2' />

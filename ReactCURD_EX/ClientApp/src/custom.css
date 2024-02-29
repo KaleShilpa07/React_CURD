@@ -58,6 +58,20 @@ code {
 .light-underline {
     border-bottom: 1px solid lightblue; /* Adjust the color and opacity as needed */
 }
+@keyframes slideInRight {
+    0% {
+        transform: translateX(100%);
+    }
+
+    100% {
+        transform: translateX(0);
+    }
+}
+
+/* Apply the animation to the toast notification */
+.toastify.toast {
+    animation: slideInRight 0.5s ease-in-out forwards;
+}
 #loginpage {
     margin-top: 0px;
     height: 100vh;
@@ -106,8 +120,8 @@ code {
 }
 
 .modal-content {
-  
-    border-block: double;
+    background-color: lightsteelblue;
+    
     overflow: auto;
     height: 600px;
     width: 900px;

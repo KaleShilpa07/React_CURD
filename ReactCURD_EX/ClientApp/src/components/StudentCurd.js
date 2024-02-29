@@ -19,7 +19,6 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Container from "react-bootstrap/Container";
 import axios from "axios";
-import { getData } from "ajv/dist/compile/validate";
 import { ToastContainer, toast } from "react-toastify";
 import EditIcon from "@mui/icons-material/Edit";
 import VisibilityIcon from "@mui/icons-material/Visibility";
@@ -32,8 +31,59 @@ const StudentCurd = () => {
     const refreshPage = () => {
         setTimeout(() => {
             window.location.reload();
-        }, 5000);
+        }, 1000);
     };
+    const [Degree, SetDegree] = useState([]);
+    const [selectedDegree, setSelectedDegree] = useState('');
+    const [courses, setCourses] = useState([]);
+    const [CourceName, setSelectedCourse] = useState('');
+    const [CourceCode, setSelectedCourseCode] = useState('');
+    const [errors, setErrors] = useState({});
+
+    const handleEditCourseChange = (e) => {
+        const selectedCourseName = e.target.value;
+        SetEditCourceName(selectedCourseName);
+        const selectedCourse = courses.find(course => course.courceName === selectedCourseName);
+        if (selectedCourse) {
+            SetEditCourceCode(selectedCourse.courceCode);
+        } else {
+            SetEditCourceCode('');
+        }
+    };
+    const fetchCoursesByDegree = (degreeName) => {
+        axios.get(`https://localhost:7195/api/home/GetCoursesByDegree/${degreeName}`)
+            .then(response => {
+                setCourses(response.data);
+            })
+            .catch(error => {
+                console.error('Error fetching courses:', error);
+            });
+    };
+   
+    const handleDegreeChange = (e) => {
+        const selectedDegree = e.target.value;
+        SetEditDegree(selectedDegree);
+        setSelectedDegree(selectedDegree);
+        setSelectedCourse(''); // Clear selected course when degree changes
+        setSelectedCourseCode(''); // Clear selected course code when degree changes
+     
+        fetchCoursesByDegree(selectedDegree);
+       
+    };
+
+    const handleCourseChange = (e) => {
+        const CN = e.target.value;
+        setSelectedCourse(CN);
+        const selectedCN = courses.find(course => course.courceName === CN);
+        if (selectedCN) {
+            setSelectedCourseCode(selectedCN.courceCode);
+            setErrors(prevErrors => ({ ...prevErrors, CourceName: '', CourceCode: '' }));
+        } else {
+            setErrors(prevErrors => ({ ...prevErrors, CourceName: 'Invalid course name' }));
+            setSelectedCourseCode('');
+        }
+    };
+
 
     const [currentPhotoUrl, setCurrentPhotoUrl] = useState("");
     const [previewData, setPreviewData] = useState(false);
@@ -43,7 +93,51 @@ const StudentCurd = () => {
 
     // Handler for file input change
     const handleFileChange = (e) => {
-        setSelectedFile(e.target.files[0]);
+        const file = e.target.files[0];
+
+        // Check if a file was selected
+        if (!file) {
+            setErrors(prevErrors => ({
+                ...prevErrors,
+                photo: 'Please select a file.', // Set error message if no file is selected
+            }));
+            return;
+        }
+
+        // Clear error for the photo field
+        setErrors(prevErrors => ({
+            ...prevErrors,
+            photo: '',
+        }));
+
+        // Handle additional validations if needed, such as file type or size
+        const allowedTypes = ['image/jpeg', 'image/png']; // Add more allowed file types as needed
+        if (!allowedTypes.includes(file.type)) {
+            setErrors(prevErrors => ({
+                ...prevErrors,
+                photo: 'Invalid file type. Please select a JPEG or PNG file.', // Set error message for invalid file type
+            }));
+            return;
+        }
+
+        // Handle file size validation if needed
+        const maxSizeInBytes = 10 * 1024 * 1024; // 10MB
+        if (file.size > maxSizeInBytes) {
+            setErrors(prevErrors => ({
+                ...prevErrors,
+                photo: 'File size exceeds the maximum limit of 10MB.', // Set error message for exceeding file size
+            }));
+            return;
+        }
+
+        // Clear error if file passes all validations
+        setErrors(prevErrors => ({
+            ...prevErrors,
+            photo: '',
+        }));
+
+        // Proceed with setting the selected file
+        setSelectedFile(file);
 
     };
     const handleEditFileChange = (e) => {
@@ -115,7 +209,7 @@ const StudentCurd = () => {
     const handleClosePreviewModal = () => {
         setShowPreviewModal(false);
     };
-   
+
     //Delete Data
     const [selectedRows, setSelectedRows] = useState([]);
     const handleDeleteSelectedRows = async () => {
@@ -136,9 +230,10 @@ const StudentCurd = () => {
         })
             .catch((error) => {
                 toast.error("Please Select Row To Delete Multiple Records..", { position: "top-center" });
-              
+
             });
     };
+
     const HandleMultiDelete = (id) => {
         handleClickOpen(id);
     }
@@ -192,7 +287,7 @@ const StudentCurd = () => {
             handleCheckboxChange({ target: checkbox });
         });
 
-    // Update selected rows state with all item ids when "Select All" is checked
+        // Update selected rows state with all item ids when "Select All" is checked
         setSelectedRows(isChecked ? selectedIds : []);
     }
     const handleCheckboxChange = (e) => {
@@ -210,13 +305,14 @@ const StudentCurd = () => {
     const [IsActive, SetIsActive] = useState("");
     const [Age, SetAge] = useState("");
     const [City, SetCity] = useState("");
-    const [Standard, SetStandard] = useState("");
+    // const [Degree, SetDegree] = useState("");
     const [DOB, SetDOB] = useState("");
     const [Gender, SetGender] = useState("");
     const [MobileNo, SetMobileNo] = useState("");
     const [EmailId, SetEmailId] = useState("");
-    const [CourceName, SetCourceName] = useState("");
-    const [CourceCode, SetCourceCode] = useState("");
+    //const [CourceName, setCourceName] = useState("");
+    // const [CourceCode, setCourceCode] = useState("");
+
     const [Credits, SetCredits] = useState("");
     const [Grade, SetGrade] = useState("");
     const [EnrollmentDate, SetEnrollmentDate] = useState("");
@@ -224,7 +320,7 @@ const StudentCurd = () => {
     const [Editname, SetEditName] = useState("");
     const [EditAge, SetEditAge] = useState("");
     const [EditCity, SetEditCity] = useState("");
-    const [EditStandard, SetEditStandard] = useState("");
+    const [EditDegree, SetEditDegree] = useState("");
     const [EditPhotoBase64, SetEditPhotoBase64] = useState("");
     const [EditDOB, SetEditDOB] = useState(new Date()); // Initial value, you can replace it with your actual initial value
     const [EditGender, SetEditGender] = useState("");
@@ -239,37 +335,17 @@ const StudentCurd = () => {
 
 
     //Get dummy data to show dropdown...
-    const GetCourceCode = [
-        { courceCode: "J-201" },
-        { courceCode: "C#-201" },
-        { courceCode: "P-201" },
-        { courceCode: "A-201" },
-        { courceCode: "Python-201" },
-        { courceCode: "MT-201" },
-        { courceCode: "AT-201" },
-        { courceCode: "AWS-201" },
-    ];
+
     const GetGrade = [
-        { grade: "A" },
-        { grade: "A+" },
-        { grade: "B" },
-        { grade: "B+" },
-        { grade: "C" },
-        { grade: "C+" },
-        { grade: "D" }
-    ];
-    const GetCourceName = [
-
-        { courceName: "Java Developement" },
-        { courceName: "C# Developement" },
-        { courceName: "PHP" },
-        { courceName: "Android" },
-        { courceName: "Python" },
-        { courceName: " Manual Testing" },
-        { courceName: " Automation Testing" },
-        { courceName: " AWS " }
+        { Grade: "A" },
+        { Grade: "B" },
+        { Grade: "C" },
+        { Grade: "D" },
+        { Grade: "E" },
+        { Grade: "F" },
 
     ];
+
 
     //clear data into form
     const Clear = () => {
@@ -280,7 +356,7 @@ const StudentCurd = () => {
         SetGender("");
         SetMobileNo("");
         SetEmailId("");
-        SetStandard("");
+        SetDegree("");
         SetIsActive("");
 
         SetEditCourceName("");
@@ -298,53 +374,178 @@ const StudentCurd = () => {
         SetEditEmailId("");
         SetEditGender("");
         SetEditIsActive("");
-        SetEditStandard("");
+        SetEditDegree("");
         SetEditPhotoBase64("");
     };
     //Save student Data
-    const HandleSave = async () => {
-        const url1 = "https://localhost:7195/api/home";
-        const formData = {
+    //const [errors, setErrors] = useState({});
 
-            Name: Name,
-            Age: Age,
-            DOB: DOB,
-            Gender: Gender,
-            City: City,
-            EmailId: EmailId,
-
-            CourceCode: CourceCode,
-            CourceName: CourceName,
-            Credits: Credits,
-            Grade: Grade,
-            EnrollmentDate: EnrollmentDate,
-
-            MobileNo: MobileNo,
-            isActive: IsActive,
-            Standard: Standard,
-            photo: selectedFile ? await getBase64(selectedFile) : null,
-        };
-
-        axios
-            .post(url1, formData)
-            .then((result) => {
-                getData();
-                Clear();
-                toast.error("Error adding student", { position: "top-center" });
-            })
-            .catch(() => {
-                console.error();
-                toast.success("Student Add Successfully..", { position: "top-center" });
-            });
+    const [formData, setFormData] = useState({
+        Name: '',
+        Age: '',
+        DOB: '',
+        Gender: '',
+        City: '',
+        EmailId: '',
+        courceName: '',
+        courceCode: '',
+        Credits: '',
+        Grade: '',
+        EnrollmentDate: '',
+        MobileNo: '',
+        IsActive: '',
+        Degree: '',
+        photo: '',
+    })
+    const handleInputChange = (e) => {
+        console.log("Event:", e);
+        if (e && e.target) {
+            const { name, value } = e.target;
+            setFormData({ ...formData, [name]: value });
+            console.log(name, "-------Show Names----------");
+            console.log(value, "-------Show values----");
+            console.log(setErrors, "----Show setErrors------");
+            console.log(setFormData, "-----Show setValue------");
+        } else {
+            console.error("Event or event target is undefined");
+        }
     };
-    //Update student data
+   
+    
+    const handleClickSave = async () => {
+
+        HandleSave(); 
+    };
+    const HandleSave = async (e) => {
+        //e.preventDefault();
+        //// Validate the form fields
+        //const ValidationErrors = {}
+        //if (!formData.Name.trim()) {
+        //    ValidationErrors.Name = "Enter Name";
+        //}
+
+        //if (!formData.Age.trim()) {
+        //    ValidationErrors.Age = "Enter Age";
+        //}
+
+        //// Add validations for other fields...
+        //if (!formData.DOB.trim()) {
+        //    ValidationErrors.DOB = "Enter Date of Birth";
+        //}
+
+        //if (!formData.Gender.trim()) {
+        //    ValidationErrors.Gender = "Select Gender";
+        //}
+
+        //if (!formData.City.trim()) {
+        //    ValidationErrors.City = "Enter City";
+        //}
+
+        //if (!formData.EmailId.trim()) {
+        //    ValidationErrors.EmailId = "Enter Email Address";
+        //} else if (!/^[a-zA-Z0-9]+@gmail\.com$/.test
+        //    (formData.EmailId)) {
+        //    ValidationErrors.EmailId="Email not valid please Enter Valid Email id "
+        //    }
+
+        //if (!formData.courceName.trim()) {
+        //    ValidationErrors.courceName = "Select Course Name";
+        //}
+
+        //if (!formData.courceCode.trim()) {
+        //    ValidationErrors.courceCode = "Enter Course Code";
+        //}
+
+        //if (!formData.Credits.trim()) {
+        //    ValidationErrors.Credits = "Enter Credits";
+        //} else if (!/^[1-5]$/.test
+        //    (formData.Credits)) {
+        //    ValidationErrors.Credits = "Credits must be 1 to 5 please Enter Valid Credits "
+        //}
+        
+        //if (!formData.Grade.trim()) {
+        //    ValidationErrors.Grade = "Select Grade";
+        //} else if (!/^[A-F]$/.test
+        //    (formData.Grade)) {
+        //    ValidationErrors.Grade = "Grade must be A to F please Enter Valid Grade "
+        //}
+
+        //if (!formData.EnrollmentDate.trim()) {
+        //    ValidationErrors.EnrollmentDate = "Enter Enrollment Date";
+        //}
+
+        //if (!formData.MobileNo.trim()) {
+        //    ValidationErrors.MobileNo = "Enter Mobile Number";
+        //} else if (!/^\d{10}$/.test
+        //    (formData.MobileNo)) {
+        //    ValidationErrors.MobileNo = "Mobile Number valid only 10 digits please Enter Valid Mobile number "
+        //}
+
+        //if (!formData.IsActive.trim()) {
+        //    ValidationErrors.IsActive = "Select Active Status";
+        //}
+
+        //if (!formData.Degree.trim()) {
+        //    ValidationErrors.Degree = "Select Degree";
+        //}
+        //setErrors(ValidationErrors)
+        //if (Object.keys(ValidationErrors).length === 0) {
+
+            try {
+                // Gather all the form data
+                const formData = {
+                    Name: Name,
+                    Age: Age,
+                    DOB: DOB,
+                    Gender: Gender,
+                    City: City,
+                    EmailId: EmailId,
+                    courceName: CourceName,
+                    courceCode: CourceCode,
+                    Credits: Credits,
+                    Grade: Grade,
+                    EnrollmentDate: EnrollmentDate,
+                    MobileNo: MobileNo,
+                    IsActive: IsActive,
+                    Degree: selectedDegree,
+                    photo: selectedFile ? await getBase64(selectedFile) : null,
+                };
+                const response = await axios.post('https://localhost:7195/api/home', formData);
+
+                if (response.status === 200) {
+                    // Success response
+                    console.log('Save successful:', response.data);
+                    toast.success('Student added successfully', {
+                        position: "top-center"
+                    });
+                    // Optionally, clear the form fields or close the modal
+                    handleAddCloseModal();
+                    Clear();
+                } else {
+                    // Handle other status codes
+                    console.error('Failed to add student:', response.data);
+                    toast.error('Failed to add student', {
+                        position: "top-center"
+                    });
+                }
+            } catch (error) {
+                // Handle network errors or other exceptions
+                console.error('Error saving data:', error);
+                toast.error('Error saving data. Please try again later.', {
+                    position: "top-center"
+                });
+            }
+        //}
+    };
+
+
     const handleUpdate = async (id) => {
         const updatedData = {
             id: Editid,
             Name: Editname,
             Age: EditAge,
             City: EditCity,
-            Standard: EditStandard,
+            Degree: EditDegree,
             DOB: EditDOB,
             EmailId: EditEmailId,
             MobileNo: EditMobileNo,
@@ -388,7 +589,7 @@ const StudentCurd = () => {
                 SetEditName(result.data.name);
                 SetEditAge(result.data.age);
                 SetEditCity(result.data.city);
-                SetEditStandard(result.data.standard);
+                SetEditDegree(result.data.degree);
                 SetEditDOB(result.data.dob);
                 SetEditEmailId(result.data.emailId);
                 SetEditMobileNo(result.data.mobileNo);
@@ -458,6 +659,7 @@ const StudentCurd = () => {
     };
     const handleAddCloseModal = () => {
         setAddShowModal(false);
+
     };
 
     const handleIsActiveChange = (itemId) => {
@@ -475,8 +677,15 @@ const StudentCurd = () => {
     const [checkboxesDisabled, setCheckboxesDisabled] = useState(true);
 
     useEffect(() => {
+        axios.get('https://localhost:7195/api/home/GetDegree')
+            .then(response => {
+                SetDegree(response.data);
+            })
+            .catch(error => {
+                console.error('Error fetching degrees:', error);
+            });
         Getdata();
-      
+
     }, [searchTerm]);
 
     const Getdata = () => {
@@ -499,12 +708,13 @@ const StudentCurd = () => {
     return (
         <Fragment >
             <br></br>
-            <ToastContainer style={{marginTop:"60px" }} />
+            <ToastContainer style={{ marginTop: "60px" }} />
 
             {/*search data and Delete All btn*/}
-            <Container style={{marginTop:"50px" }}>
+            <Container style={{ marginTop: "50px" }}>
                 <Row>
                     <Col
+                        mx={2}
                         lg={4}
                         md={8}
                         style={{ position: "fixed", width: "15%", marginLeft: "860px" }}
@@ -556,7 +766,7 @@ const StudentCurd = () => {
                         onClick={handleAddShowModal}
                     >
                         <AddCircleOutlineIcon />
-                       &nbsp; Add New
+                        &nbsp; Add New
                     </IconButton>{" "}
                 </div>
             </Row>
@@ -567,143 +777,147 @@ const StudentCurd = () => {
                 marginBottom: 2, padding: '0.5%', position: "fixed",
                 top: "120px"
             }}>
-            <Table
-                striped
-                bordered
-                style={{
-                    padding:"20px",
-                    marginRight: "40px",
-                    top: "100px",
-                    overflowX: "auto", // Add this line for horizontal scrollbar
-                    maxWidth: "100%", // Ensure the table takes the full width
-                }}
-            >
+                <Table
+                    striped
+                    bordered
+                    style={{
+                        backgroundColor: "#EAECEC",
+                        padding: "20px",
+                        marginRight: "40px",
+                        top: "100px",
+                        overflowX: "auto", // Add this line for horizontal scrollbar
+                        maxWidth: "100%", // Ensure the table takes the full width
+                    }}
+                >
                     <thead>
-                        <tr style={{ textAlign: "center", backgroundColor:"#DCD6D4" }}>
+                        <tr style={{ textAlign: "center", backgroundColor: "gray" }}>
 
-                        <th>  <input
+                            <th>  <input
                                 type="checkbox"
                                 onChange={handleSelectAll}
                                 checked={selectAll}
                             /></th>
-                        {/*  <th>StudentId</th>*/}
-                        <th>Name</th>
-                        <th>DOB</th>
-                        <th>Age</th>
-                        <th>Gender</th>
-                        <th>Email</th>
-                        <th>City</th>
-                        <th>Standard</th>
-                        <th>Mobile</th>
-                        <th>Photo</th>
-                        <th>Cources</th>
-                        <th>CourceCode</th>
-                        <th>Credit</th>
-                        <th>Grade</th>
-                        <th>Enroll Date</th>
-                        <th>Active</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {data && data.length > 0
-                        ? data.map((item, index) => {
-                            return (
-                                <>
-                                    <tr key={index} style={{ textAlign: "center", height:"Auto" }}>
-                                        {/*  <td>{index + 1}</td>*/}
-                                        <td>
-                                            <input
-                                                type="checkbox"
-                                                name="rowCheckbox"
-                                                value={item.id}
-                                                onChange={handleCheckboxChange}
-                                            />
+                            {/*  <th>StudentId</th>*/}
+                            <th>Name</th>
+                            <th>DOB</th>
+                            <th>Age</th>
+                            <th>Gender</th>
+                            <th>Email</th>
+                            <th>City</th>
+
+                            <th>Mobile</th>
+                            <th>Photo</th>
+                            <th>Degree</th>
+                            <th>Cources</th>
+                            <th>CourceCode</th>
+                            <th>Credit</th>
+                            <th>Grade</th>
+                            <th>Enroll Date</th>
+                            <th>Active</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {data && data.length > 0
+                            ? data.map((item, index) => {
+                                return (
+                                    <>
+                                        <tr key={index} style={{ textAlign: "center", height: "Auto" }}>
+                                            {/*  <td>{index + 1}</td>*/}
+                                            <td>
+                                                <input
+                                                    type="checkbox"
+                                                    name="rowCheckbox"
+                                                    value={item.id}
+                                                    onChange={handleCheckboxChange}
+                                                />
 
 
-                                        </td>
-                                        {/* <td>{item.id}</td>*/}
-                                        <td>{item.name}</td>
-                                        <td>
-                                            {item.dob
-                                                ? new Date(item.dob).toLocaleDateString()
-                                                : "N/A"}
-                                        </td>
+                                            </td>
+                                            {/* <td>{item.id}</td>*/}
+                                            <td>{item.name}</td>
+                                            <td>
+                                                {item.dob
+                                                    ? new Date(item.dob).toLocaleDateString()
+                                                    : "N/A"}
+                                            </td>
 
-                                        <td>{item.age}</td>
-                                        <td>{item.gender}</td>
-                                        <td>{item.emailId}</td>
-                                        <td>{item.city}</td>
-                                        <td>{item.standard}</td>
-                                        <td>{item.mobileNo}</td>
-                                        <td>
-                                            <div
-                                                style={{
-                                                    textAlign: "center",
-                                                    maxWidth: "50px",
-                                                    maxHeight: "50px",
-                                                    overflow: "hidden",
-                                                }}
-                                            >
-                                                {item.photo !== null ? (
-                                                    <img
-                                                        style={{
-                                                            width: "100%",
-                                                            height: "100%",
-                                                            objectFit: "cover",
-                                                        }}
-                                                        src={`data:image/png;base64,${item.photo}`}
-                                                        alt={`${item.name}`}
-                                                        onClick={() => HandlePreview2(item.id)}
-                                                    />
-                                                ) : (
-                                                    ".."
-                                                )}
-                                            </div>
-                                        </td>
+                                            <td>{item.age}</td>
+                                            <td>{item.gender}</td>
+                                            <td>{item.emailId}</td>
+                                            <td>{item.city}</td>
 
-                                        <td>{item.courceName}</td>
-                                        <td>{item.courceCode}</td>
-                                        <td>{item.credits}</td>
-                                        <td>{item.grade} </td>
-                                        <td>{item.enrollmentDate}</td>
-                                        <td className="text-center">
-                                            <input
-                                                type="checkbox"
-                                                defaultChecked={item.isActive}
-                                                onChange={() => handleIsActiveChange(item.id)}
-                                                disabled={checkboxesDisabled}
-                                                id={`checkbox_${item.id}`}
-                                            /></td>
-                                        <td colSpan={2}>
-                                            <EditIcon
-                                                style={{ cursor: "pointer", color: "blue" }} // Set color or other styles as needed
-                                                onClick={() => HandleEdit(item.id)}
-                                            ></EditIcon>
-                                            &nbsp;
-                                            <VisibilityIcon
-                                                onClick={() => HandlePreview(item.id)}
-                                                style={{ cursor: "pointer" }}
-                                            />
-                                            &nbsp;
-                                            <DeleteIcon
-                                                onClick={() => {
-                                                    HandleDelete(item.id);
-                                                }}
-                                                style={{ cursor: "pointer", color: "red" }} // Customize the color
-                                            />
-                                        </td>
-                                    </tr>
-                                </>
-                            );
-                        })
-                        : "... No data here "}
-                </tbody>
-            </Table>
+                                            <td>{item.mobileNo}</td>
+                                            <td>
+                                                <div
+                                                    style={{
+                                                        textAlign: "center",
+                                                        maxWidth: "50px",
+                                                        maxHeight: "50px",
+                                                        overflow: "hidden",
+                                                    }}
+                                                >
+                                                    {item.photo !== null ? (
+                                                        <img
+                                                            style={{
+                                                                width: "100%",
+                                                                height: "100%",
+                                                                objectFit: "cover",
+                                                            }}
+                                                            src={`data:image/png;base64,${item.photo}`}
+                                                            alt={`${item.name}`}
+                                                            onClick={() => HandlePreview2(item.id)}
+                                                        />
+                                                    ) : (
+                                                        ".."
+                                                    )}
+                                                </div>
+                                            </td>
+                                            <td>{item.degree}</td>
+                                            <td>{item.courceName}</td>
+                                            <td>{item.courceCode}</td>
+                                            <td>{item.credits}</td>
+                                            <td>{item.grade} </td>
+                                            <td>   {item.enrollmentDate
+                                                ? new Date(item.enrollmentDate).toLocaleDateString()
+                                                : "N/A"}</td>
+                                            <td className="text-center">
+                                                <input
+                                                    type="checkbox"
+                                                    defaultChecked={item.isActive}
+                                                    onChange={() => handleIsActiveChange(item.id)}
+                                                    disabled={checkboxesDisabled}
+                                                    id={`checkbox_${item.id}`}
+                                                /></td>
+                                            <td colSpan={2}>
+                                                <EditIcon
+                                                    style={{ cursor: "pointer", color: "blue" }} // Set color or other styles as needed
+                                                    onClick={() => HandleEdit(item.id)}
+                                                ></EditIcon>
+                                                &nbsp;
+                                                <VisibilityIcon
+                                                    onClick={() => HandlePreview(item.id)}
+                                                    style={{ cursor: "pointer" }}
+                                                />
+                                                &nbsp;
+                                                <DeleteIcon
+                                                    onClick={() => {
+                                                        HandleDelete(item.id);
+                                                    }}
+                                                    style={{ cursor: "pointer", color: "red" }} // Customize the color
+                                                />
+                                            </td>
+                                        </tr>
+                                    </>
+                                );
+                            })
+                            : "... No data here "}
+                    </tbody>
+                </Table>
             </TableContainer>
 
             {/* Confirm delete*/}
-            <Dialog style={{ backgroundColor: 'gray' }} open={open} onClose={handleCloseDialog}>
+            <Dialog /*style={{ backgroundColor: 'gray' }}*/ open={open} onClose={handleCloseDialog}>
                 <DialogTitle>Confirmation</DialogTitle>
                 <DialogContent>
                     <DialogContentText>
@@ -731,7 +945,7 @@ const StudentCurd = () => {
 
             {/*Image Preview Data */}
             <div>
-                <Modal style={{ backgroundColor: 'gray', marginTop: "70px" }}
+                <Modal style={{ /*backgroundColor: 'gray',*/ marginTop: "70px" }}
                     show={showPreviewImage}
                     onHide={handleClosePreviewModalImage}
                     animation={true}
@@ -768,13 +982,13 @@ const StudentCurd = () => {
                 transform: "translate(-50%, -50%)",
             }}>
                 {" "}
-                <Modal style={{ backgroundColor: 'gray', marginTop: "60px" }}
+                <Modal style={{ /*backgroundColor: 'gray',*/ marginTop: "60px" }}
                     show={showPreviewModal}
                     onHide={handleClosePreviewModal}
                     animation={true}
                 >
                     <Modal.Header closeButton>
-                        <Modal.Title>Student Preview</Modal.Title>
+                        <Modal.Title><span style={{ textAlign: "center", marginLeft: "300px" }}>Student Preview</span></Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
                         {previewData && (
@@ -791,7 +1005,7 @@ const StudentCurd = () => {
                                         <p> City: {previewData.city}</p>  </div></Col>
 
                                     <Col xs={12} md={6}><div>
-                                        <p> Standard: {previewData.standard}</p>
+                                        <p> Degree: {previewData.degree}</p>
                                         <p> Mobile No: {previewData.mobileNo} </p>
 
                                         <p> Cource Name: {previewData.courceName}</p>
@@ -803,14 +1017,14 @@ const StudentCurd = () => {
                                     </div>
                                     </Col>  </Row>
                                 <p> Enrollment Date: {previewData.enrollmentDate}</p>
-
-                                {previewData.photo && (
-                                    <img
-                                        src={`data:image/png;base64,${previewData.photo}`}
-                                        alt={`Photo of ${previewData.name}`}
-                                        style={{ maxWidth: "100%", maxHeight: "400px" }}
-                                    />
-                                )}
+                                <div style={{ paddingTop: "30px", paddingLeft: "20px" }}>
+                                    {previewData.photo && (
+                                        <img
+                                            src={`data:image/png;base64,${previewData.photo}`}
+                                            alt={`Photo of ${previewData.name}`}
+                                            style={{ maxWidth: "100%", maxHeight: "400px" }}
+                                        />
+                                    )}</div>
                             </div>
                         )}
 
@@ -819,12 +1033,14 @@ const StudentCurd = () => {
             </div>
 
 
+
             {/* Add Model*/}
-            <Modal style={{ backgroundColor: 'gray', marginTop: "70px" }} show={showAddModal} onHide={handleAddCloseModal} size="lg">
-                <Modal.Header closeButton>
-                    <Modal.Title>Add New Student</Modal.Title>
+            <Modal style={{ /*backgroundColor: 'gray'*/ marginTop: "70px" }} show={showAddModal} onHide={handleAddCloseModal} size="lg" className="custom-modal">
+                <Modal.Header closeButton >
+                    <Modal.Title><span style={{ textAlign: "center", marginLeft: "300px" }}>Add New Student</span></Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
+
                     <Row>
                         <Col xs={12} md={6}>
                             <Form.Group>
@@ -834,8 +1050,14 @@ const StudentCurd = () => {
                                     className="form-control"
                                     placeholder="Name"
                                     value={Name}
-                                    onChange={(e) => SetName(e.target.value)}
+                                    onChange={(e) => {
+                                        SetName(e.target.value); // Set the value
+                                        handleInputChange() // Handle input change and clear errors
+                                    }}
                                 />
+                                {errors.Name && (
+                                    <span className='text-danger'>{errors.Name}</span>
+                                )}
                             </Form.Group>
                         </Col>
                         <Col xs={12} md={6}>
@@ -846,8 +1068,15 @@ const StudentCurd = () => {
                                     className="form-control"
                                     placeholder="Mobile No"
                                     value={MobileNo}
-                                    onChange={(e) => SetMobileNo(e.target.value)}
+                                    onChange={(e) => {
+                                        SetMobileNo(e.target.value)
+                                        handleInputChange()
+                                    }
+                                    }
                                 />
+                                {errors.MobileNo && (
+                                    <span className='text-danger'>{errors.MobileNo}</span>
+                                )}
                             </Form.Group>
                         </Col>
                     </Row>
@@ -861,28 +1090,18 @@ const StudentCurd = () => {
                                     className="form-control"
                                     placeholder="Age"
                                     value={Age}
-                                    onChange={(e) => SetAge(e.target.value)}
+                                    onChange={(e) => {
+                                        SetAge(e.target.value)
+                                        handleInputChange()
+                                    }}
                                 />
+                                {errors.Age && (
+                                    <span className='text-danger'>{errors.Age}</span>
+                                )}
                             </Form.Group>
 
                         </Col>
-                        <Col xs={12} md={6}>
-                            <Form.Group>
-                                <Form.Label></Form.Label>
-                                <input
-                                    type="text"
-                                    className="form-control"
-                                    placeholder="Standard"
-                                    value={Standard}
-                                    onChange={(e) => SetStandard(e.target.value)}
-                                />
-                            </Form.Group>
-                        </Col>
-                    </Row>
 
-
-
-                    <Row>
                         <Col xs={12} md={6}>
                             <Form.Group>
                                 <Form.Label></Form.Label>
@@ -891,12 +1110,118 @@ const StudentCurd = () => {
                                     className="form-control"
                                     placeholder="City"
                                     value={City}
-                                    onChange={(e) => SetCity(e.target.value)}
+                                    onChange={(e) => {
+                                        SetCity(e.target.value)
+                                        handleInputChange()
+                                    }}
                                 />
+                                {errors.City && (
+                                    <span className='text-danger'>{errors.City}</span>
+                                )}
                             </Form.Group>
                         </Col>
+                        <Row>
+                            <Col xs={12} md={6} style={{ width: "405px" }}>
+                                <Form.Group>
+                                    <Form.Label></Form.Label>
+                                    <Form.Select
+                                        value={selectedDegree}
+                                        onChange={handleDegreeChange}
+                                    >
+                                        <option value="">Select Degree</option>
+                                        {Degree.map(degree => (
+                                            <option key={degree.DegreeId} value={degree.name}>
+                                                {degree.name}
+                                            </option>
+                                        ))}
+                                    </Form.Select>
+                                    {errors.Degree && <span className='text-danger'>{errors.Degree}</span>}
+                                </Form.Group>
+                            </Col>
+                            <Col xs={12} md={6} style={{ width: "380px" }}>
+                                <Form.Group>
+                                    <Form.Label></Form.Label>
+                                    <Form.Select
+                                        value={CourceName}
+                                        onChange={handleCourseChange}
+                                    >
+                                        <option value="">Select Course</option>
+                                        {courses.map(course => (
+                                            <option key={course.courseId} value={course.courceName}>
+                                                {course.courceName}
+                                            </option>
+                                        ))}
+                                    </Form.Select>
+                                    {errors.CourceName && <span className='text-danger'>{errors.CourceName}</span>}
+                                </Form.Group>
+                            </Col> </Row>
                         <Col xs={12} md={6}>
+                            <Form.Group>
+                                <Form.Label></Form.Label>
+                                <Form.Select
+                                    value={CourceCode}
+                                    onChange={(e) => setSelectedCourseCode(e.target.value)}
+                                >
+                                    <option value="">Select Course Code</option>
+                                    {courses.map(course => (
+                                        <option key={course.courseId} value={course.courceCode}>
+                                            {course.courceCode}
+                                        </option>
+                                    ))}
+                                </Form.Select>
+                                {errors.CourceCode && <span className='text-danger'>{errors.CourceCode}</span>}
+                            </Form.Group>
+                        </Col>
 
+
+
+
+                        <Col xs={12} md={6}>
+                            <Form.Group>
+                                <Form.Label></Form.Label>
+                                <Form.Select
+                                    value={Grade}
+                                    onChange={(e) => {
+                                        SetGrade(e.target.value)
+                                        handleInputChange()
+                                    }}
+                                >  <option value="">Select Grade</option>
+                                    {GetGrade.map(grade => (
+                                        <option key={grade.GradeId} value={grade.Grade}>
+                                            {grade.Grade}
+                                        </option>
+                                    ))}
+                                   
+                                </Form.Select>
+                                {errors.Grade && (
+                                    <span className='text-danger'>{errors.Grade}</span>
+                                )}
+                            </Form.Group>
+                        </Col>
+                    </Row>
+
+                    <Row>
+                        <Col xs={12} md={6}>
+                            <Form.Group>
+                                <Form.Label></Form.Label>
+                                <input
+
+                                    type="text"
+                                    className="form-control"
+                                    placeholder="Credits"
+                                    value={Credits}
+                                    onChange={(e) => {
+                                        SetCredits(e.target.value)
+                                        handleInputChange()
+                                    }}
+                                />
+                                {errors.Credits && (
+                                    <span className='text-danger'>{errors.Credits}</span>
+                                )}
+                            </Form.Group>
+                        </Col>
+
+                        <Col xs={12} md={6}>
                             <Form.Group>
                                 <Form.Label></Form.Label>
                                 <input
@@ -904,74 +1229,15 @@ const StudentCurd = () => {
                                     className="form-control"
                                     placeholder="Email Id"
                                     value={EmailId}
-                                    onChange={(e) => SetEmailId(e.target.value)}
+                                    onChange={(e) => {
+                                        SetEmailId(e.target.value)
+                                        handleInputChange()
+                                    }}
                                 />
-                            </Form.Group>
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col xs={12} md={6}>
-                            <Form.Group>
-                                <Form.Label></Form.Label>
-                                <Form.Select
-                                    value={CourceName}
-                                    onChange={(e) => SetCourceName(e.target.value)}
-                                >
-                                    <option value="">Select CourceName</option>
-                                    {GetCourceName && GetCourceName.length > 0 && GetCourceName.map(
-                                        (item, index) => (
-                                            <option key={index} value={item.courceName}>{item.courceName}</option>
-                                        )
-                                    )}
-                                </Form.Select>
-                            </Form.Group>
-                        </Col>
+                                {errors.EmailId && (
+                                    <span className='text-danger'>{errors.EmailId}</span>
+                                )}
 
-                        <Col xs={12} md={6}>
-                            <Form.Group>
-                                <Form.Label></Form.Label>
-                                <Form.Select
-                                    value={CourceCode}
-                                    onChange={(e) => SetCourceCode(e.target.value)}
-                                >
-                                    <option value="">Select CourceCode</option>
-                                    {GetCourceCode && GetCourceCode.length > 0 && GetCourceCode.map(
-                                        (item, index) => (
-                                            <option key={index} value={item.courceCode}>{item.courceCode}</option>
-                                        )
-                                    )}
-                                </Form.Select>
-                            </Form.Group>
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col xs={12} md={6}>
-                            <Form.Group>
-                                <Form.Label></Form.Label>
-                                <input
-                                    type="text"
-                                    className="form-control"
-                                    placeholder="Credits"
-                                    value={Credits}
-                                    onChange={(e) => SetCredits(e.target.value)}
-                                />
-                            </Form.Group>
-                        </Col>
-
-                        <Col xs={12} md={6}>
-                            <Form.Group>
-                                <Form.Label></Form.Label>
-                                <Form.Select
-                                    value={Grade}
-                                    onChange={(e) => SetGrade(e.target.value)}
-                                >
-                                    <option value="">Select Grade</option>
-                                    {GetGrade && GetGrade.length > 0 && GetGrade.map(
-                                        (item, index) => (
-                                            <option key={index} value={item.grade}>{item.grade}</option>
-                                        )
-                                    )}
-                                </Form.Select>
                             </Form.Group>
                         </Col>
 
@@ -993,8 +1259,13 @@ const StudentCurd = () => {
                                             id="maleRadio"
                                             name="genderRadio"
                                             checked={Gender === "Male" || Gender === "male"}
-                                            onChange={() => SetGender("Male")}
+
+                                            onChange={(e) => {
+                                                SetGender("Male")
+                                                handleInputChange()
+                                            }}
                                         />
+                                       
                                         <Form.Check
                                             inline
                                             value={Gender}
@@ -1003,12 +1274,19 @@ const StudentCurd = () => {
                                             id="femaleRadio"
                                             name="genderRadio"
                                             checked={Gender === "Female" || Gender === "female"}
-                                            onChange={() => SetGender("Female")}
+
+                                            onChange={(e) => {
+                                                SetGender("Female")
+                                                handleInputChange()
+                                            }}
                                         />
 
                                     </label>
                                 </div>
-                            </Form.Group> &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;
+                            </Form.Group><div>
+                            {errors.Gender && (
+                                <span className='text-danger'>{errors.Gender}</span>
+                                )}</div>
                         </Col>
 
 
@@ -1023,8 +1301,12 @@ const StudentCurd = () => {
                                         name="isActiveRadio"
                                         checked={IsActive === true}
                                         style={{ color: IsActive ? 'green' : 'black', cursor: 'pointer' }}
-                                        onChange={() => SetIsActive(true)}
+                                        onChange={(e) => {
+                                            SetIsActive(true)
+                                            handleInputChange()
+                                        }}
                                     />
+                                  
                                     <Form.Check
                                         inline
                                         label="No"
@@ -1033,11 +1315,18 @@ const StudentCurd = () => {
                                         name="isActiveRadio"
                                         checked={IsActive === false}
                                         style={{ color: IsActive ? 'red' : 'black', cursor: 'pointer' }}
+                                        onChange={(e) => {
 
-                                        onChange={() => SetIsActive(false)}
-                                    />
+                                            SetIsActive(false)
+                                            handleInputChange()
+                                        }}
+                                    />  <div>
+                                        {errors.IsActive && (
+                                            <span className='text-danger'>{errors.IsActive}</span>
+                                        )}</div>
                                 </label>
                             </Form.Group>
+                           
                         </Col>
 
                     </Row>
@@ -1046,12 +1335,23 @@ const StudentCurd = () => {
                             <Form.Group>
                                 <Form.Label> </Form.Label>
                                 <DatePicker
-                                    selected={DOB ? new Date(DOB) : null}
-                                    onChange={(date) => SetDOB(date)}
+                                    dateFormat="MMM-dd-yy"
+                                    selected={DOB}
+                                    onChange={(e) => {
+                                        SetDOB(e);
+                                        handleInputChange()
+                                    }}
                                     className="form-control"
                                     placeholderText="Date of Birth"
+                                    isValidDate={(date) => {
+                                        // Return false if the date is in the future
+                                        return date <= new Date();
+                                    }}
                                 />
                             </Form.Group>
+                            {errors.DOB && (
+                                <span className='text-danger'>{errors.DOB}</span>
+                            )}
                         </Col>&nbsp;&nbsp;
                         <Col
                             xs={12}
@@ -1061,12 +1361,20 @@ const StudentCurd = () => {
                             <Form.Group>
                                 <Form.Label> </Form.Label>
                                 <DatePicker
+                                    dateFormat="MMM-dd-yy"
+
                                     selected={EnrollmentDate ? new Date(EnrollmentDate) : null}
-                                    onChange={(date) => SetEnrollmentDate(date)}
+                                    onChange={(e) => {
+                                        SetEnrollmentDate(e)
+                                        handleInputChange()
+                                    }}
                                     className="form-control"
                                     placeholderText="EnrollmentDate"
                                 />
                             </Form.Group>
+                            {errors.EnrollmentDate && (
+                                <span className='text-danger'>{errors.EnrollmentDate}</span>
+                            )}
                         </Col>
 
                     </Row>
@@ -1075,48 +1383,50 @@ const StudentCurd = () => {
                         <Col xs={12} md={6} style={{ marginTop: "30px" }}>
                             <Form.Group>
                                 <Form.Label></Form.Label>
-                                <input type="file" onChange={(e) => handleFileChange(e)} style={{ marginBottom: "30px" }} />
-                                {selectedFile && (
+                                <input type="file" onChange={(e) => { handleFileChange(e); handleInputChange() }} style={{ marginBottom: "30px" }} />
+                                <div>  {selectedFile && (
                                     <img
+
                                         src={URL.createObjectURL(selectedFile)}
                                         alt="Selected File"
                                         style={{ maxWidth: "100%", maxHeight: "100px" }}
 
                                     />
 
-                                )}
+                                )}</div>
+                                <div>
+                                    {errors.photo && <span style={{ color: 'red' }}>{errors.photo}</span>}</div>
+
                             </Form.Group>
 
                         </Col>
                     </Row>
+
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button variant="secondary" onClick={handleAddCloseModal}>
+                    <Button variant="danger" onClick={handleAddCloseModal}>
                         Close
                     </Button>
                     <Button
                         variant="success"
-                        onClick={() => {
-                            HandleSave();
-                            refreshPage();
-                            handleAddCloseModal();
-                        }}
+                        onClick={(event) => { handleClickSave(event); refreshPage(); }} // Pass the event object here
                     >
                         Submit
                     </Button>
                 </Modal.Footer>
             </Modal>
 
+
             {/*  Edit Model*/}
             <div>
                 <Modal
-                    style={{ backgroundColor: 'gray', marginTop: "70px" }}
+                    style={{/* backgroundColor: 'gray',*/ marginTop: "70px", marginRight: "900px" }}
                     show={showEditModal}
                     onHide={handleCloseEditModal}
                     animation={true}
                 >
                     <Modal.Header closeButton>
-                        <Modal.Title>Update/Edit Student</Modal.Title>
+                        <Modal.Title><span style={{ textAlign: "center", marginLeft: "300px" }}>Update/Edit Student</span></Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
                         <Row>
@@ -1165,63 +1475,85 @@ const StudentCurd = () => {
                                     <input
                                         type="text"
                                         className="form-control"
-                                        placeholder="Edit Standard"
-                                        value={EditStandard}
-                                        onChange={(e) => SetEditStandard(e.target.value)}
-                                    />
-                                </Form.Group>
-                            </Col>
-                        </Row>
-
-                        <Row>
-                            <Col xs={12} md={6}>
-                                <Form.Group>
-                                    <Form.Label></Form.Label>
-                                    <input
-                                        type="text"
-                                        className="form-control"
-                                        placeholder="Edit Email Id"
-                                        value={EditEmailId}
-                                        onChange={(e) => SetEditEmailId(e.target.value)}
-                                    />
-                                </Form.Group>
-                            </Col>
-                            <Col xs={12} md={6}>
-                                <Form.Group>
-                                    <Form.Label></Form.Label>
-                                    <input
-                                        type="text"
-                                        className="form-control"
                                         placeholder="Edit City"
                                         value={EditCity}
                                         onChange={(e) => SetEditCity(e.target.value)}
                                     />
                                 </Form.Group>
                             </Col>
-                        </Row><Row>
-                            <Col xs={12} md={6}>
+                        </Row>
+                        <Row>
+                            <Col xs={12} md={6} style={{ width: "405px" }}>
                                 <Form.Group>
                                     <Form.Label></Form.Label>
-                                    <input
-                                        type="text"
-                                        className="form-control"
-                                        placeholder="EditCourceName"
-                                        value={EditCourceName}
-                                        onChange={(e) => SetEditCourceName(e.target.value)}
-                                    />
+                                    <Form.Select
+                                        value={EditDegree}
+                                        onChange={handleDegreeChange}
+                                    >
+                                        <option value="">Select Degree</option>
+                                        {Degree.map(degree => (
+                                            <option key={degree.DegreeId} value={degree.name}>
+                                                {degree.name}
+                                            </option>
+                                        ))}
+                                    </Form.Select>
+                                    {errors.Degree && <span className='text-danger'>{errors.Degree}</span>}
                                 </Form.Group>
                             </Col>
-                            <Col xs={12} md={6}>
+                            <Col xs={12} md={6} style={{ width: "380px" }}>
                                 <Form.Group>
                                     <Form.Label></Form.Label>
-                                    <input
-                                        type="text"
-                                        className="form-control"
-                                        placeholder="Edit CourceCode"
-                                        value={EditCourceCode}
-                                        onChange={(e) => SetEditCourceCode(e.target.value)}
-                                    />
+                                    <Form.Select
+                                        value={EditCourceName}
+                                        onChange={handleEditCourseChange}
+                                    >
+                                        <option value="">Select Course</option>
+                                        {courses.map(course => (
+                                            <option key={course.courseId} value={course.courceName}>
+                                                {course.courceName}
+                                            </option>
+                                        ))}
+                                    </Form.Select>
+                                    {errors.CourceName && <span className='text-danger'>{errors.CourceName}</span>}
                                 </Form.Group>
+                            </Col> </Row>
+                            <Row>
+                        <Col xs={12} md={6}>
+                            <Form.Group>
+                                <Form.Label></Form.Label>
+                                <Form.Select
+                                        value={EditCourceCode}
+                                        onChange={handleEditCourseChange}
+                                >
+                                    <option value="">Select Course Code</option>
+                                    {courses.map(course => (
+                                        <option key={course.courseId} value={course.courceCode}>
+                                            {course.courceCode}
+                                        </option>
+                                    ))}
+                                </Form.Select>
+                                {errors.CourceCode && <span className='text-danger'>{errors.CourceCode}</span>}
+                            </Form.Group>
+                            </Col>
+                            <Col xs={12} md={6}>
+                            <Form.Group>
+                                <Form.Label></Form.Label>
+                                <Form.Select
+                                    value={EditGrade}
+                                    onChange={(e) => 
+                                        SetEditGrade(e.target.value)   }
+                                >  <option value="">Select Grade</option>
+                                    {GetGrade.map(grade => (
+                                        <option key={grade.GradeId} value={grade.Grade}>
+                                            {grade.Grade}
+                                        </option>
+                                    ))}
+
+                                </Form.Select>
+                                {errors.Grade && (
+                                    <span className='text-danger'>{errors.Grade}</span>
+                                )}
+                            </Form.Group>
                             </Col>
                         </Row>
                         <Row>
@@ -1243,13 +1575,12 @@ const StudentCurd = () => {
                                     <input
                                         type="text"
                                         className="form-control"
-                                        placeholder="Edit Grade"
-                                        value={EditGrade}
-                                        onChange={(e) => SetEditGrade(e.target.value)}
+                                        placeholder="Edit Email Id"
+                                        value={EditEmailId}
+                                        onChange={(e) => SetEditEmailId(e.target.value)}
                                     />
                                 </Form.Group>
                             </Col>
-
                         </Row>
                         <Row>
                             <Col xs={12} md={4} style={{ marginTop: "24px", width: "265px" }} >
@@ -1371,6 +1702,7 @@ const StudentCurd = () => {
                             <Col xs={12} md={6} style={{ marginTop: "30px" }}>
                                 <Form.Group>
                                     <Form.Label></Form.Label>
+
                                     <input
                                         type="file"
                                         onChange={(e) => handleEditFileChange(e)}
@@ -1380,13 +1712,14 @@ const StudentCurd = () => {
                         </Row>
                     </Modal.Body>
                     <Modal.Footer>
-                        <Button variant="secondary" onClick={handleCloseEditModal}>
+                        <Button variant="danger" onClick={handleCloseEditModal}>
                             Close
                         </Button>
                         <Button
                             variant="primary"
                             onClick={() => {
                                 handleUpdate(Editid);
+
                             }}
                         >
                             Save

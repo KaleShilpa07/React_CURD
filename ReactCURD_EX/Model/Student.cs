@@ -1,4 +1,6 @@
 ﻿using ReactCURD_EX.Model;
+using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -9,33 +11,45 @@ namespace ReactCURD_EX
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        //Scaler Property
         public int Id { get; set; }
-        [Required]
+
+        [Required(ErrorMessage = "Name is required")]
         public string? Name { get; set; }
-        [Required]
+
+        [Required(ErrorMessage = "City is required")]
         public string? City { get; set; }
-        [Required]
-        public string? Age { get; set; }
-        [Required]
-        public string? Standard { get; set; }
-        // New property for storing photo as byte array
+
+        [Required(ErrorMessage = "Age is required")]
+        public int Age { get; set; }
+
+        [Required(ErrorMessage = "Degree is required")]
+        public string? Degree { get; set; }
 
         public byte[]? Photo { get; set; }
 
-        // New property for storing base64 representation of the photo
-        [NotMapped] // This property is not mapped to the database
+        [NotMapped]
         public string? PhotoBase64 { get; set; }
+
+        [Required(ErrorMessage = "Date of Birth is required")]
+        
         public DateTime? DOB { get; set; }
-        [Required]
+
+        [Required(ErrorMessage = "Gender is required")]
         public string? Gender { get; set; }
-        [Required]
+
+        [Required(ErrorMessage = "Mobile Number is required")]
+        [RegularExpression(@"^\d{10}$", ErrorMessage = "Invalid Mobile Number")]
         public string? MobileNo { get; set; }
-        [Required]
+
+        [Required(ErrorMessage = "Email should not be empty")]
+        [EmailAddress(ErrorMessage = "Invalid email format")]
+        [RegularExpression(@"[a-zA-Z0-9]+@gmail\.com", ErrorMessage = "Email must be in the format example@gmail.com")]
+
         public string? EmailId { get; set; }
+
+        [Required(ErrorMessage = "IsActive is required")]
         public bool IsActive { get; set; }
-        // Navigation properties
+
         public virtual ICollection<Enrollment>? Enrollments { get; set; }
     }
-
 }

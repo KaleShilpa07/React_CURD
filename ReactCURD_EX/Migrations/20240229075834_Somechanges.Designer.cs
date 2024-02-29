@@ -12,8 +12,8 @@ using ReactCURD_EX;
 namespace ReactCURD_EX.Migrations
 {
     [DbContext(typeof(ComponyContext))]
-    [Migration("20240209120949_demo")]
-    partial class demo
+    [Migration("20240229075834_Somechanges")]
+    partial class Somechanges
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -24,6 +24,27 @@ namespace ReactCURD_EX.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
+            modelBuilder.Entity("ReactCURD_EX.LoginFormModel", b =>
+                {
+                    b.Property<int>("LoginId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("LoginId"), 1L, 1);
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("LoginId");
+
+                    b.ToTable("LoginFormModelTBL");
+                });
+
             modelBuilder.Entity("ReactCURD_EX.Model.Cource", b =>
                 {
                     b.Property<int>("CourceId")
@@ -33,15 +54,18 @@ namespace ReactCURD_EX.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CourceId"), 1L, 1);
 
                     b.Property<string>("CourceCode")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("CourceName")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Credits")
                         .HasColumnType("int");
 
                     b.Property<string>("Grade")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("CourceId");
@@ -57,7 +81,8 @@ namespace ReactCURD_EX.Migrations
                     b.Property<int>("CourceId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("EnrollmentDate")
+                    b.Property<DateTime?>("EnrollmentDate")
+                        .IsRequired()
                         .HasColumnType("datetime2");
 
                     b.Property<int>("EnrollmentId")
@@ -70,15 +95,58 @@ namespace ReactCURD_EX.Migrations
                     b.ToTable("enrollments");
                 });
 
-            modelBuilder.Entity("ReactCURD_EX.Registration", b =>
+            modelBuilder.Entity("ReactCURD_EX.Model.StudentCources", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("CourseId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CourseId"), 1L, 1);
 
-                    b.Property<string>("Adress")
+                    b.Property<string>("CourceCode")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CourceName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("DegreeId")
+                        .HasColumnType("int");
+
+                    b.HasKey("CourseId");
+
+                    b.HasIndex("DegreeId");
+
+                    b.ToTable("StudentCources");
+                });
+
+            modelBuilder.Entity("ReactCURD_EX.Model.StudentDegree", b =>
+                {
+                    b.Property<int>("DegreeId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("DegreeId"), 1L, 1);
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("DegreeId");
+
+                    b.ToTable("StudentDegree");
+                });
+
+            modelBuilder.Entity("ReactCURD_EX.SignUpFormModel", b =>
+                {
+                    b.Property<int>("SignUpId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("SignUpId"), 1L, 1);
+
+                    b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -86,26 +154,13 @@ namespace ReactCURD_EX.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("Id");
-
-                    b.ToTable("RegistrationTBL");
-                });
-
-            modelBuilder.Entity("ReactCURD_EX.Skill", b =>
-                {
-                    b.Property<int>("SkillId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("SkillId"), 1L, 1);
-
-                    b.Property<string>("SkillName")
+                    b.Property<string>("Password")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("SkillId");
+                    b.HasKey("SignUpId");
 
-                    b.ToTable("SkillTBL");
+                    b.ToTable("SignUpFormModelTBL");
                 });
 
             modelBuilder.Entity("ReactCURD_EX.Student", b =>
@@ -116,16 +171,20 @@ namespace ReactCURD_EX.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<string>("Age")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("Age")
+                        .HasColumnType("int");
 
                     b.Property<string>("City")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("DOB")
+                        .IsRequired()
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("Degree")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("EmailId")
                         .IsRequired()
@@ -148,10 +207,6 @@ namespace ReactCURD_EX.Migrations
 
                     b.Property<byte[]>("Photo")
                         .HasColumnType("varbinary(max)");
-
-                    b.Property<string>("Standard")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -177,9 +232,25 @@ namespace ReactCURD_EX.Migrations
                     b.Navigation("Student");
                 });
 
+            modelBuilder.Entity("ReactCURD_EX.Model.StudentCources", b =>
+                {
+                    b.HasOne("ReactCURD_EX.Model.StudentDegree", "studentDegree")
+                        .WithMany("studentCources")
+                        .HasForeignKey("DegreeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("studentDegree");
+                });
+
             modelBuilder.Entity("ReactCURD_EX.Model.Cource", b =>
                 {
                     b.Navigation("Enrollments");
+                });
+
+            modelBuilder.Entity("ReactCURD_EX.Model.StudentDegree", b =>
+                {
+                    b.Navigation("studentCources");
                 });
 
             modelBuilder.Entity("ReactCURD_EX.Student", b =>

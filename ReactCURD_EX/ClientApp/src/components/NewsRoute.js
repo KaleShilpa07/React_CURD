@@ -52,7 +52,8 @@ export class NewsRoute extends Component {
                                     <Route path="/Nav" element={<Nav />} />
                                     <Route path="/Navbar" element={<Navbar />} />
                                     <Route path="/TextForm" element={<TextForm />} />
-                                </Routes>
+                                   
+                                    </Routes>
                             </this.RenderNav>}
                         />
                        

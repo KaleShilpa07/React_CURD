@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ReactCURD_EX.Infrastructure.Interface;
+using ReactCURD_EX.Model;
 using static ReactCURD_EX.ComponyContext;
 
 namespace ReactCURD_EX.Controllers
@@ -45,22 +46,31 @@ namespace ReactCURD_EX.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
+        [HttpGet("GetDegree")]
+        public IActionResult GetDegree()
+        {
+            try
+            {
+                var Students = _cc.StudentDegree.ToList();
+                return Ok(Students);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+       
 
-        //[HttpGet("{id}")]
 
-        //public async Task<ActionResult<Student>> GetStudents(int? id)
-        //{
-        //    if (_cc.Students == null)
-        //    { return NotFound(); }
+        [HttpGet("GetCoursesByDegree/{degreeName}")]
+        public ActionResult<IEnumerable<StudentCources>> GetCoursesByDegree(string degreeName)
+        {
+            var courses = _cc.StudentCources
+                .Where(c => c.studentDegree.Name.ToUpper() == degreeName.ToUpper())
+                .ToList();
 
-        //    var student = await _cc.Students.FindAsync(id);
-        //    if (student == null)
-        //    {
-        //        return NotFound();
-        //    }
-        //    return student;
-        //}
-
+            return Ok(courses);
+        }
         [HttpGet("{id}")]
 
         public async Task<IActionResult> GetStudents(int? id)
@@ -83,33 +93,13 @@ namespace ReactCURD_EX.Controllers
         }
 
 
-        //[HttpPost]
-        //public async Task<ActionResult<IEnumerable<Student>>> AddStudent(Student student)
-        //{
-        //    try
-        //    {
-
-        //        // Convert base64 string to byte array and set the Photo property
-        //        if (!string.IsNullOrEmpty(student.PhotoBase64))
-        //        {
-        //            student.Photo = Convert.FromBase64String(student.PhotoBase64);
-        //        }
-
-        //        _cc.Students.Add(student);
-        //        await _cc.SaveChangesAsync();
-        //    }
-        //    catch (DbUpdateConcurrencyException ex)
-        //    {
-        //        Console.WriteLine($"Concurrency Exception: {ex.Message}");
-        //        throw;
-        //    }
-        //    return Ok();
-        //}
 
         [HttpPost]
         public async Task<ActionResult<int>> AddStudent([FromBody] StudentDetailsDTO studentDetails)
         {
             try
+            {
+                if (ModelState.IsValid)
             {
                 var result = await _studentRepository.AddStudent(studentDetails);
 
@@ -120,37 +110,15 @@ namespace ReactCURD_EX.Controllers
 
                 return BadRequest("Failed to add student.");
             }
+            return BadRequest(ModelState);
+            }
             catch (Exception ex)
             {
                 return StatusCode(500, $"Internal Server Error: {ex.Message}");
             }
         }
 
-        //[HttpPut("{id}")]
-        //public async Task<ActionResult<IEnumerable<Student>>> EditStudent(int id, Student ss)
-        //{
-        //    if (id != ss.Id)
-        //    {
-        //        return BadRequest();
-        //    }
-
-        //    // Convert base64 string to byte array and set the Photo property
-        //    if (!string.IsNullOrEmpty(ss.PhotoBase64))
-        //    {
-        //        ss.Photo = Convert.FromBase64String(ss.PhotoBase64);
-        //    }
-
-        //    _cc.Entry(ss).State = EntityState.Modified;
-        //    try
-        //    {
-        //        await _cc.SaveChangesAsync();
-        //    }
-        //    catch (DbUpdateConcurrencyException)
-        //    {
-        //        throw;
-        //    }
-        //    return Ok();
-        //}
+      
         [HttpPut("{id}")]
         public async Task<ActionResult> EditStudent(int id, [FromBody] StudentDetailsDTO studentDetails)
         {
@@ -216,19 +184,7 @@ namespace ReactCURD_EX.Controllers
         }
 
 
-        //[HttpGet("search")]
-        //public IActionResult SearchStudents(string searchTerm)
-        //{
-        //    var filteredStudents = _.Students
-        //        .Where(s => s.Name.Contains(searchTerm) || s.Standard.Contains(searchTerm) || s.Age.Contains(searchTerm) || s.City.Contains(searchTerm) || s.MobileNo.Contains(searchTerm) || s.Gender.Contains(searchTerm) || s.EmailId.Contains(searchTerm))
-        //        .ToList();
-
-        //    return Ok(filteredStudents);
-        //}
-
-
-
-
+       
         [HttpGet("search")]
         public IActionResult SearchStudents(string searchTerm)
         {

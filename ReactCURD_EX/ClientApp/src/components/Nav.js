@@ -25,7 +25,7 @@ const Nav = () =>
                             <li className="nav-item"> <Link className="nav-link" to="/StudentCurd">Student Records</Link></li>
                             <li className="nav-item"> <Link className="nav-link" to="/Navbar">News</Link></li>
                             <li className="nav-item"> <Link className="nav-link" to="/TextForm">TextEditor</Link></li>
-                            <li className="nav-item"> <Link className="nav-link" to="/Contact">Contact</Link></li>
+                            {/*<li className="nav-item"> <Link className="nav-link" to="/Contact">Contact</Link></li>*/}
                           </ul>
                         {/* Toggle icon */}
                         <button onClick={toggleDrawer}>

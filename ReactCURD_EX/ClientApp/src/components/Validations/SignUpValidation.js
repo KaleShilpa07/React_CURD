@@ -1,4 +1,4 @@
-﻿const Validation = (values) => {
+﻿const SignUpValidation = (values) => {
     let error = {};
 
     const Email_Pattern = /^[a-zA-Z0-9]+@(?:[a-zA-Z0-9]+\.)+[A-Za-z]+$/;
@@ -31,4 +31,4 @@
     return error;
 };
 
-export default Validation;
+export default SignUpValidation;

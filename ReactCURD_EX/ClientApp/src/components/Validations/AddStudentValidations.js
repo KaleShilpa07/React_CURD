@@ -1,136 +1,79 @@
 ﻿
-//const extractDate = (dateString) => {
-//    const date = new Date(dateString);
-//    const month = String(date.getMonth() + 1).padStart(2, '0'); // Adding 1 because getMonth() returns zero-based index
-//    const day = String(date.getDate()).padStart(2, '0');
-//    const year = date.getFullYear();
-//    return `${month}/${day}/${year}`;
-//};
-//const validateDateFormat = (dateString) => {
-//    // Regular expression to match "MM/DD/YYYY" format
-//    const dateFormatRegex = /^(0[1-9]|1[0-2])\/(0[1-9]|[12]\d|3[01])\/\d{4}$/;
-//    // Check if the dateString matches the format
-//    return dateFormatRegex.test(dateString);
-//};
-const AddStudentValidations = (values) => {
-    let error = {};
 
-    //const Email_Pattern = /^[a-zA-Z0-9]+@gmail\.com$/;
-    //const MobileNumber_Pattern = /^\d{10}$/; // with 10 digits
-    //const Age_Pattern = /^(0?[1-9]|[1-9][0-9]|[1][1-9][1-9]|200)$/; // Valid age range
-    //const Grade_Pattern = /^[A-F]$/; // Assuming grade is A-F
-    //const CreditsPattern = /^[1-5]$/;
-
-    if (typeof values.Name !== 'string' || values.Name.trim() === "") {
-        error.Name = "Enter Name ";
-    } else {
-        error.Name = "";
+const AddStudentValidations = (formData) => {
+    const Allerrors = {};
+    //const ValidationErrors = {};
+    if (!formData.Name.trim()) {
+        Allerrors.Name = "Please enter your Name.";
     }
 
-    //if (typeof values.MobileNo !== 'string' || !MobileNumber_Pattern.test(values.MobileNo)) {
-    //    error.MobileNo = "Enter valid Mobile Number";
-    //} else if (!MobileNumber_Pattern.test(values.MobileNo)) {
-    //    error.MobileNo = "Invalid Mobile Number";
-    //} else {
-    //    error.MobileNo = "";
-    //}
-
-    //if (values.MobileNo === "") {
-    //    error.MobileNo = "Enter valid Mobile Number";
-    //} else if (!MobileNumber_Pattern.test(values.MobileNo)) {
-    //    error.MobileNo = "Invalid Mobile Number";
-    //} else {
-    //    error.MobileNo = "";
-    //}
-
-    //if (typeof values.Age !== 'string' || !Age_Pattern.test(values.Age)) {
-    //    error.Age = " Enter Valid Age ";
-    //} else if (!Age_Pattern.test(values.Age)) {
-    //    error.Age = "Invalid Age";
-    //} else {
-    //    error.Age = "";
-    //}
-
-    //if (typeof values.IsActive !== 'boolean') {
-    //    error.IsActive = "Please Select Student Active or Not";
-    //} else if (values.IsActive !== true && values.IsActive !== false) {
-    //    error.IsActive = "Invalid value for IsActive";
-    //} else {
-    //    error.IsActive = "";
-    //}
-
-    //if (typeof values.Credits !== 'string' || !CreditsPattern.test(values.Credits)) {
-    //    error.Credits = " Enter Credits ";
-    //} else if (values.Credits < 1 || values.Credits > 5) {
-    //    error.Credits = "Credits should be between 1 and 5 are allowed";
-    //} else {
-    //    error.Credits = "";
-    //}
-
-    //if (typeof values.Degree !== 'string' || values.Degree.trim() === "") {
-    //    error.Degree = "Please Select Degree";
-    //} else {
-    //    error.Degree = "";
-    //}
-
-    if (typeof values.City !== 'string' || values.City.trim() === "") {
-        error.City = "Enter City ";
+    if (!formData.City.trim()) {
+        Allerrors.City = "Please enter your City...";
+    }
+    if (!formData.Age.trim()) {
+        Allerrors.Age = "Please enter your Age.";
     } else {
-        error.City = "";
+        const age = parseInt(formData.Age);
+        if (isNaN(age)) {
+            Allerrors.Age = "Age must be a valid integer.";
+        } else if (age <= 0 || age > 100) {
+            Allerrors.Age = "Age must be between 1 and 100.";
+        }
     }
 
-    //if (values.EmailId === "") {
-    //    error.EmailId = "Enter Email Address";
-    //} else if (!Email_Pattern.test(values.EmailId)) {
-    //    error.EmailId = "Invalid Email";
-    //} else {
-    //    error.EmailId = "";
-    //}
-
-    //if (typeof values.CourceName !== 'string') {
-    //    error.CourceName = "Please Select Course";
-    //} else {
-    //    error.CourceName = "";
-    //}
-
-    //if (typeof values.CourceCode !== 'string') {
-    //    error.CourceCode = "Please Select Course Code";
-    //} else {
-    //    error.CourceCode = "";
-    //}
-
-    //if (typeof values.Grade !== 'string' || !Grade_Pattern.test(values.Grade)) {
-    //    error.Grade = "Please Select Grade";
-    //} else {
-    //    error.Grade = "";
-    //}
-
-    //if (typeof values.Gender !== 'string' || (values.Gender !== 'Male' && values.Gender !== 'Female')) {
-    //    error.Gender = "Please Select Gender";
-    //} else {
-    //    error.Gender = "";
-    //}
-
-    //if (typeof values.DOB !== 'string' || !validateDateFormat(values.DOB)) {
-    //    error.DOB = "Enter Date of Birth in MM/DD/YYYY format";
-    //} else {
-    //    error.DOB = "";
-    //}
-    //if (!error.DOB) {
-    //    values.DOB = extractDate(values.DOB);
-    //}
-    //if (typeof values.EnrollmentDate !== 'string' || !validateDateFormat(values.EnrollmentDate)) {
-    //    error.EnrollmentDate = "Enter Enrollment Date in MM/DD/YYYY format";
-    //} else {
-    //    error.EnrollmentDate = "";
-    //}
-
-    //if (!error.EnrollmentDate) {
-    //    values.EnrollmentDate = extractDate(values.EnrollmentDate);
-    //}
    
+    if (!formData.EmailId.trim()) {
+        Allerrors.EmailId = "Please enter your Email Address";
+    } else if (!/^[a-zA-Z0-9]+@gmail\.com$/.test
+        (formData.EmailId)) {
+        Allerrors.EmailId = "Email not valid please Enter Valid Email id "
+    }
 
-    return error;
+    if (!formData.CourceName.trim()) {
+        Allerrors.CourceName = "Please Select Course Name";
+    } if (!formData.Degree.trim()) {
+        Allerrors.Degree = "Please Select Degree";
+    }
+
+    if (!formData.CourceCode.trim()) {
+        Allerrors.CourceCode = "Please Select Course Code";
+    }
+
+    if (!formData.Credits.trim()) {
+        Allerrors.Credits = " Please Enter Credits";
+    } else if (!/^[1-5]$/.test
+        (formData.Credits)) {
+        Allerrors.Credits = "Credits must be 1 to 5 please Enter Valid Credits "
+    }
+
+    if (!formData.Grade.trim()) {
+        Allerrors.Grade = "Please select Grade.";
+    } else if (!/^[A-F-]+$/.test(formData.Grade)) {
+        Allerrors.Grade = "Grade must be A to F or hyphen (-). Please enter a valid Grade.";
+    }
+
+    if (!formData.EnrollmentDate || (typeof formData.EnrollmentDate !== 'string') || !formData.EnrollmentDate.trim()) {
+        Allerrors.EnrollmentDate = "Please enter Enrollment Date.";
+    }
+    if (!formData.DOB || (typeof formData.DOB !== 'string') || !formData.DOB.trim()) {
+        Allerrors.DOB = "Please enter Enrollment Date.";
+    }
+    if (!formData.MobileNo.trim()) {
+        Allerrors.MobileNo = "Enter Mobile Number";
+    } else if (!/^\d{10}$/.test
+        (formData.MobileNo)) {
+        Allerrors.MobileNo = "Mobile Number valid only 10 digits please Enter Valid Mobile number "
+    }
+    //if (!formData.Gender || typeof formData.Gender !== 'string' || !formData.Gender.trim()) {
+    //    Allerrors.Gender = "Please select your Gender";
+    //}
+
+    if (formData.hasOwnProperty('IsActive')) {
+        if (typeof formData.IsActive !== 'boolean') {
+            Allerrors.IsActive = "Select Active Status";
+        }
+    }
+    return Allerrors;
 };
 
 export default AddStudentValidations;

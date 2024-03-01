@@ -7,9 +7,9 @@ import 'react-toastify/dist/ReactToastify.css';
 import SignUpValidation from "./Validations/SignUpValidation";
 const SignUp = () => {
     const [values, setValues] = useState({
-        name: '',
-        email: '',
-        password: ''
+        name: "",
+        email: "",
+        password: ""
     });
     const [errors, setErrors] = useState({});
     const Navigate = useNavigate(); 
@@ -34,6 +34,7 @@ const SignUp = () => {
     const handleInput = (event) => {
         const { name, value } = event.target;
         setValues(prev => ({ ...prev, [name]: value }));
+        console.log(name, value);
     };
 
     return (

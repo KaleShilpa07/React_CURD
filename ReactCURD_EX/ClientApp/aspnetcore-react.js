@@ -5,7 +5,7 @@ const fs = require('fs');
 const path = require('path');
 
 const baseFolder =
-  process.env.APPDATA !== undefined && process.env.APPDATA !== ''
+  process.env.APPDATA !== undefined && process.env.APPDATA !== ""
     ? `${process.env.APPDATA}/ASP.NET/https`
     : `${process.env.HOME}/.aspnet/https`;
 

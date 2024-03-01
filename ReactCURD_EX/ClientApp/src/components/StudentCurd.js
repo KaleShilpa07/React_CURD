@@ -25,6 +25,7 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import DeleteIcon from "@mui/icons-material/Delete";
 import "react-toastify/dist/ReactToastify.css";
+import AddStudentValidations from "./Validations/AddStudentValidations";
 
 const StudentCurd = () => {
 
@@ -34,12 +35,11 @@ const StudentCurd = () => {
         }, 1000);
     };
     const [Degree, SetDegree] = useState([]);
-    const [selectedDegree, setSelectedDegree] = useState('');
+    const [selectedDegree, setSelectedDegree] = useState("");
     const [courses, setCourses] = useState([]);
-    const [CourceName, setSelectedCourse] = useState('');
-    const [CourceCode, setSelectedCourseCode] = useState('');
-    const [errors, setErrors] = useState({});
-
+    const [CourceName, setSelectedCourse] = useState("");
+    const [CourceCode, setSelectedCourseCode] = useState("");
+  
     const handleEditCourseChange = (e) => {
         const selectedCourseName = e.target.value;
         SetEditCourceName(selectedCourseName);
@@ -47,7 +47,7 @@ const StudentCurd = () => {
         if (selectedCourse) {
             SetEditCourceCode(selectedCourse.courceCode);
         } else {
-            SetEditCourceCode('');
+            SetEditCourceCode("");
         }
     };
     const fetchCoursesByDegree = (degreeName) => {
@@ -64,23 +64,31 @@ const StudentCurd = () => {
         const selectedDegree = e.target.value;
         SetEditDegree(selectedDegree);
         setSelectedDegree(selectedDegree);
-        setSelectedCourse(''); // Clear selected course when degree changes
-        setSelectedCourseCode(''); // Clear selected course code when degree changes
+        setSelectedCourse(""); // Clear selected course when degree changes
+        setSelectedCourseCode(""); // Clear selected course code when degree changes
      
         fetchCoursesByDegree(selectedDegree);
        
     };
 
     const handleCourseChange = (e) => {
-        const CN = e.target.value;
-        setSelectedCourse(CN);
-        const selectedCN = courses.find(course => course.courceName === CN);
-        if (selectedCN) {
-            setSelectedCourseCode(selectedCN.courceCode);
-            setErrors(prevErrors => ({ ...prevErrors, CourceName: '', CourceCode: '' }));
-        } else {
-            setErrors(prevErrors => ({ ...prevErrors, CourceName: 'Invalid course name' }));
-            setSelectedCourseCode('');
+        const selectedCourceName = e.target.value;
+        const selectedCourse = courses.find(course => course.courceName === selectedCourceName);
+        if (selectedCourse) {
+            setSelectedCourseCode(selectedCourse.courceCode);  // Set the selected course code
+            setFormData(prevData => ({
+                ...prevData,
+                CourceName: selectedCourceName,
+                CourceCode: selectedCourse.courceCode,  // Update the course code in the formData state
+            }));
+        }
+        else {
+            setSelectedCourseCode('');  // Reset the selected course code if no course is selected
+            setFormData(prevData => ({
+                ...prevData,
+                CourceName: '',  // Clear the course name in the formData state
+                CourceCode: '',  // Clear the course code in the formData state
+            }));
         }
     };
 
@@ -92,54 +100,15 @@ const StudentCurd = () => {
     const [selectedFile, setSelectedFile] = useState(null);
 
     // Handler for file input change
-    const handleFileChange = (e) => {
+    const handleFileChange = async (e) => {
         const file = e.target.files[0];
-
-        // Check if a file was selected
-        if (!file) {
-            setErrors(prevErrors => ({
-                ...prevErrors,
-                photo: 'Please select a file.', // Set error message if no file is selected
-            }));
-            return;
-        }
-
-        // Clear error for the photo field
-        setErrors(prevErrors => ({
-            ...prevErrors,
-            photo: '',
-        }));
-
-        // Handle additional validations if needed, such as file type or size
-        const allowedTypes = ['image/jpeg', 'image/png']; // Add more allowed file types as needed
-        if (!allowedTypes.includes(file.type)) {
-            setErrors(prevErrors => ({
-                ...prevErrors,
-                photo: 'Invalid file type. Please select a JPEG or PNG file.', // Set error message for invalid file type
-            }));
-            return;
-        }
-
-        // Handle file size validation if needed
-        const maxSizeInBytes = 10 * 1024 * 1024; // 10MB
-        if (file.size > maxSizeInBytes) {
-            setErrors(prevErrors => ({
-                ...prevErrors,
-                photo: 'File size exceeds the maximum limit of 10MB.', // Set error message for exceeding file size
-            }));
-            return;
-        }
-
-        // Clear error if file passes all validations
-        setErrors(prevErrors => ({
-            ...prevErrors,
-            photo: '',
-        }));
-
-        // Proceed with setting the selected file
-        setSelectedFile(file);
-
-    };
+        setSelectedFile(file); // Set selectedFile state with the file object
+        await updatePhoto(); // Update photo state with base64 representation of the selected file
+    }
+    const updatePhoto = async () => {
+        const base64 = selectedFile ? await getBase64(selectedFile) : null;
+        // Now you can use the base64 value to update your photo state or perform any other operation
+    }
     const handleEditFileChange = (e) => {
         SetEditPhotoBase64();
         setSelectedFile(e.target.files[0]);
@@ -301,21 +270,21 @@ const StudentCurd = () => {
 
 
     const [data, Setdata] = useState([]);
-    const [Name, SetName] = useState("");
-    const [IsActive, SetIsActive] = useState("");
-    const [Age, SetAge] = useState("");
-    const [City, SetCity] = useState("");
-    // const [Degree, SetDegree] = useState("");
-    const [DOB, SetDOB] = useState("");
-    const [Gender, SetGender] = useState("");
-    const [MobileNo, SetMobileNo] = useState("");
-    const [EmailId, SetEmailId] = useState("");
+   
+    //const [IsActive, SetIsActive] = useState("");
+    //const [Age, SetAge] = useState("");
+    //const [Name, SetName] = useState("");
+    //const [City, SetCity] = useState("");
+    //const [DOB, SetDOB] = useState("");
+    //const [Gender, SetGender] = useState("");
+    //const [MobileNo, SetMobileNo] = useState("");
+    //const [EmailId, SetEmailId] = useState("");
     //const [CourceName, setCourceName] = useState("");
     // const [CourceCode, setCourceCode] = useState("");
 
-    const [Credits, SetCredits] = useState("");
-    const [Grade, SetGrade] = useState("");
-    const [EnrollmentDate, SetEnrollmentDate] = useState("");
+    //const [Credits, SetCredits] = useState("");
+    //const [Grade, SetGrade] = useState("");
+   // const [EnrollmentDate, SetEnrollmentDate] = useState("");
     const [Editid, SetEditid] = useState("");
     const [Editname, SetEditName] = useState("");
     const [EditAge, SetEditAge] = useState("");
@@ -338,178 +307,75 @@ const StudentCurd = () => {
 
     const GetGrade = [
         { Grade: "A" },
+        { Grade: "-A" },
         { Grade: "B" },
         { Grade: "C" },
         { Grade: "D" },
         { Grade: "E" },
         { Grade: "F" },
+        { Grade: "G" },
+        { Grade: "H" },
 
     ];
 
 
-    //clear data into form
-    const Clear = () => {
-        SetName("");
-        SetCity("");
-        SetAge("");
-        SetDOB("");
-        SetGender("");
-        SetMobileNo("");
-        SetEmailId("");
-        SetDegree("");
-        SetIsActive("");
-
-        SetEditCourceName("");
-        SetEditCourceCode("");
-        SetEditCredits("");
-        SetEditGrade("");
-        SetEditEnrollmentDate("");
-        EditPhotoBase64("");
-        SetEditCity("");
-        SetEditid("");
-        SetEditName("");
-        SetEditAge("");
-        SetEditDOB("");
-        SetEditMobileNo("");
-        SetEditEmailId("");
-        SetEditGender("");
-        SetEditIsActive("");
-        SetEditDegree("");
-        SetEditPhotoBase64("");
-    };
     //Save student Data
     //const [errors, setErrors] = useState({});
-
+    const [errors, setErrors] = useState({});
+     
     const [formData, setFormData] = useState({
-        Name: '',
-        Age: '',
-        DOB: '',
-        Gender: '',
-        City: '',
-        EmailId: '',
-        courceName: '',
-        courceCode: '',
-        Credits: '',
-        Grade: '',
-        EnrollmentDate: '',
-        MobileNo: '',
-        IsActive: '',
-        Degree: '',
-        photo: '',
-    })
-    const handleInputChange = (e) => {
-        console.log("Event:", e);
-        if (e && e.target) {
-            const { name, value } = e.target;
-            setFormData({ ...formData, [name]: value });
-            console.log(name, "-------Show Names----------");
-            console.log(value, "-------Show values----");
-            console.log(setErrors, "----Show setErrors------");
-            console.log(setFormData, "-----Show setValue------");
-        } else {
-            console.error("Event or event target is undefined");
+        Name: "",
+        Age: "",
+        DOB: new Date(),
+        Gender: "",
+        City: "",
+        EmailId: "",
+        CourceName: "",
+        CourceCode: "",
+        Credits: "",
+        Grade: "",
+        EnrollmentDate: new Date(),
+        MobileNo: "",
+        IsActive: "",
+        Degree: selectedDegree,
+        photo: selectedFile ? getBase64(selectedFile) : null,
+    });
+    const handleInputChange = (event) => {
+        const { name, value, type } = event.target;
+        let inputValue = value; // Define inputValue here
+        if (type === 'radio') {
+            setFormData(prev => ({ ...prev, [name]: value === 'true' }));
+        } else {  // If the input is for photo, use the selectedFile directly
+            if (name === 'photo') {
+                inputValue = selectedFile;
+            }
+
+            setFormData(prevFormData => ({
+                ...prevFormData,
+                [name]: inputValue
+            }));
         }
-    };
+
+        console.log(name, inputValue); // Log name and inputValue
+        };
    
     
-    const handleClickSave = async () => {
+    
+    const HandleSave = async (event) => {
+        event.preventDefault();
 
-        HandleSave(); 
-    };
-    const HandleSave = async (e) => {
-        //e.preventDefault();
-        //// Validate the form fields
-        //const ValidationErrors = {}
-        //if (!formData.Name.trim()) {
-        //    ValidationErrors.Name = "Enter Name";
-        //}
+        const validationErrors = AddStudentValidations(formData);
+        setErrors(validationErrors);
 
-        //if (!formData.Age.trim()) {
-        //    ValidationErrors.Age = "Enter Age";
-        //}
-
-        //// Add validations for other fields...
-        //if (!formData.DOB.trim()) {
-        //    ValidationErrors.DOB = "Enter Date of Birth";
-        //}
-
-        //if (!formData.Gender.trim()) {
-        //    ValidationErrors.Gender = "Select Gender";
-        //}
-
-        //if (!formData.City.trim()) {
-        //    ValidationErrors.City = "Enter City";
-        //}
-
-        //if (!formData.EmailId.trim()) {
-        //    ValidationErrors.EmailId = "Enter Email Address";
-        //} else if (!/^[a-zA-Z0-9]+@gmail\.com$/.test
-        //    (formData.EmailId)) {
-        //    ValidationErrors.EmailId="Email not valid please Enter Valid Email id "
-        //    }
-
-        //if (!formData.courceName.trim()) {
-        //    ValidationErrors.courceName = "Select Course Name";
-        //}
-
-        //if (!formData.courceCode.trim()) {
-        //    ValidationErrors.courceCode = "Enter Course Code";
-        //}
-
-        //if (!formData.Credits.trim()) {
-        //    ValidationErrors.Credits = "Enter Credits";
-        //} else if (!/^[1-5]$/.test
-        //    (formData.Credits)) {
-        //    ValidationErrors.Credits = "Credits must be 1 to 5 please Enter Valid Credits "
-        //}
-        
-        //if (!formData.Grade.trim()) {
-        //    ValidationErrors.Grade = "Select Grade";
-        //} else if (!/^[A-F]$/.test
-        //    (formData.Grade)) {
-        //    ValidationErrors.Grade = "Grade must be A to F please Enter Valid Grade "
-        //}
-
-        //if (!formData.EnrollmentDate.trim()) {
-        //    ValidationErrors.EnrollmentDate = "Enter Enrollment Date";
-        //}
-
-        //if (!formData.MobileNo.trim()) {
-        //    ValidationErrors.MobileNo = "Enter Mobile Number";
-        //} else if (!/^\d{10}$/.test
-        //    (formData.MobileNo)) {
-        //    ValidationErrors.MobileNo = "Mobile Number valid only 10 digits please Enter Valid Mobile number "
-        //}
-
-        //if (!formData.IsActive.trim()) {
-        //    ValidationErrors.IsActive = "Select Active Status";
-        //}
-
-        //if (!formData.Degree.trim()) {
-        //    ValidationErrors.Degree = "Select Degree";
-        //}
-        //setErrors(ValidationErrors)
-        //if (Object.keys(ValidationErrors).length === 0) {
-
+        // If there are no validation errors, proceed with form submission
+        if (Object.keys(validationErrors).length === 0) {
             try {
                 // Gather all the form data
-                const formData = {
-                    Name: Name,
-                    Age: Age,
-                    DOB: DOB,
-                    Gender: Gender,
-                    City: City,
-                    EmailId: EmailId,
-                    courceName: CourceName,
-                    courceCode: CourceCode,
-                    Credits: Credits,
-                    Grade: Grade,
-                    EnrollmentDate: EnrollmentDate,
-                    MobileNo: MobileNo,
-                    IsActive: IsActive,
-                    Degree: selectedDegree,
-                    photo: selectedFile ? await getBase64(selectedFile) : null,
-                };
+                const newData = { ...formData };
+
+                Setdata(prevData => [...prevData, newData]); // Update the data state
+                console.log(data);
+
                 const response = await axios.post('https://localhost:7195/api/home', formData);
 
                 if (response.status === 200) {
@@ -520,7 +386,6 @@ const StudentCurd = () => {
                     });
                     // Optionally, clear the form fields or close the modal
                     handleAddCloseModal();
-                    Clear();
                 } else {
                     // Handle other status codes
                     console.error('Failed to add student:', response.data);
@@ -535,9 +400,8 @@ const StudentCurd = () => {
                     position: "top-center"
                 });
             }
-        //}
+        }
     };
-
 
     const handleUpdate = async (id) => {
         const updatedData = {
@@ -774,7 +638,7 @@ const StudentCurd = () => {
 
             {/* Get Table Data*/}
             <TableContainer component={Paper} sx={{
-                marginBottom: 2, padding: '0.5%', position: "fixed",
+                marginBottom: 2, padding: '0.5%',
                 top: "120px"
             }}>
                 <Table
@@ -1041,19 +905,19 @@ const StudentCurd = () => {
                 </Modal.Header>
                 <Modal.Body>
 
+                    <form onSubmit={HandleSave}>
                     <Row>
                         <Col xs={12} md={6}>
                             <Form.Group>
                                 <Form.Label></Form.Label>
                                 <input
-                                    type="text"
+                                          type="text" 
+                                        autocomplete="off"
                                     className="form-control"
-                                    placeholder="Name"
-                                    value={Name}
-                                    onChange={(e) => {
-                                        SetName(e.target.value); // Set the value
-                                        handleInputChange() // Handle input change and clear errors
-                                    }}
+                                        placeholder="Name"
+                                        name="Name"
+                                        value={formData.Name}
+                                        onChange={handleInputChange}
                                 />
                                 {errors.Name && (
                                     <span className='text-danger'>{errors.Name}</span>
@@ -1064,15 +928,12 @@ const StudentCurd = () => {
                             <Form.Group>
                                 <Form.Label> </Form.Label>
                                 <input
-                                    type="text"
+                                      type="text" autocomplete ="off"
                                     className="form-control"
-                                    placeholder="Mobile No"
-                                    value={MobileNo}
-                                    onChange={(e) => {
-                                        SetMobileNo(e.target.value)
-                                        handleInputChange()
-                                    }
-                                    }
+                                        placeholder="Mobile No"
+                                        name="MobileNo"
+                                        value={formData.MobileNo}
+                                        onChange={handleInputChange}
                                 />
                                 {errors.MobileNo && (
                                     <span className='text-danger'>{errors.MobileNo}</span>
@@ -1086,14 +947,12 @@ const StudentCurd = () => {
                             <Form.Group>
                                 <Form.Label></Form.Label>
                                 <input
-                                    type="text"
+                                      type="text" autocomplete ="off"
                                     className="form-control"
                                     placeholder="Age"
-                                    value={Age}
-                                    onChange={(e) => {
-                                        SetAge(e.target.value)
-                                        handleInputChange()
-                                    }}
+                                        name="Age"
+                                        value={formData.Age}
+                                        onChange={handleInputChange}
                                 />
                                 {errors.Age && (
                                     <span className='text-danger'>{errors.Age}</span>
@@ -1106,14 +965,11 @@ const StudentCurd = () => {
                             <Form.Group>
                                 <Form.Label></Form.Label>
                                 <input
-                                    type="text"
+                                      type="text" autocomplete ="off"
                                     className="form-control"
-                                    placeholder="City"
-                                    value={City}
-                                    onChange={(e) => {
-                                        SetCity(e.target.value)
-                                        handleInputChange()
-                                    }}
+                                        placeholder="City"
+                                        name="City" value={formData.City}
+                                        onChange={handleInputChange}
                                 />
                                 {errors.City && (
                                     <span className='text-danger'>{errors.City}</span>
@@ -1124,34 +980,42 @@ const StudentCurd = () => {
                             <Col xs={12} md={6} style={{ width: "405px" }}>
                                 <Form.Group>
                                     <Form.Label></Form.Label>
-                                    <Form.Select
-                                        value={selectedDegree}
-                                        onChange={handleDegreeChange}
-                                    >
-                                        <option value="">Select Degree</option>
-                                        {Degree.map(degree => (
-                                            <option key={degree.DegreeId} value={degree.name}>
-                                                {degree.name}
-                                            </option>
-                                        ))}
-                                    </Form.Select>
+                                        <Form.Select
+                                            name="Degree"
+                                            value={formData.Degree}
+                                            onChange={(e) => {
+                                                handleDegreeChange(e);  // Pass the event object to handleDegreeChange
+                                                handleInputChange(e);   // Pass the event object to handleInputChange
+                                            }}
+                                        >
+                                            <option value="">Select Degree</option>
+                                            {Degree.map(degree => (
+                                                <option key={degree.DegreeId} value={degree.name}>
+                                                    {degree.name}
+                                                </option>
+                                            ))}
+                                        </Form.Select>
                                     {errors.Degree && <span className='text-danger'>{errors.Degree}</span>}
                                 </Form.Group>
                             </Col>
                             <Col xs={12} md={6} style={{ width: "380px" }}>
                                 <Form.Group>
                                     <Form.Label></Form.Label>
-                                    <Form.Select
-                                        value={CourceName}
-                                        onChange={handleCourseChange}
-                                    >
-                                        <option value="">Select Course</option>
-                                        {courses.map(course => (
-                                            <option key={course.courseId} value={course.courceName}>
-                                                {course.courceName}
-                                            </option>
-                                        ))}
-                                    </Form.Select>
+                                        <Form.Select
+                                            name="CourceName"
+                                            value={formData.CourceName}
+                                            onChange={(e) => {
+                                                handleCourseChange(e);  // Pass the event object to handleDegreeChange
+                                                handleInputChange(e);   // Pass the event object to handleInputChange
+                                            }}
+                                        >
+                                            <option value="">Select Course</option>
+                                            {courses.map(course => (
+                                                <option key={course.courseId} value={course.courceName}>
+                                                    {course.courceName}
+                                                </option>
+                                            ))}
+                                        </Form.Select>
                                     {errors.CourceName && <span className='text-danger'>{errors.CourceName}</span>}
                                 </Form.Group>
                             </Col> </Row>
@@ -1159,8 +1023,11 @@ const StudentCurd = () => {
                             <Form.Group>
                                 <Form.Label></Form.Label>
                                 <Form.Select
-                                    value={CourceCode}
-                                    onChange={(e) => setSelectedCourseCode(e.target.value)}
+                                        name="CourceCode" value={formData.CourceCode}
+                                        onChange={(e) => {
+                                            setSelectedCourseCode(e);  // Pass the event object to handleDegreeChange
+                                            handleInputChange(e);   // Pass the event object to handleInputChange
+                                        }}
                                 >
                                     <option value="">Select Course Code</option>
                                     {courses.map(course => (
@@ -1179,20 +1046,26 @@ const StudentCurd = () => {
                         <Col xs={12} md={6}>
                             <Form.Group>
                                 <Form.Label></Form.Label>
-                                <Form.Select
-                                    value={Grade}
-                                    onChange={(e) => {
-                                        SetGrade(e.target.value)
-                                        handleInputChange()
-                                    }}
-                                >  <option value="">Select Grade</option>
-                                    {GetGrade.map(grade => (
-                                        <option key={grade.GradeId} value={grade.Grade}>
-                                            {grade.Grade}
-                                        </option>
-                                    ))}
+                                {/*<Form.Select*/}
+                                {/*        name="Grade"*/}
+                                {/*        value={formData.Grade}*/}
+                                {/*        onChange={handleInputChange}*/}
+                                {/*>  <option value="">Select Grade</option>*/}
+                                {/*    {GetGrade.map(grade => (*/}
+                                {/*        <option key={grade.GradeId} value={grade.Grade}>*/}
+                                {/*            {grade.Grade}*/}
+                                {/*        </option>*/}
+                                {/*    ))}*/}
                                    
-                                </Form.Select>
+                                    {/*</Form.Select>*/}
+                                    <input
+                                        type="text" autocomplete="off"
+                                        className="form-control"
+                                        placeholder="Enter Grade"
+                                        name="Grade"
+                                        value={formData.Grade}
+                                        onChange={handleInputChange}
+                                    />
                                 {errors.Grade && (
                                     <span className='text-danger'>{errors.Grade}</span>
                                 )}
@@ -1206,14 +1079,12 @@ const StudentCurd = () => {
                                 <Form.Label></Form.Label>
                                 <input
 
-                                    type="text"
+                                      type="text" autocomplete ="off"
                                     className="form-control"
-                                    placeholder="Credits"
-                                    value={Credits}
-                                    onChange={(e) => {
-                                        SetCredits(e.target.value)
-                                        handleInputChange()
-                                    }}
+                                        placeholder="Credits"
+                                        name="Credits"
+                                        value={formData.Credits}
+                                        onChange={handleInputChange}
                                 />
                                 {errors.Credits && (
                                     <span className='text-danger'>{errors.Credits}</span>
@@ -1225,14 +1096,12 @@ const StudentCurd = () => {
                             <Form.Group>
                                 <Form.Label></Form.Label>
                                 <input
-                                    type="text"
+                                      type="text" autocomplete ="off"
                                     className="form-control"
                                     placeholder="Email Id"
-                                    value={EmailId}
-                                    onChange={(e) => {
-                                        SetEmailId(e.target.value)
-                                        handleInputChange()
-                                    }}
+                                        name="EmailId"
+                                        value={formData.EmailId}
+                                        onChange={handleInputChange}
                                 />
                                 {errors.EmailId && (
                                     <span className='text-danger'>{errors.EmailId}</span>
@@ -1251,35 +1120,26 @@ const StudentCurd = () => {
                                 <div>
                                     <label>Gender &nbsp;:&nbsp;&nbsp;
 
-                                        <Form.Check
-                                            inline
-                                            value={Gender}
-                                            label="Male"
-                                            type="radio"
-                                            id="maleRadio"
-                                            name="genderRadio"
-                                            checked={Gender === "Male" || Gender === "male"}
-
-                                            onChange={(e) => {
-                                                SetGender("Male")
-                                                handleInputChange()
-                                            }}
-                                        />
-                                       
-                                        <Form.Check
-                                            inline
-                                            value={Gender}
-                                            label="Female"
-                                            type="radio"
-                                            id="femaleRadio"
-                                            name="genderRadio"
-                                            checked={Gender === "Female" || Gender === "female"}
-
-                                            onChange={(e) => {
-                                                SetGender("Female")
-                                                handleInputChange()
-                                            }}
-                                        />
+                                            <Form.Check
+                                                inline
+                                                label="Male"
+                                                type="radio"
+                                                id="maleRadio"
+                                                name="Gender"
+                                                value="true"
+                                                checked={formData.Gender === true}
+                                                onChange={handleInputChange}
+                                            />
+                                            <Form.Check
+                                                inline
+                                                label="Female"
+                                                type="radio"
+                                                id="femaleRadio"
+                                                name="Gender"
+                                                value="false"
+                                                checked={formData.Gender === false}
+                                                onChange={handleInputChange}
+                                            />
 
                                     </label>
                                 </div>
@@ -1293,34 +1153,28 @@ const StudentCurd = () => {
                         <Col xs={12} md={6}>
                             <Form.Group>
                                 <label>IsActive &nbsp;&nbsp;&nbsp;
-                                    <Form.Check
-                                        inline
-                                        label="Yes"
-                                        type="radio"
-                                        id="yesRadio"
-                                        name="isActiveRadio"
-                                        checked={IsActive === true}
-                                        style={{ color: IsActive ? 'green' : 'black', cursor: 'pointer' }}
-                                        onChange={(e) => {
-                                            SetIsActive(true)
-                                            handleInputChange()
-                                        }}
-                                    />
-                                  
-                                    <Form.Check
-                                        inline
-                                        label="No"
-                                        type="radio"
-                                        id="noRadio"
-                                        name="isActiveRadio"
-                                        checked={IsActive === false}
-                                        style={{ color: IsActive ? 'red' : 'black', cursor: 'pointer' }}
-                                        onChange={(e) => {
-
-                                            SetIsActive(false)
-                                            handleInputChange()
-                                        }}
-                                    />  <div>
+                                        <Form.Check
+                                            inline
+                                            label="Yes"
+                                            type="radio"
+                                            id="yesRadio"
+                                            name="IsActive"
+                                            value={true}  // Set the value to true
+                                            checked={formData.IsActive === true}
+                                            style={{ color: formData.IsActive ? 'green' : 'black', cursor: 'pointer' }}
+                                            onChange={handleInputChange}
+                                        />
+                                        <Form.Check
+                                            inline
+                                            label="No"
+                                            type="radio"
+                                            id="noRadio"
+                                            name="IsActive"
+                                            value={false}  // Set the value to false
+                                            checked={formData.IsActive === false}
+                                            style={{ color: formData.IsActive ? 'red' : 'black', cursor: 'pointer' }}
+                                            onChange={handleInputChange}
+                                        /> <div>
                                         {errors.IsActive && (
                                             <span className='text-danger'>{errors.IsActive}</span>
                                         )}</div>
@@ -1334,19 +1188,22 @@ const StudentCurd = () => {
                         <Col xs={12} md={6} style={{ marginTop: "24px", width: "350px" }}>
                             <Form.Group>
                                 <Form.Label> </Form.Label>
-                                <DatePicker
-                                    dateFormat="MMM-dd-yy"
-                                    selected={DOB}
-                                    onChange={(e) => {
-                                        SetDOB(e);
-                                        handleInputChange()
-                                    }}
-                                    className="form-control"
-                                    placeholderText="Date of Birth"
-                                    isValidDate={(date) => {
-                                        // Return false if the date is in the future
-                                        return date <= new Date();
-                                    }}
+                                    <DatePicker
+                                        name="DOB"
+                                        selected={formData.DOB ? new Date(formData.DOB) : null}
+                                        onChange={(date) => {
+                                            const formattedDate = date.toISOString().split('T')[0];
+                                            setFormData(prevData => ({
+                                                ...prevData,
+                                                DOB: formattedDate
+                                            }));
+                                        }}
+                                        dateFormat="dd-MMM-yy"
+                                        className="form-control"
+                                        placeholderText="Date of Birth"
+                                        isValidDate={(date) => {
+                                            return date <= new Date();
+                                        }}
                                 />
                             </Form.Group>
                             {errors.DOB && (
@@ -1356,20 +1213,23 @@ const StudentCurd = () => {
                         <Col
                             xs={12}
                             md={6}
-                            style={{ marginLeft: "80px", marginTop: "24px", width: "350px" }}
+                            style={{ marginLeft: "52px", marginTop: "24px", width: "370px" }}
                         >
                             <Form.Group>
                                 <Form.Label> </Form.Label>
                                 <DatePicker
-                                    dateFormat="MMM-dd-yy"
-
-                                    selected={EnrollmentDate ? new Date(EnrollmentDate) : null}
-                                    onChange={(e) => {
-                                        SetEnrollmentDate(e)
-                                        handleInputChange()
-                                    }}
-                                    className="form-control"
-                                    placeholderText="EnrollmentDate"
+                                        dateFormat="dd-MMM-yy"
+                                        name="EnrollmentDate"
+                                        selected={formData.EnrollmentDate ? new Date(formData.EnrollmentDate) : null}
+                                        onChange={(date) => {
+                                            const formattedDate = date.toISOString().split('T')[0];
+                                            setFormData(prevData => ({
+                                                ...prevData,
+                                                EnrollmentDate: formattedDate
+                                            }));
+                                        }}
+                                        className="form-control"
+                                        placeholderText="EnrollmentDate"
                                 />
                             </Form.Group>
                             {errors.EnrollmentDate && (
@@ -1383,37 +1243,38 @@ const StudentCurd = () => {
                         <Col xs={12} md={6} style={{ marginTop: "30px" }}>
                             <Form.Group>
                                 <Form.Label></Form.Label>
-                                <input type="file" onChange={(e) => { handleFileChange(e); handleInputChange() }} style={{ marginBottom: "30px" }} />
-                                <div>  {selectedFile && (
-                                    <img
-
-                                        src={URL.createObjectURL(selectedFile)}
-                                        alt="Selected File"
-                                        style={{ maxWidth: "100%", maxHeight: "100px" }}
-
-                                    />
-
-                                )}</div>
+                                    <input type="file" onChange={handleFileChange} style={{ marginBottom: "30px" }} />
+                                    {selectedFile && (
+                                        <img
+                                            src={URL.createObjectURL(selectedFile)}
+                                            alt="Selected File"
+                                            style={{ maxWidth: "100%", maxHeight: "100px" }}
+                                        />
+                                    )}
                                 <div>
                                     {errors.photo && <span style={{ color: 'red' }}>{errors.photo}</span>}</div>
 
                             </Form.Group>
 
                         </Col>
-                    </Row>
+                        </Row>
+                        <div className="mt-3 d-flex justify-content-end align-items-center">
+                            <Button variant="danger" onClick={handleAddCloseModal}>
+                                Close
+                            </Button>
+                            <div className="mx-2" style={{
+                                borderLeft: '1px'
+                            }} >
+                            <Button type="submit" variant="primary">
+                                Submit
+                                </Button>
+                            </div>
+                        </div>
+
+                    </form>
 
                 </Modal.Body>
-                <Modal.Footer>
-                    <Button variant="danger" onClick={handleAddCloseModal}>
-                        Close
-                    </Button>
-                    <Button
-                        variant="success"
-                        onClick={(event) => { handleClickSave(event); refreshPage(); }} // Pass the event object here
-                    >
-                        Submit
-                    </Button>
-                </Modal.Footer>
+              
             </Modal>
 
 
@@ -1429,12 +1290,13 @@ const StudentCurd = () => {
                         <Modal.Title><span style={{ textAlign: "center", marginLeft: "300px" }}>Update/Edit Student</span></Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
+                        <form >
                         <Row>
                             <Col xs={12} md={6}>
                                 <Form.Group>
                                     <Form.Label></Form.Label>
                                     <input
-                                        type="text"
+                                          type="text" autocomplete ="off"
                                         className="form-control"
                                         placeholder="Edit Name"
                                         value={Editname}
@@ -1446,7 +1308,7 @@ const StudentCurd = () => {
                                 <Form.Group>
                                     <Form.Label> </Form.Label>
                                     <input
-                                        type="text"
+                                          type="text" autocomplete ="off"
                                         className="form-control"
                                         placeholder="Edit Mobile No"
                                         value={EditMobileNo}
@@ -1461,7 +1323,7 @@ const StudentCurd = () => {
                                 <Form.Group>
                                     <Form.Label></Form.Label>
                                     <input
-                                        type="text"
+                                          type="text" autocomplete ="off"
                                         className="form-control"
                                         placeholder="Edit Age"
                                         value={EditAge}
@@ -1473,7 +1335,7 @@ const StudentCurd = () => {
                                 <Form.Group>
                                     <Form.Label></Form.Label>
                                     <input
-                                        type="text"
+                                          type="text" autocomplete ="off"
                                         className="form-control"
                                         placeholder="Edit City"
                                         value={EditCity}
@@ -1561,7 +1423,7 @@ const StudentCurd = () => {
                                 <Form.Group>
                                     <Form.Label></Form.Label>
                                     <input
-                                        type="text"
+                                          type="text" autocomplete ="off"
                                         className="form-control"
                                         placeholder="EditCredits"
                                         value={EditCredits}
@@ -1573,7 +1435,7 @@ const StudentCurd = () => {
                                 <Form.Group>
                                     <Form.Label></Form.Label>
                                     <input
-                                        type="text"
+                                          type="text" autocomplete ="off"
                                         className="form-control"
                                         placeholder="Edit Email Id"
                                         value={EditEmailId}
@@ -1710,11 +1572,13 @@ const StudentCurd = () => {
                                 </Form.Group>
                             </Col>
                         </Row>
-                    </Modal.Body>
-                    <Modal.Footer>
-                        <Button variant="danger" onClick={handleCloseEditModal}>
-                            Close
-                        </Button>
+                        <div className="mt-3 d-flex justify-content-end align-items-center">
+                    <Button variant="danger" onClick={handleCloseEditModal}>
+                        Close
+                    </Button>
+                    <div className="mx-2" style={{
+                        borderLeft: '1px'
+                    }} >
                         <Button
                             variant="primary"
                             onClick={() => {
@@ -1724,9 +1588,16 @@ const StudentCurd = () => {
                         >
                             Save
                         </Button>
-                    </Modal.Footer>
-                </Modal>
+                    </div>
+                </div>
+
+            </form>
+
+        </Modal.Body>
+              
+            </Modal >
             </div>
+
         </Fragment>
     );
 };

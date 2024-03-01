@@ -14,8 +14,8 @@ const Login = () => {
     };
     const Navigate = useNavigate(); // Import useHistory hook
     const [values, setValue] = useState({
-        email: '',
-        password: '',
+        email: "",
+        password: "",
     });
     const [errors, setErrors] = useState({});
 
@@ -57,7 +57,7 @@ const Login = () => {
         <>
             <div id='loginpage' className='d-flex border bg-light-blue '>
                 <div>
-                    <form id='Lform' action='' onSubmit={handleSubmit}>
+                    <form id='Lform' action="" onSubmit={handleSubmit}>
                         <h3 style={{ textAlign: "center" }}>
                             <strong class="light-underline">Login Page</strong>
                         </h3>

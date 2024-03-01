@@ -3,7 +3,7 @@
 console.log(useEffect);
 export  function TextForm(props) {
 
-    const [test, SetTest] = useState('');
+    const [test, SetTest] = useState("");
     const HandleUpClick = () => {
         let newtext = test.toUpperCase();
         SetTest(newtext)
@@ -17,7 +17,7 @@ export  function TextForm(props) {
         // document.title='Lowercase Data'
     }
     const HandleCrClick = () => {
-        let newtext = '';
+        let newtext = "";
         SetTest(newtext)
         props.showAlert("  Clear Data !!", "Success");
         //document.title='Clear Data'

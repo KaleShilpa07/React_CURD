@@ -41,7 +41,7 @@ class News extends Component {
     //CapitalizeFirstLetter = (str) => {
     //    // Check if str is a string
     //    if (typeof str !== 'string' || str.length === 0) {
-    //        return ''; // Or handle the error accordingly
+    //        return ""; // Or handle the error accordingly
     //    }
     //    return str.charAt(0).toUpperCase() + str.slice(1);
     //};

@@ -73,23 +73,31 @@ code {
     animation: slideInRight 0.5s ease-in-out forwards;
 }
 #loginpage {
+    padding:60px;
     margin-top: 0px;
-    height: 100vh;
+    height: 99vh;
     width: 68vw;
     margin-right:50%;
-    background-image: url('components/Bg3.png');
+    background-image: url('components/bg2.png');
     overflow: hidden;
     background-repeat: no-repeat;
     background-attachment: fixed;
     background-position: center;
     background-size: cover;
 }
+.css-mpjsgn-MuiPaper-root-MuiTableContainer-root {
+    background-color: darkblue;
+    position: absolute;
+  padding: 50px 50px 50px 50px;
+
+}
 #SignUppage {
+    padding: 60px;
     margin-top: 0px;
-    height: 100vh;
+    height: 99vh;
     width: 68vw;
     margin-right: 50%;
-    background-image: url('components/Bg3.png');
+    background-image: url('components/bg2.png');
     overflow: hidden;
     background-repeat: no-repeat;
     background-attachment: fixed;

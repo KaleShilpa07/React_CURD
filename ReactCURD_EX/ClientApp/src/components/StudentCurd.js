@@ -7,7 +7,7 @@ import {
     DialogContentText,
     DialogActions,
     TableContainer,
-    IconButton, Paper
+     Paper
 } from "@mui/material";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -100,15 +100,14 @@ const StudentCurd = () => {
     const [selectedFile, setSelectedFile] = useState(null);
 
     // Handler for file input change
-    const handleFileChange = async (e) => {
+    const handleFileChange = (e) => {
         const file = e.target.files[0];
-        setSelectedFile(file); // Set selectedFile state with the file object
-        await updatePhoto(); // Update photo state with base64 representation of the selected file
+        setSelectedFile(file);
     }
-    const updatePhoto = async () => {
-        const base64 = selectedFile ? await getBase64(selectedFile) : null;
-        // Now you can use the base64 value to update your photo state or perform any other operation
-    }
+    //const updatePhoto = async () => {
+    //    const photo = selectedFile ? await getBase64(selectedFile) : null;
+    //    // Now you can use the base64 value to update your photo state or perform any other operation
+    //}
     const handleEditFileChange = (e) => {
         SetEditPhotoBase64();
         setSelectedFile(e.target.files[0]);
@@ -128,6 +127,16 @@ const StudentCurd = () => {
             };
         });
     };
+    //const getBase64 = (file, callback) => {
+    //    const reader = new FileReader();
+    //    reader.readAsDataURL(file);
+    //    reader.onload = () => {
+    //        callback(reader.result.split(',')[1]);
+    //    };
+    //    reader.onerror = (error) => {
+    //        console.error('Error:', error);
+    //    };
+    //};
 
 
     const [searchTerm, setSearchTerm] = useState("");
@@ -215,6 +224,7 @@ const StudentCurd = () => {
             .then((result) => {
                 if (result.status === 200) {
                     toast.success("Student Delete SuccessFully..", { position: "top-center" });
+                    
                 }
                 handleCloseDialog(); // Close the confirmation dialog
             })
@@ -303,21 +313,6 @@ const StudentCurd = () => {
     const [EditCourceName, SetEditCourceName] = useState("");
 
 
-    //Get dummy data to show dropdown...
-
-    const GetGrade = [
-        { Grade: "A" },
-        { Grade: "-A" },
-        { Grade: "B" },
-        { Grade: "C" },
-        { Grade: "D" },
-        { Grade: "E" },
-        { Grade: "F" },
-        { Grade: "G" },
-        { Grade: "H" },
-
-    ];
-
 
     //Save student Data
     //const [errors, setErrors] = useState({});
@@ -326,7 +321,7 @@ const StudentCurd = () => {
     const [formData, setFormData] = useState({
         Name: "",
         Age: "",
-        DOB: new Date(),
+        DOB: "",
         Gender: "",
         City: "",
         EmailId: "",
@@ -334,74 +329,65 @@ const StudentCurd = () => {
         CourceCode: "",
         Credits: "",
         Grade: "",
-        EnrollmentDate: new Date(),
+        EnrollmentDate: "",
         MobileNo: "",
         IsActive: "",
-        Degree: selectedDegree,
-        photo: selectedFile ? getBase64(selectedFile) : null,
+        Degree: "",
+        photo: null, // Change to null
     });
     const handleInputChange = (event) => {
-        const { name, value, type } = event.target;
-        let inputValue = value; // Define inputValue here
-        if (type === 'radio') {
-            setFormData(prev => ({ ...prev, [name]: value === 'true' }));
-        } else {  // If the input is for photo, use the selectedFile directly
-            if (name === 'photo') {
-                inputValue = selectedFile;
-            }
+        const { name, value,type } = event.target;
 
-            setFormData(prevFormData => ({
-                ...prevFormData,
-                [name]: inputValue
-            }));
-        }
+        let inputValue = value; // Define inputValue here
+        if (type === 'checkbox') {
+            // For other radio buttons, convert the value to a boolean
+            inputValue = value === 'true';
+        } 
+        // Update formData with the input value
+        setFormData(prevFormData => ({
+            ...prevFormData,
+            [name]: inputValue
+        }));
 
         console.log(name, inputValue); // Log name and inputValue
-        };
-   
+    };
+
     
     
     const HandleSave = async (event) => {
         event.preventDefault();
 
-        const validationErrors = AddStudentValidations(formData);
-        setErrors(validationErrors);
+        try {
+            const formDataCopy = { ...formData };
 
-        // If there are no validation errors, proceed with form submission
-        if (Object.keys(validationErrors).length === 0) {
-            try {
-                // Gather all the form data
-                const newData = { ...formData };
-
-                Setdata(prevData => [...prevData, newData]); // Update the data state
-                console.log(data);
-
-                const response = await axios.post('https://localhost:7195/api/home', formData);
-
-                if (response.status === 200) {
-                    // Success response
-                    console.log('Save successful:', response.data);
-                    toast.success('Student added successfully', {
-                        position: "top-center"
-                    });
-                    // Optionally, clear the form fields or close the modal
-                    handleAddCloseModal();
-                } else {
-                    // Handle other status codes
-                    console.error('Failed to add student:', response.data);
-                    toast.error('Failed to add student', {
-                        position: "top-center"
-                    });
-                }
-            } catch (error) {
-                // Handle network errors or other exceptions
-                console.error('Error saving data:', error);
-                toast.error('Error saving data. Please try again later.', {
-                    position: "top-center"
-                });
+            if (selectedFile) {
+                formDataCopy.photo = await getBase64(selectedFile);
             }
+
+            const validationErrors = AddStudentValidations(formDataCopy);
+            setErrors(validationErrors);
+
+            if (Object.keys(validationErrors).length > 0) {
+                return;
+            }
+
+            const response = await axios.post('https://localhost:7195/api/home', formDataCopy);
+
+            if (response.status === 200) {
+                console.log('Save successful:', response.data);
+                setFormData({ ...formData, photo: null });
+                setSelectedFile(null);
+                handleAddCloseModal();
+                refreshPage();
+            } else {
+                console.error('Failed to add student:', response.data);
+            }
+        } catch (error) {
+            console.error('Error saving data:', error);
         }
     };
+
+
 
     const handleUpdate = async (id) => {
         const updatedData = {
@@ -572,16 +558,16 @@ const StudentCurd = () => {
     return (
         <Fragment >
             <br></br>
-            <ToastContainer style={{ marginTop: "60px" }} />
+            <ToastContainer style={{ marginTop: "5px", position:"absolute"}} />
 
             {/*search data and Delete All btn*/}
-            <Container style={{ marginTop: "50px" }}>
+            <Container style={{ marginTop: "55px" }}>
                 <Row>
                     <Col
                         mx={2}
                         lg={4}
                         md={8}
-                        style={{ position: "fixed", width: "15%", marginLeft: "860px" }}
+                        style={{ position: "fixed", width: "13%", marginLeft: "860px" }}
                     >
                         <input
                             className="form-control"
@@ -624,14 +610,14 @@ const StudentCurd = () => {
                 {" "}
                 <div>
                     {" "}
-                    <IconButton
-                        color="btn btn-outline-Success"
-                        style={{ color: "green" }}
+                    <Button
+                        color="btn btn-Success"
+                        style={{ color: "white", marginLeft:"15px" }}
                         onClick={handleAddShowModal}
                     >
                         <AddCircleOutlineIcon />
                         &nbsp; Add New
-                    </IconButton>{" "}
+                    </Button>{" "}
                 </div>
             </Row>
             <br></br>
@@ -928,7 +914,7 @@ const StudentCurd = () => {
                             <Form.Group>
                                 <Form.Label> </Form.Label>
                                 <input
-                                      type="text" autocomplete ="off"
+                                      type="text" autoComplete="off"
                                     className="form-control"
                                         placeholder="Mobile No"
                                         name="MobileNo"
@@ -947,7 +933,7 @@ const StudentCurd = () => {
                             <Form.Group>
                                 <Form.Label></Form.Label>
                                 <input
-                                      type="text" autocomplete ="off"
+                                      type="text" autoComplete="off"
                                     className="form-control"
                                     placeholder="Age"
                                         name="Age"
@@ -965,7 +951,7 @@ const StudentCurd = () => {
                             <Form.Group>
                                 <Form.Label></Form.Label>
                                 <input
-                                      type="text" autocomplete ="off"
+                                      type="text" autoComplete="off"
                                     className="form-control"
                                         placeholder="City"
                                         name="City" value={formData.City}
@@ -1046,18 +1032,7 @@ const StudentCurd = () => {
                         <Col xs={12} md={6}>
                             <Form.Group>
                                 <Form.Label></Form.Label>
-                                {/*<Form.Select*/}
-                                {/*        name="Grade"*/}
-                                {/*        value={formData.Grade}*/}
-                                {/*        onChange={handleInputChange}*/}
-                                {/*>  <option value="">Select Grade</option>*/}
-                                {/*    {GetGrade.map(grade => (*/}
-                                {/*        <option key={grade.GradeId} value={grade.Grade}>*/}
-                                {/*            {grade.Grade}*/}
-                                {/*        </option>*/}
-                                {/*    ))}*/}
-                                   
-                                    {/*</Form.Select>*/}
+                                
                                     <input
                                         type="text" autocomplete="off"
                                         className="form-control"
@@ -1079,7 +1054,7 @@ const StudentCurd = () => {
                                 <Form.Label></Form.Label>
                                 <input
 
-                                      type="text" autocomplete ="off"
+                                      type="text" autoComplete="off"
                                     className="form-control"
                                         placeholder="Credits"
                                         name="Credits"
@@ -1096,7 +1071,7 @@ const StudentCurd = () => {
                             <Form.Group>
                                 <Form.Label></Form.Label>
                                 <input
-                                      type="text" autocomplete ="off"
+                                      type="text" autoComplete="off"
                                     className="form-control"
                                     placeholder="Email Id"
                                         name="EmailId"
@@ -1122,22 +1097,24 @@ const StudentCurd = () => {
 
                                             <Form.Check
                                                 inline
+                                                value="Male"
                                                 label="Male"
                                                 type="radio"
                                                 id="maleRadio"
                                                 name="Gender"
-                                                value="true"
-                                                checked={formData.Gender === true}
+                                                checked={formData.Gender === "Male" || formData.Gender === "male"}
+
                                                 onChange={handleInputChange}
                                             />
                                             <Form.Check
                                                 inline
+                                                value="Female"
                                                 label="Female"
                                                 type="radio"
                                                 id="femaleRadio"
                                                 name="Gender"
-                                                value="false"
-                                                checked={formData.Gender === false}
+                                                checked={formData.Gender === "Female" || formData.Gender === "female"}
+
                                                 onChange={handleInputChange}
                                             />
 
@@ -1152,29 +1129,31 @@ const StudentCurd = () => {
 
                         <Col xs={12} md={6}>
                             <Form.Group>
-                                <label>IsActive &nbsp;&nbsp;&nbsp;
+                                    <label>IsActive &nbsp;&nbsp;&nbsp;
                                         <Form.Check
-                                            inline
+                                            type="checkbox"
                                             label="Yes"
-                                            type="radio"
-                                            id="yesRadio"
+                                            id="isActiveCheckbox"
                                             name="IsActive"
-                                            value={true}  // Set the value to true
                                             checked={formData.IsActive === true}
-                                            style={{ color: formData.IsActive ? 'green' : 'black', cursor: 'pointer' }}
                                             onChange={handleInputChange}
+                                            style={{ color: formData.IsActive ? 'green' : 'black', cursor: 'pointer' }}
+                                            inline
+                                            value={true}
+                                            
                                         />
                                         <Form.Check
                                             inline
                                             label="No"
-                                            type="radio"
-                                            id="noRadio"
+                                            type="checkbox"
+                                            id="isActiveCheckbox"
                                             name="IsActive"
                                             value={false}  // Set the value to false
                                             checked={formData.IsActive === false}
                                             style={{ color: formData.IsActive ? 'red' : 'black', cursor: 'pointer' }}
                                             onChange={handleInputChange}
-                                        /> <div>
+                                        />
+                                         <div>
                                         {errors.IsActive && (
                                             <span className='text-danger'>{errors.IsActive}</span>
                                         )}</div>
@@ -1190,6 +1169,7 @@ const StudentCurd = () => {
                                 <Form.Label> </Form.Label>
                                     <DatePicker
                                         name="DOB"
+                                        autoComplete="off"
                                         selected={formData.DOB ? new Date(formData.DOB) : null}
                                         onChange={(date) => {
                                             const formattedDate = date.toISOString().split('T')[0];
@@ -1219,6 +1199,7 @@ const StudentCurd = () => {
                                 <Form.Label> </Form.Label>
                                 <DatePicker
                                         dateFormat="dd-MMM-yy"
+                                        autoComplete="off"
                                         name="EnrollmentDate"
                                         selected={formData.EnrollmentDate ? new Date(formData.EnrollmentDate) : null}
                                         onChange={(date) => {
@@ -1242,19 +1223,25 @@ const StudentCurd = () => {
 
                         <Col xs={12} md={6} style={{ marginTop: "30px" }}>
                             <Form.Group>
-                                <Form.Label></Form.Label>
-                                    <input type="file" onChange={handleFileChange} style={{ marginBottom: "30px" }} />
-                                    {selectedFile && (
-                                        <img
-                                            src={URL.createObjectURL(selectedFile)}
-                                            alt="Selected File"
-                                            style={{ maxWidth: "100%", maxHeight: "100px" }}
-                                        />
-                                    )}
-                                <div>
-                                    {errors.photo && <span style={{ color: 'red' }}>{errors.photo}</span>}</div>
+                                    <Col xs={12} md={6} style={{ marginTop: "30px" }}>
+                                       
+                                            <Form.Group>
+                                                <Form.Label></Form.Label>
+                                                <input type="file" onChange={(e) => handleFileChange(e)} />
 
-                            </Form.Group>
+                                                {selectedFile && (
+                                                    <img
+                                                        src={URL.createObjectURL(selectedFile)}
+                                                        alt="Selected File"
+                                                        style={{ maxWidth: "100%", maxHeight: "200px" }}
+                                                    />
+
+                                                )}</Form.Group>
+                                            
+                                        <div> {errors.photo && <span style={{ color: 'red' }}>{errors.photo}</span>}</div>
+
+                                    </Col>
+                                 </Form.Group>
 
                         </Col>
                         </Row>
@@ -1296,7 +1283,7 @@ const StudentCurd = () => {
                                 <Form.Group>
                                     <Form.Label></Form.Label>
                                     <input
-                                          type="text" autocomplete ="off"
+                                          type="text" autoComplete="off"
                                         className="form-control"
                                         placeholder="Edit Name"
                                         value={Editname}
@@ -1308,7 +1295,7 @@ const StudentCurd = () => {
                                 <Form.Group>
                                     <Form.Label> </Form.Label>
                                     <input
-                                          type="text" autocomplete ="off"
+                                          type="text" autoComplete="off"
                                         className="form-control"
                                         placeholder="Edit Mobile No"
                                         value={EditMobileNo}
@@ -1323,7 +1310,7 @@ const StudentCurd = () => {
                                 <Form.Group>
                                     <Form.Label></Form.Label>
                                     <input
-                                          type="text" autocomplete ="off"
+                                          type="text" autoComplete="off"
                                         className="form-control"
                                         placeholder="Edit Age"
                                         value={EditAge}
@@ -1335,7 +1322,7 @@ const StudentCurd = () => {
                                 <Form.Group>
                                     <Form.Label></Form.Label>
                                     <input
-                                          type="text" autocomplete ="off"
+                                          type="text" autoComplete="off"
                                         className="form-control"
                                         placeholder="Edit City"
                                         value={EditCity}
@@ -1376,8 +1363,7 @@ const StudentCurd = () => {
                                             </option>
                                         ))}
                                     </Form.Select>
-                                    {errors.CourceName && <span className='text-danger'>{errors.CourceName}</span>}
-                                </Form.Group>
+                                     </Form.Group>
                             </Col> </Row>
                             <Row>
                         <Col xs={12} md={6}>
@@ -1399,22 +1385,18 @@ const StudentCurd = () => {
                             </Col>
                             <Col xs={12} md={6}>
                             <Form.Group>
-                                <Form.Label></Form.Label>
-                                <Form.Select
-                                    value={EditGrade}
-                                    onChange={(e) => 
-                                        SetEditGrade(e.target.value)   }
-                                >  <option value="">Select Grade</option>
-                                    {GetGrade.map(grade => (
-                                        <option key={grade.GradeId} value={grade.Grade}>
-                                            {grade.Grade}
-                                        </option>
-                                    ))}
+                                        <Form.Label></Form.Label>
 
-                                </Form.Select>
-                                {errors.Grade && (
-                                    <span className='text-danger'>{errors.Grade}</span>
-                                )}
+                                        <input
+                                            type="text" autoComplete="off"
+                                            className="form-control"
+                                            placeholder="Edit Grade"
+                                            value={EditGrade}
+                                            onChange={(e) => SetEditGrade(e.target.value)}
+                                        />
+                                        {errors.Grade && (
+                                            <span className='text-danger'>{errors.Grade}</span>
+                                        )}
                             </Form.Group>
                             </Col>
                         </Row>
@@ -1423,7 +1405,7 @@ const StudentCurd = () => {
                                 <Form.Group>
                                     <Form.Label></Form.Label>
                                     <input
-                                          type="text" autocomplete ="off"
+                                          type="text" autoComplete="off"
                                         className="form-control"
                                         placeholder="EditCredits"
                                         value={EditCredits}
@@ -1435,7 +1417,7 @@ const StudentCurd = () => {
                                 <Form.Group>
                                     <Form.Label></Form.Label>
                                     <input
-                                          type="text" autocomplete ="off"
+                                          type="text" autoComplete="off"
                                         className="form-control"
                                         placeholder="Edit Email Id"
                                         value={EditEmailId}
@@ -1484,9 +1466,9 @@ const StudentCurd = () => {
                                         <Form.Check
                                             inline
                                             label="Yes"
-                                            type="radio"
-                                            id="yesRadio"
-                                            name="isActiveRadio"
+                                                type="checkbox"
+                                                id="checkboxTrue"
+                                            name="IsActive"
                                             checked={EditIsActive === true}
                                             style={{ color: EditIsActive ? 'green' : 'black', cursor: 'pointer' }}
                                             onChange={() => SetEditIsActive(true)}
@@ -1494,9 +1476,9 @@ const StudentCurd = () => {
                                         <Form.Check
                                             inline
                                             label="No"
-                                            type="radio"
-                                            id="noRadio"
-                                            name="isActiveRadio"
+                                                type="checkbox"
+                                                id="checkboxFalse"
+                                            name="IsActive"
                                             checked={EditIsActive === false}
                                             style={{ color: EditIsActive ? 'red' : 'black', cursor: 'pointer' }}
                                             onChange={() => SetEditIsActive(false)}
@@ -1514,7 +1496,7 @@ const StudentCurd = () => {
                             {" "}
                             <Col xs={12} md={6} style={{ marginTop: "24px", width: "300px" }}>
                                 <Form.Group>
-                                    <Form.Label> </Form.Label>
+                                    <Form.Label>Date of Birth</Form.Label>
                                     <DatePicker
                                         selected={EditDOB ? new Date(EditDOB) : null}
                                         onChange={(date) => SetEditDOB(date)}
@@ -1529,7 +1511,7 @@ const StudentCurd = () => {
                             </Col>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                             <Col xs={12} md={6} style={{ marginTop: "24px", width: "300px" }}>
                                 <Form.Group>
-                                    <Form.Label> </Form.Label>
+                                    <Form.Label>Enrollment Date </Form.Label>
                                     <DatePicker
                                         selected={
                                             EditEnrollmentDate ? new Date(EditEnrollmentDate) : null

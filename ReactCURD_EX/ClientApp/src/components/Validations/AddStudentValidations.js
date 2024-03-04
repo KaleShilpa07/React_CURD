@@ -64,14 +64,17 @@ const AddStudentValidations = (formData) => {
         (formData.MobileNo)) {
         Allerrors.MobileNo = "Mobile Number valid only 10 digits please Enter Valid Mobile number "
     }
-    //if (!formData.Gender || typeof formData.Gender !== 'string' || !formData.Gender.trim()) {
-    //    Allerrors.Gender = "Please select your Gender";
-    //}
+    if (!formData.hasOwnProperty('Gender') || (formData.Gender !== 'Male' && formData.Gender !== 'Female')) {
+        Allerrors.Gender = "Select Gender";
+    }
 
     if (formData.hasOwnProperty('IsActive')) {
         if (typeof formData.IsActive !== 'boolean') {
             Allerrors.IsActive = "Select Active Status";
         }
+    }
+    if (!formData.photo) {
+        Allerrors.photo = "Please upload a photo.";
     }
     return Allerrors;
 };

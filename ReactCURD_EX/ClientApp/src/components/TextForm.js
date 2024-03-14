@@ -44,20 +44,19 @@ export  function TextForm(props) {
 
     return (
         <>
-            <div className="container" style={{ marginTop:"70px" }}>
+            <div className="container" style={{ padding: "30px" }}>
+                <h1 ><u>Text Editor</u> </h1>
                 <div className="mb-4">
-                    <strong> <label htmlFor="exampleInputEmail1" className="form-label">Upper ,Lower Word counter,character counter,count time,remove extra spaces.</label></strong>
-                    <textarea className="form-control" style={{ backgroundColor: props.mode === 'dark' ? 'grey' : 'white', border: '2px solid' }} value={test} id="Box1" onChange={HandleOnChange} rows="5"></textarea>
+                    <strong> <label className="form-label">Upper ,Lower Word counter,character counter,count time,remove extra spaces.</label></strong>
+                    <textarea className="form-control" style={{ backgroundColor: props.mode === 'dark' ? 'grey' : 'white', border: '2px solid', width:"600px" }} value={test} id="Box1" onChange={HandleOnChange} rows="5"></textarea>
                 </div>
-
-
                 <button disabled={test.length === 0} className="btn btn-primary mx-1 my-1" onClick={HandleLoClick}>Lower case</button>
                 <button disabled={test.length === 0} className="btn btn-primary mx-1 my-1" onClick={HandleCrClick}>Clear</button>
                 <button disabled={test.length === 0} className="btn btn-primary mx-1 my-1" onClick={HandleCopyClick}>Copy</button>
                 <button disabled={test.length === 0} className="btn btn-primary mx-1 my-1" onClick={HandleRemoveExtraSpaceClick}>Remove Space</button>
                 <button disabled={test.length === 0} className="btn btn-primary mx-1 my-1" onClick={HandleUpClick}>Upper case</button>
             </div>
-            <div className="container my-3">
+            <div className="container my-3" >
                 <h2>Yours Note Summary..</h2>
                 <p>{test.split(/\s+/).filter((element) => { return element.length !== 0 }).length} Words And {test.length} Characters</p>
                 {/* Count words in a paragraph and find length in para */}

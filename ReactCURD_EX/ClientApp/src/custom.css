@@ -18,7 +18,43 @@ a {
         animation: App-logo-spin infinite 20s linear;
     }
 }
+.custom-table {
+    border: 1px solid #000; /* Black border around the table */
+}
 
+    .custom-table .MuiDataGrid-columnsContainer {
+        border-bottom: 1px solid #000; /* Black border at the bottom of the header */
+        background-color: yellow; /* Background color for the header */
+    }
+
+    .custom-table .MuiDataGrid-cell {
+        border-right: 1px solid #000; /* Black border between columns */
+        border-bottom: 1px solid #000; /* Black border between rows */
+    }
+
+    .custom-table .MuiDataGrid-row:last-child .MuiDataGrid-cell {
+        border-bottom: none; /* Remove bottom border for the last row */
+    }
+
+.custom-header-name {
+    color: azure;
+    font: bold;
+    align-items: center;
+    background-color: #696969; /* gray background for Name column header */
+}
+.MuiDataGrid-sortIcon path {
+    fill: white; /* Change arrow color to white */
+}
+.MuiButtonBase-root.MuiIconButton-root:hover .MuiDataGrid-sortIcon path {
+    fill: white; /* Change hover arrow color to white */
+}
+/* Target the menu icon */
+.MuiDataGrid-menuIconButton svg {
+    fill: white; /* Change menu icon color to white */
+}
+.MuiDataGrid-root .MuiDataGrid-cell:hover {
+    background-color: lightgray; /* Change cell hover color to pink */
+}
 .App-header {
     background-color: #282c34;
     min-height: 100vh;

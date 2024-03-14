@@ -2,14 +2,9 @@
 import LoadingBar from "react-top-loading-bar";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import News from './News';
-import Navbar from './Navbar';
-import StudentCurd from './StudentCurd';
-import ContactStudent from './ContactStudent';
 import Login from './Login';
 import SignUp from './SignUp';
 import Nav from './Nav';
-import TextForm from './TextForm';
-
 
 export class NewsRoute extends Component {
 
@@ -45,14 +40,9 @@ export class NewsRoute extends Component {
                             path="*"
                             element={<this.RenderNav>
                                 <Routes>
-                                    <Route path="/StudentCurd" element={<StudentCurd />} />
-                                    <Route path="/Contact" element={<ContactStudent />} />
-                                    <Route path="/" element={<Login />} />
+                                     <Route path="/" element={<Login />} />
                                     <Route path="/SignUp" element={<SignUp />} />
                                     <Route path="/Nav" element={<Nav />} />
-                                    <Route path="/Navbar" element={<Navbar />} />
-                                    <Route path="/TextForm" element={<TextForm />} />
-                                   
                                     </Routes>
                             </this.RenderNav>}
                         />

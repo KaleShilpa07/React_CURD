@@ -1,6 +1,7 @@
 ﻿
 using Microsoft.EntityFrameworkCore;
 using ReactCURD_EX.Model;
+using ReactCURD_EX.Model.CalenderModel;
 using System.ComponentModel.DataAnnotations;
 using System.Xml.Linq;
 
@@ -17,9 +18,12 @@ namespace ReactCURD_EX
 
         public DbSet<Cource> courses { get; set; }
         public DbSet<StudentCources> StudentCources { get; set; }
+        public DbSet<Email> Emails { get; set; }
         public DbSet<StudentDegree> StudentDegree { get; set; }
         public DbSet<Enrollment> enrollments { get; set; }
         public DbSet<Student> Students { get; set; }
+        public DbSet<StudentContact> studentContacts { get; set; }
+        public DbSet<Event> events { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             // Configure relationships
@@ -41,9 +45,6 @@ namespace ReactCURD_EX
                 .HasOne(e => e.Cource)
                 .WithMany(c => c.Enrollments)
                 .HasForeignKey(e => e.CourceId);
-
-            // Optionally, add other configurations for entities here
-
 
             // Optionally, add other configurations for entities here
 

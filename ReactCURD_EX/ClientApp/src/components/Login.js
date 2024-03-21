@@ -22,6 +22,10 @@ const Login = () => {
     const handleSubmit = async (event) => {
         event.preventDefault();
         setErrors(LoginValidation(values));
+        if (errors.email) {
+            toast.error('A user with this email and password combination already exists.', { position: "top-center", autoClose: 5000 });
+            return;
+        }
         const response = await fetch("https://localhost:7195/api/home/login", {
             method: 'POST',
             headers: {
@@ -34,7 +38,7 @@ const Login = () => {
             console.log('Login successful:', data);
             toast.success('Login Success', { position: "top-center", autoClose:5000 });
             // Redirect to the next page upon successful login
-            Navigate('/StudentCurd');
+            Navigate('/Layout');
             refreshPage();
             
         }
@@ -59,7 +63,7 @@ const Login = () => {
                 <div>
                     <form id='Lform' action="" onSubmit={handleSubmit}>
                         <h3 style={{ textAlign: "center" }}>
-                            <strong class="light-underline">Login Page</strong>
+                            <strong className="light-underline">Login Page</strong>
                         </h3>
                         <div className='mb-3'>
                             <label htmlFor='Name' className='col-lg-2 col-form-label'>

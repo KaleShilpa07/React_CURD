@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ReactCURD_EX.Infrastructure.Interface;
 using ReactCURD_EX.Model;
+using ReactCURD_EX.Model.CalenderModel;
 using static ReactCURD_EX.ComponyContext;
 
 namespace ReactCURD_EX.Controllers
@@ -22,16 +23,20 @@ namespace ReactCURD_EX.Controllers
 
         }
 
-        //[HttpGet]
+        private readonly List<Event> _events = new List<Event>();
 
-        //public async Task<ActionResult<IEnumerable<Student>>> GetStudent()
-        //{
-        //    if (_cc.Students == null)
-        //    {
-        //        return NotFound();
-        //    }
-        //    return await _cc.Students.ToListAsync();
-        //}
+        [HttpGet("GetEvents")]
+        public ActionResult<IEnumerable<Event>> GetEvents()
+        {
+            return _events;
+        }
+
+        [HttpPost("CreateEvent1")]
+        public ActionResult<Event> CreateEvent1(Event newEvent)
+        {
+            _events.Add(newEvent);
+            return CreatedAtAction(nameof(GetEvents), new { id = newEvent.Id }, newEvent);
+        }
 
         [HttpGet]
         public async Task<IActionResult> GetStudent()
@@ -117,8 +122,8 @@ namespace ReactCURD_EX.Controllers
                 return StatusCode(500, $"Internal Server Error: {ex.Message}");
             }
         }
-
       
+
         [HttpPut("{id}")]
         public async Task<ActionResult> EditStudent(int id, [FromBody] StudentDetailsDTO studentDetails)
         {
@@ -223,6 +228,28 @@ namespace ReactCURD_EX.Controllers
             catch (Exception ex)
             {
                 return StatusCode(500, $"An error occurred while processing your request: {ex.Message}");
+            }
+        }
+
+            [HttpPost("AddContact")]
+            public async Task<ActionResult<int>> AddContact(StudentContact studentContact)
+            {
+                try
+                {
+                    var result = await _studentRepository.AddContact(studentContact);
+
+                    // Check if the result is greater than zero, indicating success
+                    if (result > 0)
+                    {
+                        return Ok(result); // Return the number of affected rows
+                    }
+
+                    return BadRequest("Failed to add student.");
+                }
+                catch (Exception ex)
+                {
+                    return StatusCode(500, $"Internal Server Error: {ex.Message}");
+                
             }
         }
     }

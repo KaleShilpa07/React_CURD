@@ -877,81 +877,82 @@ const StudentCurd = () => {
                 <Modal.Body>
 
                     <form onSubmit={HandleSave}>
-                    <Row>
-                        <Col xs={12} md={6}>
-                            <Form.Group>
-                                <Form.Label></Form.Label>
-                                <input
-                                          type="text" 
+                        <Row>
+                            <Col xs={12} md={6}>
+                                <Form.Group>
+                                    <Form.Label></Form.Label>
+                                    <input
+                                        type="text"
                                         autocomplete="off"
-                                    className="form-control"
+                                        className={`form-control ${errors.Name && 'is-invalid'}`}
                                         placeholder="Name"
                                         name="Name"
                                         value={formData.Name}
                                         onChange={handleInputChange}
-                                />
-                                {errors.Name && (
-                                    <span className='text-danger'>{errors.Name}</span>
-                                )}
-                            </Form.Group>
-                        </Col>
-                        <Col xs={12} md={6}>
-                            <Form.Group>
-                                <Form.Label> </Form.Label>
-                                <input
-                                      type="text" autoComplete="off"
-                                    className="form-control"
+                                    />
+                                    {errors.Name && (
+                                        <span className='text-danger'>{errors.Name}</span>
+                                    )}
+                                </Form.Group>
+                            </Col>
+                            <Col xs={12} md={6}>
+                                <Form.Group>
+                                    <Form.Label> </Form.Label>
+                                    <input
+                                        type="text" autoComplete="off"
+                                        className={`form-control ${errors.MobileNo && 'is-invalid'}`}
                                         placeholder="Mobile No"
                                         name="MobileNo"
                                         value={formData.MobileNo}
                                         onChange={handleInputChange}
-                                />
-                                {errors.MobileNo && (
-                                    <span className='text-danger'>{errors.MobileNo}</span>
-                                )}
-                            </Form.Group>
-                        </Col>
-                    </Row>
+                                    />
+                                    {errors.MobileNo && (
+                                        <span className='text-danger'>{errors.MobileNo}</span>
+                                    )}
+                                </Form.Group>
+                            </Col>
+                        </Row>
 
-                    <Row>
-                        <Col xs={12} md={6}>
-                            <Form.Group>
-                                <Form.Label></Form.Label>
-                                <input
-                                      type="text" autoComplete="off"
-                                    className="form-control"
-                                    placeholder="Age"
+                        <Row>
+                            <Col xs={12} md={6}>
+                                <Form.Group>
+                                    <Form.Label></Form.Label>
+                                    <input
+                                        type="text" autoComplete="off"
+                                        className={`form-control ${errors.Age && 'is-invalid'}`}
+                                        placeholder="Age"
                                         name="Age"
                                         value={formData.Age}
                                         onChange={handleInputChange}
-                                />
-                                {errors.Age && (
-                                    <span className='text-danger'>{errors.Age}</span>
-                                )}
-                            </Form.Group>
+                                    />
+                                    {errors.Age && (
+                                        <span className='text-danger'>{errors.Age}</span>
+                                    )}
+                                </Form.Group>
 
-                        </Col>
+                            </Col>
 
-                        <Col xs={12} md={6}>
-                            <Form.Group>
-                                <Form.Label></Form.Label>
-                                <input
-                                      type="text" autoComplete="off"
-                                    className="form-control"
+                            <Col xs={12} md={6}>
+                                <Form.Group>
+                                    <Form.Label></Form.Label>
+                                    <input
+                                        type="text" autoComplete="off"
+                                        className={`form-control ${errors.City && 'is-invalid'}`}
                                         placeholder="City"
                                         name="City" value={formData.City}
                                         onChange={handleInputChange}
-                                />
-                                {errors.City && (
-                                    <span className='text-danger'>{errors.City}</span>
-                                )}
-                            </Form.Group>
-                        </Col>
-                        <Row>
-                            <Col xs={12} md={6} style={{ width: "405px" }}>
-                                <Form.Group>
-                                    <Form.Label></Form.Label>
+                                    />
+                                    {errors.City && (
+                                        <span className='text-danger'>{errors.City}</span>
+                                    )}
+                                </Form.Group>
+                            </Col>
+                            <Row>
+                                <Col xs={12} md={6} style={{ width: "340px" }}>
+                                    <Form.Group>
+                                        <Form.Label></Form.Label>
                                         <Form.Select
+                                            className={`form-control ${errors.Degree && 'is-invalid'}`}
                                             name="Degree"
                                             value={formData.Degree}
                                             onChange={(e) => {
@@ -966,13 +967,14 @@ const StudentCurd = () => {
                                                 </option>
                                             ))}
                                         </Form.Select>
-                                    {errors.Degree && <span className='text-danger'>{errors.Degree}</span>}
-                                </Form.Group>
-                            </Col>
-                            <Col xs={12} md={6} style={{ width: "380px" }}>
-                                <Form.Group>
-                                    <Form.Label></Form.Label>
+                                        {errors.Degree && <span className='text-danger'>{errors.Degree}</span>}
+                                    </Form.Group>
+                                </Col>
+                                <Col xs={12} md={6} style={{ marginLeft: "20px", width: "300px" }}>
+                                    <Form.Group>
+                                        <Form.Label></Form.Label>
                                         <Form.Select
+                                            className={`form-control ${errors.CourceName && 'is-invalid'}`}
                                             name="CourceName"
                                             value={formData.CourceName}
                                             onChange={(e) => {
@@ -987,98 +989,99 @@ const StudentCurd = () => {
                                                 </option>
                                             ))}
                                         </Form.Select>
-                                    {errors.CourceName && <span className='text-danger'>{errors.CourceName}</span>}
-                                </Form.Group>
-                            </Col> </Row>
-                        <Col xs={12} md={6}>
-                            <Form.Group>
-                                <Form.Label></Form.Label>
-                                <Form.Select
+                                        {errors.CourceName && <span className='text-danger'>{errors.CourceName}</span>}
+                                    </Form.Group>
+                                </Col> </Row>
+                            <Col xs={12} md={6}>
+                                <Form.Group>
+                                    <Form.Label></Form.Label>
+                                    <Form.Select
+                                        className={`form-control ${errors.CourceCode && 'is-invalid'}`}
                                         name="CourceCode" value={formData.CourceCode}
                                         onChange={(e) => {
                                             setSelectedCourseCode(e);  // Pass the event object to handleDegreeChange
                                             handleInputChange(e);   // Pass the event object to handleInputChange
                                         }}
-                                >
-                                    <option value="">Select Course Code</option>
-                                    {courses.map(course => (
-                                        <option key={course.courseId} value={course.courceCode}>
-                                            {course.courceCode}
-                                        </option>
-                                    ))}
-                                </Form.Select>
-                                {errors.CourceCode && <span className='text-danger'>{errors.CourceCode}</span>}
-                            </Form.Group>
-                        </Col>
+                                    >
+                                        <option value="">Select Course Code</option>
+                                        {courses.map(course => (
+                                            <option key={course.courseId} value={course.courceCode}>
+                                                {course.courceCode}
+                                            </option>
+                                        ))}
+                                    </Form.Select>
+                                    {errors.CourceCode && <span className='text-danger'>{errors.CourceCode}</span>}
+                                </Form.Group>
+                            </Col>
 
 
 
 
-                        <Col xs={12} md={6}>
-                            <Form.Group>
-                                <Form.Label></Form.Label>
-                                
+                            <Col xs={12} md={6}>
+                                <Form.Group>
+                                    <Form.Label></Form.Label>
+
                                     <input
                                         type="text" autocomplete="off"
-                                        className="form-control"
+                                        className={`form-control ${errors.Grade && 'is-invalid'}`}
                                         placeholder="Enter Grade"
                                         name="Grade"
                                         value={formData.Grade}
                                         onChange={handleInputChange}
                                     />
-                                {errors.Grade && (
-                                    <span className='text-danger'>{errors.Grade}</span>
-                                )}
-                            </Form.Group>
-                        </Col>
-                    </Row>
+                                    {errors.Grade && (
+                                        <span className='text-danger'>{errors.Grade}</span>
+                                    )}
+                                </Form.Group>
+                            </Col>
+                        </Row>
 
-                    <Row>
-                        <Col xs={12} md={6}>
-                            <Form.Group>
-                                <Form.Label></Form.Label>
-                                <input
+                        <Row>
+                            <Col xs={12} md={6}>
+                                <Form.Group>
+                                    <Form.Label></Form.Label>
+                                    <input
 
-                                      type="text" autoComplete="off"
-                                    className="form-control"
+                                        type="text" autoComplete="off"
+                                        className={`form-control ${errors.Credits && 'is-invalid'}`}
                                         placeholder="Credits"
                                         name="Credits"
                                         value={formData.Credits}
                                         onChange={handleInputChange}
-                                />
-                                {errors.Credits && (
-                                    <span className='text-danger'>{errors.Credits}</span>
-                                )}
-                            </Form.Group>
-                        </Col>
+                                    />
+                                    {errors.Credits && (
+                                        <span className='text-danger'>{errors.Credits}</span>
+                                    )}
+                                </Form.Group>
+                            </Col>
 
-                        <Col xs={12} md={6}>
-                            <Form.Group>
-                                <Form.Label></Form.Label>
-                                <input
-                                      type="text" autoComplete="off"
-                                    className="form-control"
-                                    placeholder="Email Id"
+                            <Col xs={12} md={6}>
+                                <Form.Group>
+                                    <Form.Label></Form.Label>
+                                    <input
+                                        type="text" autoComplete="off"
+                                        className={`form-control ${errors.EmailId && 'is-invalid'}`}
+                                        placeholder="Email Id"
                                         name="EmailId"
                                         value={formData.EmailId}
                                         onChange={handleInputChange}
-                                />
-                                {errors.EmailId && (
-                                    <span className='text-danger'>{errors.EmailId}</span>
-                                )}
+                                    />
+                                    {errors.EmailId && (
+                                        <span className='text-danger'>{errors.EmailId}</span>
+                                    )}
 
-                            </Form.Group>
-                        </Col>
+                                </Form.Group>
+                            </Col>
 
-                    </Row>
+                        </Row>
 
-                    <br></br>
-                    <Row>
+                        <br></br>
+                        <Row>
 
-                        <Col xs={12} md={6}>
-                            <Form.Group>
-                                <div>
-                                    <label>Gender &nbsp;:&nbsp;&nbsp;
+                            <Col xs={12} md={6}>
+                                <Form.Group>
+                                    <div>
+                                        <label>Gender &nbsp;:&nbsp;&nbsp;
 
                                             <Form.Check
                                                 inline
@@ -1103,17 +1106,17 @@ const StudentCurd = () => {
                                                 onChange={handleInputChange}
                                             />
 
-                                    </label>
-                                </div>
-                            </Form.Group><div>
-                            {errors.Gender && (
-                                <span className='text-danger'>{errors.Gender}</span>
-                                )}</div>
-                        </Col>
+                                        </label>
+                                    </div>
+                                </Form.Group><div>
+                                    {errors.Gender && (
+                                        <span className='text-danger'>{errors.Gender}</span>
+                                    )}</div>
+                            </Col>
 
 
-                        <Col xs={12} md={6}>
-                            <Form.Group>
+                            <Col xs={12} md={6}>
+                                <Form.Group>
                                     <label>IsActive &nbsp;&nbsp;&nbsp;
                                         <Form.Check
                                             type="checkbox"
@@ -1125,7 +1128,7 @@ const StudentCurd = () => {
                                             style={{ color: formData.IsActive ? 'green' : 'black', cursor: 'pointer' }}
                                             inline
                                             value={true}
-                                            
+
                                         />
                                         <Form.Check
                                             inline
@@ -1138,20 +1141,20 @@ const StudentCurd = () => {
                                             style={{ color: formData.IsActive ? 'red' : 'black', cursor: 'pointer' }}
                                             onChange={handleInputChange}
                                         />
-                                         <div>
-                                        {errors.IsActive && (
-                                            <span className='text-danger'>{errors.IsActive}</span>
-                                        )}</div>
-                                </label>
-                            </Form.Group>
-                           
-                        </Col>
+                                        <div>
+                                            {errors.IsActive && (
+                                                <span className='text-danger'>{errors.IsActive}</span>
+                                            )}</div>
+                                    </label>
+                                </Form.Group>
 
-                    </Row>
-                    <Row>
-                        <Col xs={12} md={6} style={{ marginTop: "24px", width: "350px" }}>
-                            <Form.Group>
-                                <Form.Label> </Form.Label>
+                            </Col>
+
+                        </Row>
+                        <Row>
+                            <Col xs={12} md={6} style={{ marginTop: "24px", width: "330px" }}>
+                                <Form.Group>
+                                    <Form.Label> </Form.Label>
                                     <DatePicker
                                         name="DOB"
                                         autoComplete="off"
@@ -1164,25 +1167,25 @@ const StudentCurd = () => {
                                             }));
                                         }}
                                         dateFormat="dd-MMM-yy"
-                                        className="form-control"
+                                        className={`form-control ${errors.DOB && 'is-invalid'}`}
                                         placeholderText="Date of Birth"
                                         isValidDate={(date) => {
                                             return date <= new Date();
                                         }}
-                                />
-                            </Form.Group>
-                            {errors.DOB && (
-                                <span className='text-danger'>{errors.DOB}</span>
-                            )}
-                        </Col>&nbsp;&nbsp;
-                        <Col
-                            xs={12}
-                            md={6}
-                            style={{ marginLeft: "52px", marginTop: "24px", width: "370px" }}
-                        >
-                            <Form.Group>
-                                <Form.Label> </Form.Label>
-                                <DatePicker
+                                    />
+                                </Form.Group>
+                                {errors.DOB && (
+                                    <span className='text-danger'>{errors.DOB}</span>
+                                )}
+                            </Col>&nbsp;&nbsp;
+                            <Col
+                                xs={12}
+                                md={6}
+                                style={{ marginLeft: "25px", marginTop: "24px", width: "330px" }}
+                            >
+                                <Form.Group>
+                                    <Form.Label> </Form.Label>
+                                    <DatePicker
                                         dateFormat="dd-MMM-yy"
                                         autoComplete="off"
                                         name="EnrollmentDate"
@@ -1194,41 +1197,41 @@ const StudentCurd = () => {
                                                 EnrollmentDate: formattedDate
                                             }));
                                         }}
-                                        className="form-control"
+                                        className={`form-control ${errors.EnrollmentDate && 'is-invalid'}`}
                                         placeholderText="EnrollmentDate"
-                                />
-                            </Form.Group>
-                            {errors.EnrollmentDate && (
-                                <span className='text-danger'>{errors.EnrollmentDate}</span>
-                            )}
-                        </Col>
+                                    />
+                                </Form.Group>
+                                {errors.EnrollmentDate && (
+                                    <span className='text-danger'>{errors.EnrollmentDate}</span>
+                                )}
+                            </Col>
 
-                    </Row>
-                    <Row>
+                        </Row>
+                        <Row>
 
-                        <Col xs={12} md={6} style={{ marginTop: "30px" }}>
-                            <Form.Group>
-                                    <Col xs={12} md={6} style={{ marginTop: "30px" }}>
-                                       
-                                            <Form.Group>
-                                                <Form.Label></Form.Label>
-                                                <input type="file" onChange={(e) => handleFileChange(e)} />
+                            <Col xs={12} md={6} style={{ marginTop: "5px", width: "330px" }}>
+                                <Form.Group>
+                                    <Col xs={12} md={6} style={{ marginTop: "5px" }}>
 
-                                                {selectedFile && (
-                                                    <img
-                                                        src={URL.createObjectURL(selectedFile)}
-                                                        alt="Selected File"
-                                                        style={{ maxWidth: "100%", maxHeight: "200px" }}
-                                                    />
+                                        <Form.Group>
+                                            <Form.Label></Form.Label>
+                                            <input type="file" onChange={(e) => handleFileChange(e)} />
 
-                                                )}</Form.Group>
-                                            
+                                            {selectedFile && (
+                                                <img
+                                                    src={URL.createObjectURL(selectedFile)}
+                                                    alt="Selected File"
+                                                    style={{ marginTop: "15px", maxWidth: "100%", maxHeight: "200px" }}
+                                                />
+
+                                            )}</Form.Group>
+
                                         <div> {errors.photo && <span style={{ color: 'red' }}>{errors.photo}</span>}</div>
 
                                     </Col>
-                                 </Form.Group>
+                                </Form.Group>
 
-                        </Col>
+                            </Col>
                         </Row>
                         <div className="mt-3 d-flex justify-content-end align-items-center">
                             <Button variant="danger" onClick={handleAddCloseModal}>
@@ -1237,8 +1240,8 @@ const StudentCurd = () => {
                             <div className="mx-2" style={{
                                 borderLeft: '1px'
                             }} >
-                            <Button type="submit" variant="primary">
-                                Submit
+                                <Button type="submit" variant="primary">
+                                    Submit
                                 </Button>
                             </div>
                         </div>
@@ -1246,7 +1249,7 @@ const StudentCurd = () => {
                     </form>
 
                 </Modal.Body>
-              
+
             </Modal>
 
 

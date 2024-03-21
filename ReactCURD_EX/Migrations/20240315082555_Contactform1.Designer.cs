@@ -12,8 +12,8 @@ using ReactCURD_EX;
 namespace ReactCURD_EX.Migrations
 {
     [DbContext(typeof(ComponyContext))]
-    [Migration("20240229075834_Somechanges")]
-    partial class Somechanges
+    [Migration("20240315082555_Contactform1")]
+    partial class Contactform1
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -93,6 +93,39 @@ namespace ReactCURD_EX.Migrations
                     b.HasIndex("CourceId");
 
                     b.ToTable("enrollments");
+                });
+
+            modelBuilder.Entity("ReactCURD_EX.Model.StudentContact", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhoneNo")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Stud_Contact_Table");
                 });
 
             modelBuilder.Entity("ReactCURD_EX.Model.StudentCources", b =>

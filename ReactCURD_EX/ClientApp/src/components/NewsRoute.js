@@ -4,14 +4,15 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import News from './News';
 import Login from './Login';
 import SignUp from './SignUp';
-import Nav from './Nav';
+import Footer from "./Footer";
+import Layout from "./Layout";
 
 export class NewsRoute extends Component {
 
     RenderNav = ({ children }) => {
         const isLoginPage = window.location.pathname === "/" || window.location.pathname === "/signup";
-        
-        return isLoginPage ? children : <><Nav /> {children} </>;
+
+        return isLoginPage ? children : <><Layout /> {children} </>;
     };
 
     pageSize = 3;
@@ -42,7 +43,7 @@ export class NewsRoute extends Component {
                                 <Routes>
                                      <Route path="/" element={<Login />} />
                                     <Route path="/SignUp" element={<SignUp />} />
-                                    <Route path="/Nav" element={<Nav />} />
+                                    <Route path="/Layout" element={<Layout />} />
                                     </Routes>
                             </this.RenderNav>}
                         />
@@ -106,6 +107,7 @@ export class NewsRoute extends Component {
                                 
                     </Routes>
                 </Router>
+                <Footer></Footer>
             </div>
         );
     }

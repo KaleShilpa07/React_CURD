@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace ReactCURD_EX.Migrations
 {
-    public partial class Crud2 : Migration
+    public partial class Contactform1 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -52,6 +52,23 @@ namespace ReactCURD_EX.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_SignUpFormModelTBL", x => x.SignUpId);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Stud_Contact_Table",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PhoneNo = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Message = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Stud_Contact_Table", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -157,6 +174,9 @@ namespace ReactCURD_EX.Migrations
 
             migrationBuilder.DropTable(
                 name: "SignUpFormModelTBL");
+
+            migrationBuilder.DropTable(
+                name: "Stud_Contact_Table");
 
             migrationBuilder.DropTable(
                 name: "StudentCources");

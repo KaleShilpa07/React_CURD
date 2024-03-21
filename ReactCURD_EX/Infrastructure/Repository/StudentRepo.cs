@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using ReactCURD_EX.Infrastructure.Interface;
 using ReactCURD_EX.Model;
 using static ReactCURD_EX.ComponyContext;
@@ -17,10 +18,19 @@ namespace ReactCURD_EX.Infrastructure.Repository
         {
             return await _cc.loginFormModels.FirstOrDefaultAsync(u => u.Email == loginModel.Email && u.Password == loginModel.Password);
         }
+       
 
         public async Task SignUp(SignUpFormModel signUpModel)
         {
-            // First, save the signup data
+
+            // Check if the user with the same email already exists
+            var existingUser = await _cc.signUpFormModels.FirstOrDefaultAsync(u => u.Email == signUpModel.Email);
+            if (existingUser != null)
+            {
+                throw new InvalidOperationException("A user with this email already exists. Please use a different email address.");
+            }
+
+            // Save the signup data
             var signUpEntity = new SignUpFormModel
             {
                 Name = signUpModel.Name,
@@ -331,5 +341,16 @@ namespace ReactCURD_EX.Infrastructure.Repository
             }
 
         }
+
+        public async Task<int> AddContact(StudentContact studentContact)
+        {
+           
+
+                // Add student contact to database
+                _cc.studentContacts.Add(studentContact);
+                return await _cc.SaveChangesAsync(); // Save changes asynchronously and return the number of affected rows
+           
+        }
     }
+    
 }

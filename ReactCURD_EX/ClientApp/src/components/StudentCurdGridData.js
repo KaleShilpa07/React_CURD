@@ -1,26 +1,9 @@
 ﻿import React, { Fragment, useState, useEffect } from "react";
-import RefreshIcon from '@mui/icons-material/Refresh';
-
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
-import IconButton from '@mui/material/IconButton';
-import {
-    Dialog,
-    DialogTitle,
-    DialogContent,
-    DialogContentText,
-    DialogActions,
-    TableContainer,
-    Paper
-} from "@mui/material";
+import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from "@mui/material";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import Table from "react-bootstrap/Table";
-import Button from "react-bootstrap/Button";
-import { Form } from "react-bootstrap";
-import Modal from "react-bootstrap/Modal";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
-import Container from "react-bootstrap/Container";
+import { Button, Form, Modal, Row, Col, Container } from "react-bootstrap";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import EditIcon from "@mui/icons-material/Edit";
@@ -28,6 +11,7 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import DeleteIcon from "@mui/icons-material/Delete";
 import "react-toastify/dist/ReactToastify.css";
+
 
 import AddStudentValidations from "./Validations/AddStudentValidations";
 
@@ -44,6 +28,7 @@ const StudentCurdGridData = () => {
     const [CourceName, setSelectedCourse] = useState("");
     const [CourceCode, setSelectedCourseCode] = useState("");
 
+    // fetchCoursesByDegree Dropdown code
     const handleEditCourseChange = (e) => {
         const selectedCourseName = e.target.value;
         SetEditCourceName(selectedCourseName);
@@ -63,7 +48,6 @@ const StudentCurdGridData = () => {
                 console.error('Error fetching courses:', error);
             });
     };
-
     const handleDegreeChange = (e) => {
         const selectedDegree = e.target.value;
         SetEditDegree(selectedDegree);
@@ -74,7 +58,6 @@ const StudentCurdGridData = () => {
         fetchCoursesByDegree(selectedDegree);
 
     };
-
     const handleCourseChange = (e) => {
         const selectedCourceName = e.target.value;
         const selectedCourse = courses.find(course => course.courceName === selectedCourceName);
@@ -96,7 +79,7 @@ const StudentCurdGridData = () => {
         }
     };
 
-
+     // Add a new state for storing the currentPhotoUrl
     const [currentPhotoUrl, setCurrentPhotoUrl] = useState("");
     const [previewData, setPreviewData] = useState(false);
 
@@ -129,8 +112,7 @@ const StudentCurdGridData = () => {
         });
     };
 
-
-
+    //search data
     const [searchTerm, setSearchTerm] = useState("");
     const handleSearch = () => {
         axios
@@ -142,51 +124,32 @@ const StudentCurdGridData = () => {
                 console.log(error);
             });
     };
-
     const [open, setOpen] = useState(false);
     const [deleteId, setDeleteId] = useState();
 
-    const handleClickOpen = (id) => {
-        setDeleteId(id);
-        setOpen(true);
-    };
-    const handleCloseDialog = () => {
-        setOpen(false);
-    };
+    const handleClickOpen = (id) => {  setDeleteId(id); setOpen(true); };
+    const handleCloseDialog = () => { setOpen(false);  };
 
     //Edit modal
     const [showEditModal, setShowEditModal] = useState(false);
-    const handleEditModal = () => {
-        setShowEditModal(true);
-    };
-    const handleCloseEditModal = () => {
-        setShowEditModal(false);
-    };
+    const handleEditModal = () => {setShowEditModal(true);  };
+    const handleCloseEditModal = () => { setShowEditModal(false);};
 
-    // Preview modal
-
+    // Preview modal 
     const [showPreviewImage, setShowPreviewImage] = useState(false);
-    const handlePreviewModalImage = () => {
-        setShowPreviewImage(true);
-    };
-    const handleClosePreviewModalImage = () => {
-        setShowPreviewImage(false);
-    };
+    const handlePreviewModalImage = () => { setShowPreviewImage(true); };
+    const handleClosePreviewModalImage = () => {  setShowPreviewImage(false); };
     const [showPreviewModal, setShowPreviewModal] = useState(false);
-    const handlePreviewModal = () => {
-        setShowPreviewModal(true);
-    };
-    const handleClosePreviewModal = () => {
-        setShowPreviewModal(false);
-    };
+    const handlePreviewModal = () => {  setShowPreviewModal(true);   };
+    const handleClosePreviewModal = () => {  setShowPreviewModal(false);  };
 
-    //Delete Data
+    //Delete multiple records
     const [selectedRows, setSelectedRows] = useState([]);
     const handleDeleteSelectedRows = async () => {
 
         if (selectedRows.length === 0) {
             // If no rows are selected, show an error toast immediately
-            toast.error("Please select rows to delete multiple records", { position: "top-center" });
+            //toast.error("Please select rows to delete multiple records", { position: "top-center" });
             return; // Return to exit the function early
         }
         axios.delete('https://localhost:7195/api/home/deleteMultiple', {
@@ -200,16 +163,10 @@ const StudentCurdGridData = () => {
         })
             .catch((error) => {
                 //   toast.error("Please Select Row To Delete Multiple Records..", { position: "top-center" });
-
-            });
+    });
     };
-
-    const HandleMultiDelete = (id) => {
-        handleClickOpen(id);
-    }
-    const HandleDelete = (id) => {
-        handleClickOpen(id);
-    };
+    const HandleMultiDelete = (id) => {   handleClickOpen(id);}
+    const HandleDelete = (id) => {  handleClickOpen(id); };
     const confirmDelete = () => {
         axios
             .delete(`https://localhost:7195/api/home/${deleteId}`)
@@ -257,23 +214,9 @@ const StudentCurdGridData = () => {
         );
     };
 
-
+    // State variable to store data fetched from the server
     const [data, Setdata] = useState([]);
-
-    //const [IsActive, SetIsActive] = useState("");
-    //const [Age, SetAge] = useState("");
-    //const [Name, SetName] = useState("");
-    //const [City, SetCity] = useState("");
-    //const [DOB, SetDOB] = useState("");
-    //const [Gender, SetGender] = useState("");
-    //const [MobileNo, SetMobileNo] = useState("");
-    //const [EmailId, SetEmailId] = useState("");
-    //const [CourceName, setCourceName] = useState("");
-    // const [CourceCode, setCourceCode] = useState("");
-
-    //const [Credits, SetCredits] = useState("");
-    //const [Grade, SetGrade] = useState("");
-    // const [EnrollmentDate, SetEnrollmentDate] = useState("");
+    // State variables for editing data
     const [Editid, SetEditid] = useState("");
     const [Editname, SetEditName] = useState("");
     const [EditAge, SetEditAge] = useState("");
@@ -294,11 +237,12 @@ const StudentCurdGridData = () => {
 
 
     //Save student Data
-    //const [errors, setErrors] = useState({});
-    const [errors, setErrors] = useState({});
 
+// State variable to store form validation errors
+    const [errors, setErrors] = useState({});
+    // State variable to store form data
     const [formData, setFormData] = useState({
-        Name: "",
+        Name: "",   // Name field in the form
         Age: "",
         DOB: "",
         Gender: "",
@@ -316,8 +260,7 @@ const StudentCurdGridData = () => {
     });
     const handleInputChange = (event) => {
         const { name, value, type } = event.target;
-
-        let inputValue = value; // Define inputValue here
+         let inputValue = value; // Define inputValue here
         if (type === 'checkbox') {
             // For other radio buttons, convert the value to a boolean
             inputValue = value === 'true';
@@ -330,35 +273,26 @@ const StudentCurdGridData = () => {
 
         console.log(name, inputValue); // Log name and inputValue
     };
-
-
-
     const HandleSave = async (event) => {
         event.preventDefault();
-
         try {
             const formDataCopy = { ...formData };
 
             if (selectedFile) {
                 formDataCopy.photo = await getBase64(selectedFile);
             }
-
             const validationErrors = AddStudentValidations(formDataCopy);
             setErrors(validationErrors);
-
             if (Object.keys(validationErrors).length > 0) {
                 return;
             }
-
             const response = await axios.post('https://localhost:7195/api/home', formDataCopy);
-
             if (response.status === 200) {
                 console.log('Save successful:', response.data);
                 setFormData({ ...formData, photo: null });
                 setSelectedFile(null);
                 handleAddCloseModal();
                 refreshPage();
-
             } else {
                 console.error('Failed to add student:', response.data);
             }
@@ -366,13 +300,12 @@ const StudentCurdGridData = () => {
             console.error('Error saving data:', error);
         }
     };
-
-
+    // Create an object with updated data
 
     const handleUpdate = async (id) => {
         const updatedData = {
-            id: Editid,
-            Name: Editname,
+            id: Editid,// Assuming Editid is the ID of the item being updated
+            Name: Editname,// Assuming EditName is the updated name
             Age: EditAge,
             City: EditCity,
             Degree: EditDegree,
@@ -381,13 +314,11 @@ const StudentCurdGridData = () => {
             MobileNo: EditMobileNo,
             Gender: EditGender,
             IsActive: EditIsActive,
-
             Credits: EditCredits,
             Grade: EditGrade,
             EnrollmentDate: EditEnrollmentDate,
             CourceCode: EditCourceCode,
             CourceName: EditCourceName,
-
             //Photo: currentPhotoUrl.split(',')[1], // Extract base64 part
             PhotoBase64: currentPhotoUrl ? await getBase64(selectedFile) : null,
 
@@ -406,8 +337,10 @@ const StudentCurdGridData = () => {
                 toast.error("Error updating data", { position: "top-center" });
             });
     };
+    //fetch data for the item with the specified id from your API endpoint.
     const HandleEdit = (id) => {
-        handleEditModal();
+        handleEditModal();// Open the edit modal
+           // Fetch data for the item with the specified id
         axios
             .get(`https://localhost:7195/api/home/${id}`, {
                 headers: {
@@ -415,6 +348,8 @@ const StudentCurdGridData = () => {
                 },
             })
             .then((result) => {
+                // Assuming result.data contains the fetched data
+            // Set state variables with the fetched data
                 SetEditPhotoBase64(result.data.PhotoBase64);
                 SetEditName(result.data.name);
                 SetEditAge(result.data.age);
@@ -435,15 +370,15 @@ const StudentCurdGridData = () => {
                 setShowEditModal(true); // You might need this line if you want to ensure the modal is visible after fetching data
             })
             .catch((error) => {
+                  // Handle errors
                 console.error(error);
+                  // Show an error toast notification
                 toast.error("Error fetching student data for edit", { position: "top-center" });
             });
     };
 
     const HandlePreview = (id) => {
         handlePreviewModal();
-
-
         axios
             .get(`https://localhost:7195/api/home/${id}`, {
                 headers: {
@@ -461,63 +396,9 @@ const StudentCurdGridData = () => {
                 toast.error("Error fetching student data for preview", { position: "top-center" });
             });
     };
-    const HandlePreview2 = (id) => {
-
-        handlePreviewModalImage();
-
-        axios
-            .get(`https://localhost:7195/api/home/${id}`, {
-                headers: {
-                    "Content-Type": "application/json",
-                },
-            })
-            .then((result) => {
-                setPreviewData(result.data);
-                // Open the preview modal
-
-                setShowPreviewImage(true);
-            })
-            .catch((error) => {
-                console.error(error);
-                toast.error("Error fetching student data for preview", { position: "top-center" });
-            });
-    };
-
     const [showAddModal, setAddShowModal] = useState(false);
-    const handleAddShowModal = () => {
-        setAddShowModal(true);
-    };
-    const handleAddCloseModal = () => {
-        setAddShowModal(false);
-
-    };
-
-    const handleIsActiveChange = (itemId) => {
-        Setdata((prevData) =>
-            prevData.map((item) =>
-                item.id === itemId ? { ...item, isActive: !item.isActive } : item
-            )
-        );
-        const checkbox = document.getElementById(`checkbox_${itemId}`);
-        if (checkbox) {
-            checkbox.classList.toggle('Red');
-        }
-    };
-    // Disable all checkboxes by default
-    const [checkboxesDisabled, setCheckboxesDisabled] = useState(true);
-
-    useEffect(() => {
-        axios.get('https://localhost:7195/api/home/GetDegree')
-            .then(response => {
-                SetDegree(response.data);
-            })
-            .catch(error => {
-                console.error('Error fetching degrees:', error);
-            });
-        Getdata();
-
-    }, [searchTerm]);
-
+    const handleAddShowModal = () => {  setAddShowModal(true); };
+    const handleAddCloseModal = () => {setAddShowModal(false); };
     const Getdata = () => {
         axios
             .get("https://localhost:7195/api/home")
@@ -535,8 +416,21 @@ const StudentCurdGridData = () => {
             });
     };
 
+    //useEffect perform side effects in function components
+    //Like data fetching, subscriptions, or manually changing the DOM.
+    useEffect(() => {
+        axios.get('https://localhost:7195/api/home/GetDegree')
+            .then(response => {
+                SetDegree(response.data);
+            })
+            .catch(error => {
+                console.error('Error fetching degrees:', error);
+            });
+        Getdata();
+         // Effect code
+    }, [searchTerm]);
 
-
+       // It Define the columns for the grid
     const columns: GridColDef[] = [
         // { field: 'id', headerName: 'ID', width: 70 },
         { field: 'name', headerName: 'Name', width: 130, headerClassName: 'custom-header-name' },
@@ -586,34 +480,21 @@ const StudentCurdGridData = () => {
     ];
     console.log("Data before passing to DataGrid:", data);
     return (
-        <Fragment >
-            <br></br>
+        <Fragment > <br></br>
             <ToastContainer style={{ marginTop: "5px", position: "absolute" }} />
-
-            {/*search data and Delete All btn*/}
+           {/*search data and Delete All btn*/}
             <Container >
-
                 <Row>
-
-                  
-                    <Col
-                        sx={{ flexGrow: 1, display: 'flex', marginTop: "20px" }}
-                        mx={2}
-                        lg={4}
-                        md={8}
-                        style={{ position: "fixed", width: "13%", marginLeft: "30px" }}
-                    >    {" "}
-                            <Button
+                    <Col sx={{ flexGrow: 1, display: 'flex', marginTop: "20px" }} mx={2}
+                        lg={4} md={8} style={{ position: "fixed", width: "13%", marginLeft: "30px" }}>
+                       <Button
                                 color="btn btn-Success"
                                 style={{ color: "white", marginLeft: "15px" }}
-                                onClick={handleAddShowModal}
-                            >
+                                onClick={handleAddShowModal}>
                                 <AddCircleOutlineIcon />
                                 &nbsp; Add New
                             </Button>{" "}
                     </Col>
-                   
-                   
                     <Col
                         sx={{ flexGrow: 1, display: 'flex', marginTop: "20px" }}
                         mx={2}
@@ -654,21 +535,11 @@ const StudentCurdGridData = () => {
                                 DeleteAll
                             </button>
                         }
-
-                        {/*&nbsp;*/}
-
-                        {/*<IconButton style={{ backgroundColor: "red", color: "white" }} onClick={refreshPage}>*/}
-                        {/*    */}{/* Refresh Icon */}
-                        {/*    <RefreshIcon />*/}
-                        {/*</IconButton>*/}
-
                     </Col>
                 </Row>
             </Container>
             <br></br>
             <br></br>
-
-
             {/* Get Table Data*/}
             <div style={{ textAlign: "center", height: 640, width: '92%', position: "absolute" }}>
                 <DataGrid
@@ -709,7 +580,7 @@ const StudentCurdGridData = () => {
 
             {/*Image Preview Data */}
             <div>
-                <Modal style={{ /*backgroundColor: 'gray',*/ marginTop: "70px" }}
+                <Modal style={{ /*backgroundColor: 'gray',*/ marginTop: "110px" }}
                     show={showPreviewImage}
                     onHide={handleClosePreviewModalImage}
                     animation={true}
@@ -736,7 +607,6 @@ const StudentCurdGridData = () => {
                 </Modal>{" "}
             </div>
 
-
             {/*Student Preview Data */}
             <div style={{
                 position: "fixed",
@@ -746,13 +616,15 @@ const StudentCurdGridData = () => {
                 transform: "translate(-50%, -50%)",
             }}>
                 {" "}
-                <Modal style={{ /*backgroundColor: 'gray',*/ marginTop: "60px" }}
+                <Modal style={{ /*backgroundColor: 'gray',*/ marginTop: "30px" }}
                     show={showPreviewModal}
                     onHide={handleClosePreviewModal}
                     animation={true}
+                    centered
+                    size="lg"
                 >
                     <Modal.Header closeButton>
-                        <Modal.Title><span style={{ textAlign: "center", marginLeft: "300px" }}>Student Preview</span></Modal.Title>
+                        <Modal.Title><span style={{ textAlign: "center" }}>Student Preview</span></Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
                         {previewData && (
@@ -796,12 +668,11 @@ const StudentCurdGridData = () => {
                 </Modal>{" "}
             </div>
 
-
-
             {/* Add Model*/}
-            <Modal style={{ /*backgroundColor: 'gray'*/ marginTop: "70px" }} show={showAddModal} onHide={handleAddCloseModal} size="lg" className="custom-modal">
+            <Modal style={{ /*backgroundColor: 'gray'*/ marginTop: "30px" }} show={showAddModal} onHide={handleAddCloseModal} centered
+                size="lg"  className="custom-modal">
                 <Modal.Header closeButton >
-                    <Modal.Title><span style={{ textAlign: "center", marginLeft: "300px" }}>Add New Student</span></Modal.Title>
+                    <Modal.Title><span style={{ textAlign: "center" }}>Add New Student</span></Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
 
@@ -813,7 +684,7 @@ const StudentCurdGridData = () => {
                                     <input
                                         type="text"
                                         autocomplete="off"
-                                        className="form-control"
+                                        className={`form-control ${errors.Name && 'is-invalid'}`}
                                         placeholder="Name"
                                         name="Name"
                                         value={formData.Name}
@@ -829,7 +700,7 @@ const StudentCurdGridData = () => {
                                     <Form.Label> </Form.Label>
                                     <input
                                         type="text" autoComplete="off"
-                                        className="form-control"
+                                        className={`form-control ${errors.MobileNo && 'is-invalid'}`}
                                         placeholder="Mobile No"
                                         name="MobileNo"
                                         value={formData.MobileNo}
@@ -848,7 +719,7 @@ const StudentCurdGridData = () => {
                                     <Form.Label></Form.Label>
                                     <input
                                         type="text" autoComplete="off"
-                                        className="form-control"
+                                        className={`form-control ${errors.Age && 'is-invalid'}`}
                                         placeholder="Age"
                                         name="Age"
                                         value={formData.Age}
@@ -866,7 +737,7 @@ const StudentCurdGridData = () => {
                                     <Form.Label></Form.Label>
                                     <input
                                         type="text" autoComplete="off"
-                                        className="form-control"
+                                        className={`form-control ${errors.City && 'is-invalid'}`}
                                         placeholder="City"
                                         name="City" value={formData.City}
                                         onChange={handleInputChange}
@@ -877,10 +748,11 @@ const StudentCurdGridData = () => {
                                 </Form.Group>
                             </Col>
                             <Row>
-                                <Col xs={12} md={6} style={{ width: "405px" }}>
+                                <Col xs={12} md={6} style={{ width: "340px" }}>
                                     <Form.Group>
                                         <Form.Label></Form.Label>
                                         <Form.Select
+                                            className={`form-control ${errors.Degree && 'is-invalid'}`}
                                             name="Degree"
                                             value={formData.Degree}
                                             onChange={(e) => {
@@ -898,10 +770,11 @@ const StudentCurdGridData = () => {
                                         {errors.Degree && <span className='text-danger'>{errors.Degree}</span>}
                                     </Form.Group>
                                 </Col>
-                                <Col xs={12} md={6} style={{ width: "380px" }}>
+                                <Col xs={12} md={6} style={{ marginLeft:"20px", width: "300px" }}>
                                     <Form.Group>
                                         <Form.Label></Form.Label>
                                         <Form.Select
+                                            className={`form-control ${errors.CourceName && 'is-invalid'}`}
                                             name="CourceName"
                                             value={formData.CourceName}
                                             onChange={(e) => {
@@ -923,6 +796,7 @@ const StudentCurdGridData = () => {
                                 <Form.Group>
                                     <Form.Label></Form.Label>
                                     <Form.Select
+                                        className={`form-control ${errors.CourceCode && 'is-invalid'}`}
                                         name="CourceCode" value={formData.CourceCode}
                                         onChange={(e) => {
                                             setSelectedCourseCode(e);  // Pass the event object to handleDegreeChange
@@ -949,7 +823,7 @@ const StudentCurdGridData = () => {
 
                                     <input
                                         type="text" autocomplete="off"
-                                        className="form-control"
+                                        className={`form-control ${errors.Grade && 'is-invalid'}`}
                                         placeholder="Enter Grade"
                                         name="Grade"
                                         value={formData.Grade}
@@ -969,7 +843,7 @@ const StudentCurdGridData = () => {
                                     <input
 
                                         type="text" autoComplete="off"
-                                        className="form-control"
+                                        className={`form-control ${errors.Credits && 'is-invalid'}`}
                                         placeholder="Credits"
                                         name="Credits"
                                         value={formData.Credits}
@@ -986,7 +860,7 @@ const StudentCurdGridData = () => {
                                     <Form.Label></Form.Label>
                                     <input
                                         type="text" autoComplete="off"
-                                        className="form-control"
+                                        className={`form-control ${errors.EmailId && 'is-invalid'}`}
                                         placeholder="Email Id"
                                         name="EmailId"
                                         value={formData.EmailId}
@@ -1078,7 +952,7 @@ const StudentCurdGridData = () => {
 
                         </Row>
                         <Row>
-                            <Col xs={12} md={6} style={{ marginTop: "24px", width: "350px" }}>
+                            <Col xs={12} md={6} style={{ marginTop: "24px", width: "330px" }}>
                                 <Form.Group>
                                     <Form.Label> </Form.Label>
                                     <DatePicker
@@ -1093,7 +967,7 @@ const StudentCurdGridData = () => {
                                             }));
                                         }}
                                         dateFormat="dd-MMM-yy"
-                                        className="form-control"
+                                        className={`form-control ${errors.DOB && 'is-invalid'}`}
                                         placeholderText="Date of Birth"
                                         isValidDate={(date) => {
                                             return date <= new Date();
@@ -1107,7 +981,7 @@ const StudentCurdGridData = () => {
                             <Col
                                 xs={12}
                                 md={6}
-                                style={{ marginLeft: "52px", marginTop: "24px", width: "370px" }}
+                                style={{ marginLeft: "25px", marginTop: "24px", width: "330px" }}
                             >
                                 <Form.Group>
                                     <Form.Label> </Form.Label>
@@ -1123,7 +997,7 @@ const StudentCurdGridData = () => {
                                                 EnrollmentDate: formattedDate
                                             }));
                                         }}
-                                        className="form-control"
+                                        className={`form-control ${errors.EnrollmentDate && 'is-invalid'}`}
                                         placeholderText="EnrollmentDate"
                                     />
                                 </Form.Group>
@@ -1135,9 +1009,9 @@ const StudentCurdGridData = () => {
                         </Row>
                         <Row>
 
-                            <Col xs={12} md={6} style={{ marginTop: "30px" }}>
+                            <Col xs={12} md={6} style={{ marginTop: "5px", width:"330px" }}>
                                 <Form.Group>
-                                    <Col xs={12} md={6} style={{ marginTop: "30px" }}>
+                                    <Col xs={12} md={6} style={{ marginTop: "5px" }}>
 
                                         <Form.Group>
                                             <Form.Label></Form.Label>
@@ -1147,7 +1021,7 @@ const StudentCurdGridData = () => {
                                                 <img
                                                     src={URL.createObjectURL(selectedFile)}
                                                     alt="Selected File"
-                                                    style={{ maxWidth: "100%", maxHeight: "200px" }}
+                                                    style={{ marginTop:"15px", maxWidth: "100%", maxHeight: "200px" }}
                                                 />
 
                                             )}</Form.Group>
@@ -1178,17 +1052,17 @@ const StudentCurdGridData = () => {
 
             </Modal>
 
-
             {/*  Edit Model*/}
-            <div>
-                <Modal
-                    style={{/* backgroundColor: 'gray',*/ marginTop: "70px", marginRight: "900px" }}
+            <Modal
+                   
                     show={showEditModal}
                     onHide={handleCloseEditModal}
                     animation={true}
+                    centered
+                    size="lg"
                 >
                     <Modal.Header closeButton>
-                        <Modal.Title><span style={{ textAlign: "center", marginLeft: "300px" }}>Update/Edit Student</span></Modal.Title>
+                        <Modal.Title><span style={{ textAlign: "center" }}>Update/Edit Student</span></Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
                         <form >
@@ -1246,7 +1120,7 @@ const StudentCurdGridData = () => {
                                 </Col>
                             </Row>
                             <Row>
-                                <Col xs={12} md={6} style={{ width: "405px" }}>
+                                <Col xs={12} md={6} style={{ width: "340px" }}>
                                     <Form.Group>
                                         <Form.Label></Form.Label>
                                         <Form.Select
@@ -1263,7 +1137,7 @@ const StudentCurdGridData = () => {
                                         {errors.Degree && <span className='text-danger'>{errors.Degree}</span>}
                                     </Form.Group>
                                 </Col>
-                                <Col xs={12} md={6} style={{ width: "380px" }}>
+                                <Col xs={12} md={6} style={{ marginLeft:"20px", width: "300px" }}>
                                     <Form.Group>
                                         <Form.Label></Form.Label>
                                         <Form.Select
@@ -1341,7 +1215,7 @@ const StudentCurdGridData = () => {
                                 </Col>
                             </Row>
                             <Row>
-                                <Col xs={12} md={4} style={{ marginTop: "24px", width: "265px" }} >
+                                <Col xs={12} md={4} style={{ marginTop: "24px", width: "300px" }} >
                                     <Form.Group>
                                         <div>
                                             <label>Gender &nbsp;:&nbsp;&nbsp;
@@ -1371,9 +1245,9 @@ const StudentCurdGridData = () => {
                                             </label>   </div>
                                     </Form.Group>
 
-                                </Col>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;
+                                </Col> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;
 
-                                <Col xs={12} md={4} style={{ marginTop: "24px", width: "225px", marginLeft: "0px" }} >
+                                <Col xs={12} md={4} style={{ marginTop: "24px", width: "300px", marginLeft: "0px" }} >
                                     <Form.Group>
                                         <label>IsActive &nbsp;:&nbsp;&nbsp;
 
@@ -1407,8 +1281,7 @@ const StudentCurdGridData = () => {
 
 
                             <Row>
-                                {" "}
-                                <Col xs={12} md={6} style={{ marginTop: "24px", width: "300px" }}>
+                                <Col xs={12} md={6} style={{ marginTop: "24px", width: "330px" }}>
                                     <Form.Group>
                                         <Form.Label>Date of Birth</Form.Label>
                                         <DatePicker
@@ -1422,8 +1295,12 @@ const StudentCurdGridData = () => {
                                             }
                                         />
                                     </Form.Group>
-                                </Col>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                <Col xs={12} md={6} style={{ marginTop: "24px", width: "300px" }}>
+                                </Col>&nbsp;&nbsp;
+                                <Col
+                                    xs={12}
+                                    md={6}
+                                    style={{ marginLeft: "25px", marginTop: "24px", width: "330px" }}
+                                >
                                     <Form.Group>
                                         <Form.Label>Enrollment Date </Form.Label>
                                         <DatePicker
@@ -1492,8 +1369,6 @@ const StudentCurdGridData = () => {
                     </Modal.Body>
 
                 </Modal >
-            </div>
-
         </Fragment>
     );
 };

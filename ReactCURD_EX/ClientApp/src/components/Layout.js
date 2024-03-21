@@ -4,10 +4,8 @@ import Box from '@mui/material/Box';
 import MuiDrawer from '@mui/material/Drawer';
 import MuiAppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
-import List from '@mui/material/List';
 import CssBaseline from '@mui/material/CssBaseline';
 import Typography from '@mui/material/Typography';
-import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
@@ -15,28 +13,18 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import DrawerMenu from './DrawerMenu';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import ListItem from '@mui/material/ListItem';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
-import InboxIcon from '@mui/icons-material/MoveToInbox';
-import MailIcon from '@mui/icons-material/Mail';
-import PhoneIcon from '@mui/icons-material/Phone';
-import SendIcon from '@mui/icons-material/Send';
-import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
-import StarIcon from '@mui/icons-material/Star';
-import DraftIcon from '@mui/icons-material/Drafts';
-import DeleteIcon from '@mui/icons-material/Delete';
 import RefreshIcon from '@mui/icons-material/Refresh';
-
-
-import SpamIcon from '@mui/icons-material/Report';
+import { List, ListItem, ListItemButton, ListItemIcon, ListItemText, Divider, Collapse } from '@mui/material';
+import { Send as SendIcon, Drafts as DraftIcon, Mail as MailIcon, School as StudentIcon,  Inbox as InboxIcon, Star as StarIcon, Delete as DeleteIcon, Report as SpamIcon, Phone as PhoneIcon, CalendarToday as CalendarTodayIcon } from '@mui/icons-material';
 import { Link, Route, Routes, useNavigate } from "react-router-dom";
 import ContactStudent from "./ContactStudent";
 import StudentCurd from "./StudentCurd";
 import Navbar from "./Navbar";
 import TextForm from "./TextForm";
 import StudentCurdGridData from "./StudentCurdGridData";
+import MyCalender from "./MyCalender";
+import EmailForm from "./EmailForm";
+import ContactThankYou from "./ContactThankYou";
 const drawerWidth = 170;
 const drawercolor = "#112655";
 const TextColor = "#FFFFFF";
@@ -111,7 +99,7 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
     }),
 );
 
-const Nav = () => 
+const Layout = () => 
 
 {
     const theme = useTheme();
@@ -163,9 +151,7 @@ const Nav = () =>
                                 <li style={{ marginRight: '10px', borderRight: '1px solid #EEEEEE', paddingRight: '10px' }}>
                                     <Link className="nav-link" to="/StudentCurd">Student Records</Link>
                                 </li>
-                                <li style={{ marginRight: '10px', borderRight: '1px solid #EEEEEE', paddingRight: '10px' }}>
-                                    <Link className="nav-link" to="/StudentCurdGridData">Grid Table</Link>
-                                </li>
+                              
                                 <li style={{ marginRight: '10px', borderRight: '1px solid #EEEEEE', paddingRight: '10px' }}>
                                     <Link className="nav-link" to="/Navbar">News</Link>
                                 </li>
@@ -185,9 +171,9 @@ const Nav = () =>
                     </Toolbar>
                 </AppBar>
                 <Drawer variant="permanent" open={open}>
-
+                    
                     <DrawerHeader>
-                        <IconButton onClick={handleDrawerClose} sx={{
+                          <IconButton onClick={handleDrawerClose} sx={{
                             width:'20px',
                             color: '#fff'
                         }}>
@@ -195,6 +181,87 @@ const Nav = () =>
                               </IconButton>
                     </DrawerHeader>
                     <Divider />
+                    <List>
+                        {['Student'].map((text, index) => (
+                            <ListItem key={text} disablePadding sx={{ display: 'block' }}>
+                                <ListItemButton
+                                    onClick={() => handleListItemClick(text)}
+                                    sx={{
+                                        minHeight: 48,
+                                        justifyContent: open ? 'initial' : 'center',
+                                        px: 2.5,
+                                    }}
+                                    title={text}
+                                    css={{ color: 'gray' }}
+                                >
+                                    <ListItemIcon
+                                        sx={{
+                                            minWidth: 0,
+                                            mr: open ? 3 : 'auto',
+                                            justifyContent: 'center',
+                                            color: '#fff'
+                                        }}
+                                    >
+                                        {index % 2 === 0 ? <StudentIcon /> : <InboxIcon />}
+                                    </ListItemIcon>
+                                    <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
+                                </ListItemButton>
+                            </ListItem>
+                        ))}
+                        {['Contact'].map((text, index) => (
+                            <ListItem key={text} disablePadding sx={{ display: 'block' }}>
+                                <ListItemButton
+                                    onClick={() => handleListItemClick(text)}
+                                    sx={{
+                                        minHeight: 48,
+                                        justifyContent: open ? 'initial' : 'center',
+                                        px: 2.5,
+                                    }}
+                                    title={text}
+                                    css={{ color: 'gray' }}
+                                >
+                                    <ListItemIcon
+                                        sx={{
+                                            minWidth: 0,
+                                            mr: open ? 3 : 'auto',
+                                            justifyContent: 'center',
+                                            color: '#fff'
+                                        }}
+                                    >
+                                        {index % 2 === 0 ? <PhoneIcon /> : <InboxIcon />}
+                                    </ListItemIcon>
+                                    <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
+                                </ListItemButton>
+                            </ListItem>
+                        ))}
+                        {['Calender'].map((text, index) => (
+                            <ListItem key={text} disablePadding sx={{ display: 'block' }}>
+                                <ListItemButton
+                                    onClick={() => handleListItemClick(text)}
+                                    sx={{
+                                        minHeight: 48,
+                                        justifyContent: open ? 'initial' : 'center',
+                                        px: 2.5,
+                                    }}
+                                    title={text}
+                                    css={{ color: 'gray' }}
+                                >
+                                    <ListItemIcon
+                                        sx={{
+                                            minWidth: 0,
+                                            mr: open ? 3 : 'auto',
+                                            justifyContent: 'center',
+                                            color: '#fff'
+                                        }}
+                                    >
+                                        {index % 2 === 0 ? <CalendarTodayIcon /> : <InboxIcon />}
+                                    </ListItemIcon>
+                                    <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
+                                </ListItemButton>
+                            </ListItem>
+                        ))}
+
+                    </List>
                     <List>
                         {['Inbox'].map((text, index) => (
                             <ListItem key={text} disablePadding sx={{ display: 'block' }}>
@@ -222,7 +289,7 @@ const Nav = () =>
                                 </ListItemButton>
                             </ListItem>
                         ))}
-                        {['Send Email'].map((text, index) => (
+                        {['SendEmail'].map((text, index) => (
                             <ListItem key={text} disablePadding sx={{ display: 'block' }}>
                                 <ListItemButton
                                     onClick={() => handleListItemClick(text)}
@@ -383,61 +450,7 @@ const Nav = () =>
                         ))}
                     </List>
                     <Divider />
-                    <List>
-                        {['Contact'].map((text, index) => (
-                            <ListItem key={text} disablePadding sx={{ display: 'block' }}>
-                                <ListItemButton
-                                    onClick={() => handleListItemClick(text)}
-                                    sx={{
-                                        minHeight: 48,
-                                        justifyContent: open ? 'initial' : 'center',
-                                        px: 2.5,
-                                    }}
-                                    title={text}
-                                    css={{ color: 'gray' }}
-                                >
-                                    <ListItemIcon
-                                        sx={{
-                                            minWidth: 0,
-                                            mr: open ? 3 : 'auto',
-                                            justifyContent: 'center',
-                                            color: '#fff'
-                                        }}
-                                    >
-                                        {index % 2 === 0 ?<PhoneIcon/>: <InboxIcon /> }
-                                    </ListItemIcon>
-                                    <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
-                                </ListItemButton>
-                            </ListItem>
-                        ))}
-                        {['Calender'].map((text, index) => (
-                            <ListItem key={text} disablePadding sx={{ display: 'block' }}>
-                                <ListItemButton
-                                    onClick={() => handleListItemClick(text)}
-                                    sx={{
-                                        minHeight: 48,
-                                        justifyContent: open ? 'initial' : 'center',
-                                        px: 2.5,
-                                    }}
-                                    title={text}
-                                    css={{ color: 'gray' }}
-                                >
-                                    <ListItemIcon
-                                        sx={{
-                                            minWidth: 0,
-                                            mr: open ? 3 : 'auto',
-                                            justifyContent: 'center',
-                                            color: '#fff'
-                                        }}
-                                    >
-                                        {index % 2 === 0 ? <CalendarTodayIcon /> : <InboxIcon />}
-                                    </ListItemIcon>
-                                    <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
-                                </ListItemButton>
-                            </ListItem>
-                        ))}
-                        
-                    </List>
+                   
                 </Drawer>
                 <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
                     <DrawerHeader />
@@ -445,10 +458,13 @@ const Nav = () =>
                    
                         <Routes>
                             <Route path="/Contact" element={<ContactStudent />} />
-                            <Route path="/StudentCurd" element={<StudentCurd />} />
-                            <Route path="/StudentCurdGridData" element={<StudentCurdGridData />} />
+                            <Route path="/Student" element={<StudentCurdGridData/>}/>
+                            <Route path="/StudentCurd" element={<StudentCurd/>} />
                             <Route path="/Navbar" element={<Navbar />} />
                             <Route path="/TextForm" element={<TextForm />} />
+                            <Route path="/Calender" element={<MyCalender />} />
+                            <Route path="/SendEmail" element={<EmailForm />} />
+                            <Route path="/ContactThankYou" element={<ContactThankYou />} />
 
                         </Routes>
                     </Typography>
@@ -460,4 +476,4 @@ const Nav = () =>
     );
 };
 
-export default Nav;
+export default Layout;

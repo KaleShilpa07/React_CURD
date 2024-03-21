@@ -69,7 +69,19 @@ a {
 .App-link {
     color: #61dafb;
 }
+.contact-container {
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+}
 
+.contact-form {
+    display: flex;
+    flex-direction: column;
+}
 @keyframes App-logo-spin {
     from {
         transform: rotate(0deg);
@@ -173,6 +185,7 @@ code {
     padding-left: 30px;
 }
 .modal-body {
+
     position: relative;
     flex: 1 1 auto;
     padding: var(--bs-modal-padding);

@@ -12,8 +12,8 @@ using ReactCURD_EX;
 namespace ReactCURD_EX.Migrations
 {
     [DbContext(typeof(ComponyContext))]
-    [Migration("20240226101717_Crud2")]
-    partial class Crud2
+    [Migration("20240320132559_CalenderEvent init")]
+    partial class CalenderEventinit
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -45,6 +45,29 @@ namespace ReactCURD_EX.Migrations
                     b.ToTable("LoginFormModelTBL");
                 });
 
+            modelBuilder.Entity("ReactCURD_EX.Model.CalenderModel.Event", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<DateTime>("End")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("Start")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("EventTBL");
+                });
+
             modelBuilder.Entity("ReactCURD_EX.Model.Cource", b =>
                 {
                     b.Property<int>("CourceId")
@@ -73,6 +96,39 @@ namespace ReactCURD_EX.Migrations
                     b.ToTable("courses");
                 });
 
+            modelBuilder.Entity("ReactCURD_EX.Model.Email", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("Body")
+                        .IsRequired()
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<string>("Recipient")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Sender")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("SentDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Subject")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("EmailTBL");
+                });
+
             modelBuilder.Entity("ReactCURD_EX.Model.Enrollment", b =>
                 {
                     b.Property<int>("Id")
@@ -81,7 +137,8 @@ namespace ReactCURD_EX.Migrations
                     b.Property<int>("CourceId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("EnrollmentDate")
+                    b.Property<DateTime?>("EnrollmentDate")
+                        .IsRequired()
                         .HasColumnType("datetime2");
 
                     b.Property<int>("EnrollmentId")
@@ -92,6 +149,39 @@ namespace ReactCURD_EX.Migrations
                     b.HasIndex("CourceId");
 
                     b.ToTable("enrollments");
+                });
+
+            modelBuilder.Entity("ReactCURD_EX.Model.StudentContact", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhoneNo")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Stud_Contact_Table");
                 });
 
             modelBuilder.Entity("ReactCURD_EX.Model.StudentCources", b =>
@@ -170,8 +260,7 @@ namespace ReactCURD_EX.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<int?>("Age")
-                        .IsRequired()
+                    b.Property<int>("Age")
                         .HasColumnType("int");
 
                     b.Property<string>("City")
